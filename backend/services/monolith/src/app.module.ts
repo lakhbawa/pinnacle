@@ -1,9 +1,24 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import {TypeOrmModule} from "@nestjs/typeorm";
+import { BoardsModule } from './boards/boards.module';
 
 @Module({
-  imports: [],
+  imports: [
+      TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 4732,
+      password: 'postgres',
+      username: 'postgres',
+      entities: [],
+      database: 'pinnacle',
+      synchronize: true,
+      logging: true,
+    }),
+      BoardsModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
