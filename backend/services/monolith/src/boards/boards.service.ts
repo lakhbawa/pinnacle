@@ -19,7 +19,8 @@ export class BoardsService {
   }
 
   findAll() {
-    return `This action returns all boards`;
+    return this.boardRepository.find();
+    // return `This action returns all boards`;
   }
 
   findOne(id: string) {
