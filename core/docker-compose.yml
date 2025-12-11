@@ -24,13 +24,13 @@ services:
     volumes:
       - dbdata:/var/lib/postgresql/data
     ports:
-      - "4332:5432"
+      - "4732:5432"
     networks: [pinnacle-network]
 
   pinnacle-adminer:
     image: adminer:latest
     ports:
-      - "4380:8080"
+      - "4780:8080"
     depends_on:
       - pinnacle-db
     networks: [pinnacle-network]
