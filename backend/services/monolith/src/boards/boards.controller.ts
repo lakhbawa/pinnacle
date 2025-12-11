@@ -3,14 +3,17 @@ import { BoardsService } from './boards.service';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
 
-@Controller('boards')
+@Controller('api/boards')
 export class BoardsController {
   constructor(private readonly boardsService: BoardsService) {}
 
   @Post()
-  create(@Body() createBoardDto: CreateBoardDto) {
-    return this.boardsService.create(createBoardDto);
-  }
+create(@Body() createBoardDto: CreateBoardDto) {
+  console.log('Received DTO:', createBoardDto);
+  console.log('DTO type:', typeof createBoardDto.title);
+  console.log('DTO value:', createBoardDto.title);
+  return this.boardsService.create(createBoardDto);
+}
 
   @Get()
   findAll() {
@@ -19,16 +22,16 @@ export class BoardsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.boardsService.findOne(+id);
+    return this.boardsService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateBoardDto: UpdateBoardDto) {
-    return this.boardsService.update(+id, updateBoardDto);
+    return this.boardsService.update(id, updateBoardDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.boardsService.remove(+id);
+    return this.boardsService.remove(id);
   }
 }

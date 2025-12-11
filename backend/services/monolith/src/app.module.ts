@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import {TypeOrmModule} from "@nestjs/typeorm";
 import { BoardsModule } from './boards/boards.module';
+import {Board} from "./boards/entities/board.entity";
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { BoardsModule } from './boards/boards.module';
       port: 4732,
       password: 'postgres',
       username: 'postgres',
-      entities: [],
+      entities: [Board],
       database: 'pinnacle',
       synchronize: true,
       logging: true,
