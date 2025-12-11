@@ -1,0 +1,62 @@
+
+version: "3"
+services:
+
+#  nginx:
+#    image: nginx:alpine
+#    restart: unless-stopped
+#    tty: true
+#    ports:
+#      - "2000:80"
+#      - "2001:443"
+#    volumes:
+#      - ./:/var/www
+#      - ./docker/config/nginx/conf.d.local/:/etc/nginx/conf.d/
+#      - ./docker/config/nginx/conf.d.local/ssl:/etc/nginx/ssl/
+#    networks:
+#      - app-network
+  pinnacle-db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: pinnacle
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    ports:
+      - "4332:5432"
+    networks: [pinnacle-network]
+
+  pinnacle-adminer:
+    image: adminer:latest
+    ports:
+      - "4380:8080"
+    depends_on:
+      - pinnacle-db
+    networks: [pinnacle-network]
+  pinnacle-redis:
+    image: arm64v8/redis
+    restart: unless-stopped
+    tty: true
+    expose:
+      - 6379
+    volumes:
+      - redisdata:/data
+    networks:
+      - pinnacle-network
+
+
+#Docker Networks
+networks:
+  pinnacle-network:
+    driver: bridge
+#Volumes
+volumes:
+  dbdata:
+    driver: local
+  redisdata:
+    driver: local
+
+#  default:
+#    external:
+#      name: nginx-proxy
