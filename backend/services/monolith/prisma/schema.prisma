@@ -1,0 +1,14 @@
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../src/generated/prisma"  // Generate to src, not dist
+  engineType      = "library"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Board {
+  id    String @id @default(uuid())
+  title String
+}

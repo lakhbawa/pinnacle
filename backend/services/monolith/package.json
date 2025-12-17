@@ -1,5 +1,5 @@
 {
-  "name": "core",
+  "name": "monolith-new",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -24,13 +24,14 @@
     "@nestjs/core": "^11.0.1",
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^11.0.1",
-    "@nestjs/typeorm": "^11.0.0",
+    "@prisma/adapter-pg": "^7.1.0",
+    "@prisma/client": "^7.1.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.3",
     "pg": "^8.16.3",
+    "prisma": "^7.1.0",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1",
-    "typeorm": "^0.3.28"
+    "rxjs": "^7.8.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

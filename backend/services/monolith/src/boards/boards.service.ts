@@ -1,37 +1,36 @@
-import { Injectable } from '@nestjs/common';
-import { CreateBoardDto } from './dto/create-board.dto';
-import { UpdateBoardDto } from './dto/update-board.dto';
-import {Board} from "./entities/board.entity";
-import {Repository} from "typeorm";
-import {InjectRepository} from "@nestjs/typeorm";
+import {Injectable} from '@nestjs/common';
+import {CreateBoardDto} from './dto/create-board.dto';
+import {UpdateBoardDto} from './dto/update-board.dto';
+import {PrismaService} from "../prisma.service";
 
 @Injectable()
 export class BoardsService {
 
-  constructor(@InjectRepository(Board) private readonly boardRepository: Repository<Board>) {
-  }
-  create(createBoardDto: CreateBoardDto) {
+    constructor(private prisma: PrismaService) {
 
-    const board = new Board();
-    board.title = createBoardDto.title;
+    }
+    async create(createBoardDto: CreateBoardDto) {
+        const board = await this.prisma.board.create({
+            data: {
+                title: createBoardDto.title,
+            }
+        })
+        return board;
+    }
 
-    return this.boardRepository.save(board);
-  }
+    findAll() {
+        return `This action returns all boards`;
+    }
 
-  findAll() {
-    return this.boardRepository.find();
-    // return `This action returns all boards`;
-  }
+    findOne(id: number) {
+        return `This action returns a #${id} board`;
+    }
 
-  findOne(id: string) {
-    return `This action returns a #${id} board`;
-  }
+    update(id: number, updateBoardDto: UpdateBoardDto) {
+        return `This action updates a #${id} board`;
+    }
 
-  update(id: string, updateBoardDto: UpdateBoardDto) {
-    return `This action updates a #${id} board`;
-  }
-
-  remove(id: string) {
-    return `This action removes a #${id} board`;
-  }
+    remove(id: number) {
+        return `This action removes a #${id} board`;
+    }
 }
