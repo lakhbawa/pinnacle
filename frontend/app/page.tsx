@@ -6,7 +6,7 @@ export default function Home() {
     <>
     Hello from Pinnacle
 
-            <Link href="/u/lakhbawa/boards">Boards</Link>
+            <Link href="/u/lakhbawa/projects">Boards</Link>
 
     </>
   );
