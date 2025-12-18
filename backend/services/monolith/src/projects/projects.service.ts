@@ -1,4 +1,4 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, Injectable, InternalServerErrorException, NotFoundException} from '@nestjs/common';
 import {CreateProjectDto} from './dto/create-project.dto';
 import {UpdateProjectDto} from './dto/update-project.dto';
 import {PrismaService} from "../prisma.service";
@@ -9,6 +9,7 @@ export class ProjectsService {
     constructor(private prisma: PrismaService) {
 
     }
+
     async create(createProjectDto: CreateProjectDto) {
         const project = await this.prisma.project.create({
             data: {
@@ -45,16 +46,15 @@ export class ProjectsService {
     async remove(id: string) {
         try {
             return await this.prisma.project.delete({
-            where: {
-                id: id,
-            }
-        })
+                where: {
+                    id: id,
+                }
+            })
         } catch (error) {
             if (error.code === 'P2025') {
                 throw new NotFoundException(`Could not delete project with id ${id}`);
             }
-            throw error;
+            throw new BadRequestException("Cannot delete project with id " + id);
         }
-
     }
 }
