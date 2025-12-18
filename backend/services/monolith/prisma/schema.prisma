@@ -47,3 +47,18 @@ model Issue {
 
     @@map("issues")
 }
+
+model User {
+    id String @id @default(uuid()) @map("uuid")
+    name String @map("name")
+
+    email String @map("email")
+
+    company String? @map("company")
+
+    password String @map("password")
+
+    isVerified Boolean @default(false) @map("is_verified")
+
+    @@map("users")
+}
