@@ -1,37 +1,37 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
-import {CreateBoardDto} from './dto/create-board.dto';
-import {UpdateBoardDto} from './dto/update-board.dto';
+import {CreateProjectDto} from './dto/create-project.dto';
+import {UpdateProjectDto} from './dto/update-project.dto';
 import {PrismaService} from "../prisma.service";
 
 @Injectable()
-export class BoardsService {
+export class ProjectsService {
 
     constructor(private prisma: PrismaService) {
 
     }
-    async create(createBoardDto: CreateBoardDto) {
-        const board = await this.prisma.board.create({
+    async create(createProjectDto: CreateProjectDto) {
+        const project = await this.prisma.project.create({
             data: {
-                title: createBoardDto.title,
+                title: createProjectDto.title,
             }
         })
-        return board;
+        return project;
     }
 
     async findAll() {
-        return await this.prisma.board.findMany();
+        return await this.prisma.project.findMany();
     }
 
     async findOne(id: string) {
-        return await this.prisma.board.findFirst({
+        return await this.prisma.project.findFirst({
             where: {
                 id: id,
             }
         })
     }
 
-    async update(id: string, updateBoardDto: UpdateBoardDto) {
-        return await this.prisma.board.update({
+    async update(id: string, updateBoardDto: UpdateProjectDto) {
+        return await this.prisma.project.update({
             where: {
                 id: id,
             },
@@ -44,14 +44,14 @@ export class BoardsService {
 
     async remove(id: string) {
         try {
-            return await this.prisma.board.delete({
+            return await this.prisma.project.delete({
             where: {
                 id: id,
             }
         })
         } catch (error) {
             if (error.code === 'P2025') {
-                throw new NotFoundException(`Could not delete board with id ${id}`);
+                throw new NotFoundException(`Could not delete project with id ${id}`);
             }
             throw error;
         }

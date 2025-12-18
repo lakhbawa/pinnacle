@@ -1,6 +1,6 @@
 import {IsString, MinLength} from "class-validator";
 
-export class CreateBoardDto {
+export class CreateProjectDto {
 
     @IsString()
     @MinLength(3)

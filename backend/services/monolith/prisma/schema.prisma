@@ -6,11 +6,26 @@ datasource db {
   provider = "postgresql"
 }
 
-model Board {
+model Project {
   id        String   @id @default(uuid()) @map("uuid")
   title     String
+  lists List[]
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("board")
+  @@map("projects")
+}
+
+model List {
+    id String @id @default(uuid()) @map("uuid")
+    title String @map("title")
+    projectId String @map("board_id")
+    project Project @relation(fields: [projectId], references: [id])
+
+    order Int @default(0)
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @default(now()) @map("updated_at")
+
+    @@map("lists")
 }
