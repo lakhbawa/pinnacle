@@ -77,6 +77,8 @@ export class UsersService {
                     id: id
                 }
             })
+        } catch (error) {
+            throw new InternalServerErrorException(error);
         }
     }
 }
