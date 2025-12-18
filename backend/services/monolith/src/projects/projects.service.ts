@@ -2,6 +2,7 @@ import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common
 import {UpdateProjectDto} from './dto/update-project.dto';
 import {PrismaService} from "../prisma.service";
 import {Project, Prisma} from "@prisma/client";
+
 @Injectable()
 export class ProjectsService {
 
@@ -16,20 +17,22 @@ export class ProjectsService {
     }
 
     async findAll(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.ProjectWhereUniqueInput;
-    where?: Prisma.ProjectWhereInput;
-    orderBy?: Prisma.ProjectOrderByWithRelationInput;
-  }): Promise<Project[]> {
-        const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.project.findMany({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
-    });
+        skip?: number;
+        take?: number;
+        cursor?: Prisma.ProjectWhereUniqueInput;
+        where?: Prisma.ProjectWhereInput;
+        orderBy?: Prisma.ProjectOrderByWithRelationInput;
+        include?: Prisma.ProjectInclude;
+    }): Promise<Project[]> {
+        const {skip, take, cursor, where, orderBy, include} = params;
+        return this.prisma.project.findMany({
+            skip,
+            take,
+            cursor,
+            where,
+            orderBy,
+            include,
+        });
     }
 
     async findOne(id: string) {
