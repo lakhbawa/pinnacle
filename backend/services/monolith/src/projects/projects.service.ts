@@ -1,8 +1,7 @@
-import {BadRequestException, Injectable, InternalServerErrorException, NotFoundException} from '@nestjs/common';
-import {CreateProjectDto} from './dto/create-project.dto';
+import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {UpdateProjectDto} from './dto/update-project.dto';
 import {PrismaService} from "../prisma.service";
-
+import {Project, Prisma} from "@prisma/client";
 @Injectable()
 export class ProjectsService {
 
@@ -10,17 +9,27 @@ export class ProjectsService {
 
     }
 
-    async create(createProjectDto: CreateProjectDto) {
-        const project = await this.prisma.project.create({
-            data: {
-                title: createProjectDto.title,
-            }
-        })
-        return project;
+    async create(data: Prisma.ProjectCreateInput) {
+        return await this.prisma.project.create({
+            data,
+        });
     }
 
-    async findAll() {
-        return await this.prisma.project.findMany();
+    async findAll(params: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.ProjectWhereUniqueInput;
+    where?: Prisma.ProjectWhereInput;
+    orderBy?: Prisma.ProjectOrderByWithRelationInput;
+  }): Promise<Project[]> {
+        const { skip, take, cursor, where, orderBy } = params;
+    return this.prisma.project.findMany({
+      skip,
+      take,
+      cursor,
+      where,
+      orderBy,
+    });
     }
 
     async findOne(id: string) {
