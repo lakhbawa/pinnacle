@@ -53,7 +53,12 @@ export default function Projects() {
                 projects.map((project) => (
                     <div className="p-3 bg-gray-100 border-2 border-gray-300 flex flex-row items-center justify-between"
                          key={project.id}>
-                        <div>{project.title}</div>
+                        <div>
+                            <Link href={`/u/${username}/projects/${project.id}`} >
+                            {project.title}
+
+                            </Link>
+                        </div>
                         <div className="actions flex gap-3">
                             <Link href={`/u/${username}/projects/${project.id}/update`}
                                   className="font-medium bg-blue-500 p-3 shadow-2xl text-white rounded">
