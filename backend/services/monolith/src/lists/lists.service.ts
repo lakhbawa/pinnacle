@@ -43,16 +43,20 @@ export class ListsService {
 
     async update(id: string, updateListDto: UpdateListDto) {
         try {
+            const data: any = {};
+            if (updateListDto.order) {
+                data.order = updateListDto.order;
+            }
+            if (updateListDto.title) {
+                data.title = updateListDto.title;
+            }
             const lastOrder = updateListDto.order ?? 0
             return await this.prisma.list.update(
                 {
                     where: {
                         id: id,
                     },
-                    data: {
-                        title: updateListDto.title,
-                        order: lastOrder,
-                    }
+                    data
                 }
             )
         } catch (error) {

@@ -1,4 +1,4 @@
-import {IsInt, IsNotEmpty, isNumber, IsString, MaxLength, MinLength} from "class-validator";
+import {IsInt, IsNotEmpty, isNumber, IsOptional, IsString, MaxLength, MinLength} from "class-validator";
 
 export class CreateListDto {
 
@@ -11,6 +11,6 @@ export class CreateListDto {
     @IsNotEmpty()
     project_id: string
 
-    @IsInt()
-    order: number | null
+    @IsOptional()
+    order: number | undefined;
 }
