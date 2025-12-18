@@ -1,29 +1,23 @@
 'use client'
 import {useState} from "react";
+import api from "@/utils/fetchWrapper";
 
-export default function CreateBoard() {
+export default function CreateProject() {
     const [formData, setFormData] = useState({
         title: ''
     })
 
-    const createBoard = async(event: any) => {
+    const createProject = async(event: any) => {
         event.preventDefault()
-        const response = await fetch('http://localhost:4000/api/boards', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData) // Remove the wrapping object
-        })
-        const data = await response.json()
-        console.log(data)
+        const response = await api.post('http://localhost:4000/api/projects', formData)
+        console.log(response)
     }
 
     return (
         <>
             Create Board
             <div className="bg-gray-500 p-5">
-                <form onSubmit={createBoard} method="POST">
+                <form onSubmit={createProject} method="POST">
                     <label htmlFor="title">Board Title
                         <input
                             type="text"
