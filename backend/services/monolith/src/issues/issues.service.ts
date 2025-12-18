@@ -68,7 +68,7 @@ export class IssuesService {
 
   async remove(id: string) {
     try {
-      return await this.prisma.delete({
+      return await this.prisma.issue.delete({
         where: {
           id: id
         }
