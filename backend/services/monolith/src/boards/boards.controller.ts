@@ -23,16 +23,16 @@ export class BoardsController {
 
     @Get(':id')
     findOne(@Param('id') id: string) {
-        return this.boardsService.findOne(+id);
+        return this.boardsService.findOne(id);
     }
 
     @Patch(':id')
     update(@Param('id') id: string, @Body() updateBoardDto: UpdateBoardDto) {
-        return this.boardsService.update(+id, updateBoardDto);
+        return this.boardsService.update(id, updateBoardDto);
     }
 
     @Delete(':id')
     remove(@Param('id') id: string) {
-        return this.boardsService.remove(+id);
+        return this.boardsService.remove(id);
     }
 }
