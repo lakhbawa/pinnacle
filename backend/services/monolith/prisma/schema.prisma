@@ -1,7 +1,5 @@
 generator client {
-  provider        = "prisma-client-js"
-  output          = "../src/generated/prisma"  // Generate to src, not dist
-  engineType      = "library"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -9,6 +7,10 @@ datasource db {
 }
 
 model Board {
-  id    String @id @default(uuid())
-  title String
+  id        String   @id @default(uuid()) @map("uuid")
+  title     String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("board")
 }

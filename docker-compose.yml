@@ -23,6 +23,7 @@ services:
       POSTGRES_DB: pinnacle
     volumes:
       - dbdata:/var/lib/postgresql/data
+      - ./docker/config/postgres/init-db.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "4732:5432"
     networks: [pinnacle-network]
