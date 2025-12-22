@@ -8,7 +8,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
-      {/* Navigation */}
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
@@ -21,20 +20,19 @@ export default function Home() {
             
             <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-8">
               <Link 
-                href="/login" 
+                href="/auth/signin"
                 className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
               >
                 Login
               </Link>
               <Link
-                href="/register"
+                href="/auth/signup"
                 className="bg-indigo-600 text-white hover:bg-indigo-700 px-4 py-2 rounded-md text-sm font-medium"
               >
                 Get Started
               </Link>
             </div>
 
-            {/* Mobile menu button */}
             <div className="flex items-center sm:hidden">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -60,18 +58,18 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Mobile menu */}
+
         {isMenuOpen && (
           <div className="sm:hidden">
             <div className="pt-2 pb-3 space-y-1">
               <Link
-                href="/login"
+                href="/auth/signin"
                 className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50"
               >
                 Login
               </Link>
               <Link
-                href="/register"
+                href="/auth/signup"
                 className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50"
               >
                 Get Started
@@ -109,7 +107,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Feature Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {/* Feature 1 */}
@@ -125,7 +122,6 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Feature 2 */}
           <div className="bg-white rounded-lg shadow-sm p-6">
             <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
               <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -138,7 +134,6 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Feature 3 */}
           <div className="bg-white rounded-lg shadow-sm p-6">
             <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
               <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,7 +148,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Footer */}
       <footer className="bg-white mt-24">
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
           <div className="mt-8 border-t border-gray-200 pt-8 md:flex md:items-center md:justify-between">

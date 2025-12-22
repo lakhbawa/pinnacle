@@ -18,6 +18,6 @@ export class SignUpDto {
 
     @IsString()
     @IsNotEmpty()
-    @MinLength(5)
+    @MinLength(3)
     company: string;
 }
