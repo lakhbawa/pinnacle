@@ -61,7 +61,7 @@ export default function Issues({params}: { params: Promise<{ id: string, listid:
                     <div className="p-3 bg-gray-100 border-2 border-gray-300 flex flex-row items-center justify-between"
                          key={issue.id}>
                         <div>
-                            <Link href={`/u/${username}/issues/${issue.id}`} >
+                            <Link href={`/u/${username}/projects/${id}/lists/${listid}/issues/${issue.id}`} >
                             {issue.title}
 
                             </Link>
