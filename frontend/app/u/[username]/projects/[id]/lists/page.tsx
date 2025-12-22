@@ -23,7 +23,7 @@ export default function Lists({params}: { params: Promise<{ id: string }> }) {
     const username = 'lakhbawa'
 
     useEffect(() => {
-        api.get<List[]>('/lists?project_id=' + projectId)
+        api.get<List[]>('/lists/?include=project&project_id=' + projectId)
             .then((data) => {
                 setLists(data);
             })
@@ -68,7 +68,7 @@ export default function Lists({params}: { params: Promise<{ id: string }> }) {
                             </Link>
                         </div>
                         <div className="actions flex gap-3">
-                            <Link href={`/u/${username}/lists/${list.id}/update`}
+                            <Link href={`/u/${username}/projects/${list.projectId}/lists/${list.id}/update`}
                                   className="font-medium bg-blue-500 p-3 shadow-2xl text-white rounded">
                                 Update
                             </Link>
