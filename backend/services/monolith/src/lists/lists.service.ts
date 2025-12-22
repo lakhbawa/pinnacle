@@ -32,9 +32,10 @@ export class ListsService {
         });
     }
 
-    async findOne(where: Prisma.ListWhereUniqueInput): Promise<List | null> {
+    async findOne(where: Prisma.ListWhereUniqueInput, include?: Prisma.ListInclude): Promise<List | null> {
         return await this.prisma.list.findUnique({
-            where
+            where,
+            include
         })
     }
 
