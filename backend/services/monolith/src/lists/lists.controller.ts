@@ -1,7 +1,8 @@
-import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Patch, Post, Query} from '@nestjs/common';
 import {ListsService} from './lists.service';
 import {CreateListDto} from './dto/create-list.dto';
 import {UpdateListDto} from './dto/update-list.dto';
+import {Prisma} from "@prisma/client";
 
 @Controller('api/lists')
 export class ListsController {
@@ -21,8 +22,15 @@ export class ListsController {
     }
 
     @Get()
-    findAll() {
-        return this.listsService.findAll({});
+    findAll(@Query() query: { project_id: string }) {
+        const where: Prisma.ListWhereInput = {};
+
+        if (query.project_id) {
+            where.projectId = query.project_id;
+        }
+        return this.listsService.findAll({
+            where
+        });
     }
 
     @Get(':id')
