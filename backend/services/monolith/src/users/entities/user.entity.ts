@@ -7,4 +7,7 @@ export class User {
 
     @Expose()
     company: string;
+
+    @Expose()
+    name: string;
 }
