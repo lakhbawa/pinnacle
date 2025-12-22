@@ -45,20 +45,48 @@ export default function ShowList({params}: { params: Promise<{ id: string, listi
     console.log(list)
     if (loading || !list) {
         return (
-            <>
-                loading...
-            </>
-        )
+            <div className="flex items-center justify-center min-h-[200px]">
+                <div className="flex flex-col items-center space-y-4">
+                    <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                    <p className="text-gray-600">Loading list details...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-600">{error}</p>
+            </div>
+        );
     }
 
     return (
-        <>
-            <h2>
+        <div className="max-w-3xl mx-auto p-6">
+            <div className="bg-white shadow-sm rounded-lg p-6">
+                <div className="border-b pb-4 mb-4">
+                    <h1 className="text-2xl font-semibold text-gray-900">
+                        {list.title}
+                    </h1>
+                    <p className="text-sm text-gray-500 mt-1">
+                        From project: {list.project.title}
+                    </p>
+                </div>
 
-            </h2>
-            List Details
-            Title: { list.title}
-            Project: { list.project.title}
-        </>
-    )
+                <div className="space-y-4">
+                    {/* You can add more list details here */}
+                    <div className="flex items-center justify-between">
+                        <button
+                            onClick={() => router.back()}
+                            className="text-sm text-gray-600 hover:text-gray-900 flex items-center"
+                        >
+                            ← Back to project
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
 }

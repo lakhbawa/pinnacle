@@ -36,7 +36,7 @@ export class ListsController {
     @Get(':id')
     findOne(@Param('id') id: string, @Query('include') include: string) {
         const includeRels = {}
-        if (include.indexOf('project') != -1) {
+        if (include && include.indexOf('project') != -1) {
             includeRels['project'] = true
         }
         return this.listsService.findOne({id}, { ...includeRels });

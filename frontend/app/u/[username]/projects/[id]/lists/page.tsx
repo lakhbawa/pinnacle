@@ -62,7 +62,7 @@ export default function Lists({params}: { params: Promise<{ id: string }> }) {
                     <div className="p-3 bg-gray-100 border-2 border-gray-300 flex flex-row items-center justify-between"
                          key={list.id}>
                         <div>
-                            <Link href={`/u/${username}/lists/${list.id}`} >
+                            <Link href={`/u/${username}/projects/${id}/lists/${list.id}/issues`} >
                             {list.title}
 
                             </Link>
