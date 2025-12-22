@@ -41,7 +41,7 @@ export default function Lists({params}: { params: Promise<{ id: string }> }) {
             try {
                 await api.delete(`/lists/${listId}`)
                 // ✅ Remove deleted project from state
-                setLists(lists.filter(l => l.id !== id))
+                setLists(lists.filter(l => l.id !== listId))
                 console.log('List deleted successfully')
             } catch (error) {
                 console.error('Failed to delete list:', error)
