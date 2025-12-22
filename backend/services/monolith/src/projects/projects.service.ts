@@ -1,7 +1,6 @@
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
-import {UpdateProjectDto} from './dto/update-project.dto';
+import {Injectable} from '@nestjs/common';
 import {PrismaService} from "../prisma.service";
-import {Project, Prisma} from "@prisma/client";
+import {Prisma, Project} from "@prisma/client";
 
 @Injectable()
 export class ProjectsService {

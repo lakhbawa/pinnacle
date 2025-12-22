@@ -12,13 +12,13 @@ export class UsersService {
 
     create(data: Prisma.UserCreateInput) {
 
-            return this.prisma.user.create({
-                data
-            })
+        return this.prisma.user.create({
+            data
+        })
     }
 
 
-       async findAll(params: {
+    async findAll(params: {
         skip?: number;
         take?: number;
         cursor?: Prisma.UserWhereUniqueInput;
@@ -38,28 +38,28 @@ export class UsersService {
 
     async findOne(where: Prisma.UserWhereUniqueInput): Promise<User | null> {
 
-            return await this.prisma.user.findUnique({
-                where
-            })
+        return await this.prisma.user.findUnique({
+            where
+        })
     }
 
     async update(params: {
         where: Prisma.UserWhereUniqueInput;
         data: Prisma.UserUpdateInput
     }) {
-       const {data, where} = params;
-            return await this.prisma.user.update({
-                where,
-                data
-            })
+        const {data, where} = params;
+        return await this.prisma.user.update({
+            where,
+            data
+        })
 
     }
 
     async remove(where: Prisma.UserWhereUniqueInput): Promise<User> {
 
-            return  this.prisma.user.delete({
-                where
-            })
+        return this.prisma.user.delete({
+            where
+        })
 
     }
 }

@@ -1,4 +1,4 @@
-import {Controller, Get, Post, Body, Patch, Param, Delete} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
 import {IssuesService} from './issues.service';
 import {CreateIssueDto} from './dto/create-issue.dto';
 import {UpdateIssueDto} from './dto/update-issue.dto';
@@ -11,7 +11,7 @@ export class IssuesController {
     @Post()
     create(@Body() createIssueDto: CreateIssueDto) {
 
-      return this.issuesService.create({
+        return this.issuesService.create({
             title: createIssueDto.title,
             list: {
                 connect: {
@@ -34,20 +34,20 @@ export class IssuesController {
 
     @Patch(':id')
     update(@Param('id') id: string, @Body() updateIssueDto: UpdateIssueDto) {
-      const data: any = {};
-      if (updateIssueDto.title) {
-        data.title = updateIssueDto.title;
-      }
-      if (updateIssueDto.listId) {
-        data.listId = updateIssueDto.listId;
-      }
-      if (updateIssueDto.dueDate) {
-        data.dueDate = updateIssueDto.dueDate;
-      }
-      return this.issuesService.update({
-        where: { id: id },
-        data
-      });
+        const data: any = {};
+        if (updateIssueDto.title) {
+            data.title = updateIssueDto.title;
+        }
+        if (updateIssueDto.listId) {
+            data.listId = updateIssueDto.listId;
+        }
+        if (updateIssueDto.dueDate) {
+            data.dueDate = updateIssueDto.dueDate;
+        }
+        return this.issuesService.update({
+            where: {id: id},
+            data
+        });
     }
 
     @Delete(':id')

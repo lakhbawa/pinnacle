@@ -12,6 +12,7 @@ export class ListsService {
     async create(data: Prisma.ListCreateInput): Promise<List> {
         return this.prisma.list.create({data});
     }
+
     async findAll(params: {
         skip?: number;
         take?: number;
@@ -32,11 +33,10 @@ export class ListsService {
     }
 
     async findOne(where: Prisma.ListWhereUniqueInput): Promise<List | null> {
-            return await this.prisma.list.findUnique({
-                where
-            })
+        return await this.prisma.list.findUnique({
+            where
+        })
     }
-
 
 
     async update(params: {

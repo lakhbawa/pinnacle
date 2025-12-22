@@ -37,8 +37,8 @@ export class IssuesService {
     }
 
     findOne(where: Prisma.IssueWhereUniqueInput) {
-      return this.prisma.issue.findUnique({
-          where
+        return this.prisma.issue.findUnique({
+            where
         });
     }
 
