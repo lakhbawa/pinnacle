@@ -13,7 +13,9 @@ export class ProjectsController {
         console.log('Received DTO:', createProjectDto);
         console.log('DTO type:', typeof createProjectDto.title);
         console.log('DTO value:', createProjectDto.title);
-        return this.projectsService.create(createProjectDto);
+        return this.projectsService.create({
+            title: createProjectDto.title
+        });
     }
 
     @Get()
@@ -27,17 +29,28 @@ export class ProjectsController {
 
     @Get(':id')
     findOne(@Param('id') id: string) {
-        return this.projectsService.findOne(id);
+        return this.projectsService.findOne({
+            id
+        });
     }
 
     @Patch(':id')
     update(@Param('id') id: string, @Body() updateBoardDto: UpdateProjectDto) {
-        return this.projectsService.update(id, updateBoardDto);
+        return this.projectsService.update({
+            where: {
+                id: id
+            },
+            data: {
+                title: updateBoardDto.title,
+            }
+        });
     }
 
     @Delete(':id')
     remove(@Param('id') id: string) {
         console.log('Deleting project');
-        return this.projectsService.remove(id);
+        return this.projectsService.remove({
+            id: id,
+        });
     }
 }

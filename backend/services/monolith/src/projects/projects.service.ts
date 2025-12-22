@@ -35,38 +35,28 @@ export class ProjectsService {
         });
     }
 
-    async findOne(id: string) {
-        return await this.prisma.project.findFirst({
-            where: {
-                id: id,
-            }
+    async findOne(ProjectWhereUniqueInput: Prisma.ProjectWhereUniqueInput): Promise<Project | null> {
+        return this.prisma.project.findUnique({
+            where: ProjectWhereUniqueInput
         })
     }
 
-    async update(id: string, updateBoardDto: UpdateProjectDto) {
+    async update(params: {
+        where: Prisma.ProjectWhereUniqueInput;
+        data: Prisma.ProjectUpdateInput;
+    }) {
+        const {data, where} = params;
         return await this.prisma.project.update({
-            where: {
-                id: id,
-            },
-            data: {
-                title: updateBoardDto.title,
-            }
+            data,
+            where,
         })
 
     }
 
-    async remove(id: string) {
-        try {
-            return await this.prisma.project.delete({
-                where: {
-                    id: id,
-                }
-            })
-        } catch (error) {
-            if (error.code === 'P2025') {
-                throw new NotFoundException(`Could not delete project with id ${id}`);
-            }
-            throw new BadRequestException("Cannot delete project with id " + id);
-        }
+    async remove(where: Prisma.ProjectWhereUniqueInput): Promise<Project> {
+        return this.prisma.project.delete({
+            where
+        })
+
     }
 }
