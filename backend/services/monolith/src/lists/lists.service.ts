@@ -1,7 +1,6 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
-import {CreateListDto} from './dto/create-list.dto';
-import {UpdateListDto} from './dto/update-list.dto';
+import {Injectable} from '@nestjs/common';
 import {PrismaService} from "../prisma.service";
+import {List, Prisma} from "@prisma/client";
 
 @Injectable()
 export class ListsService {
@@ -10,75 +9,52 @@ export class ListsService {
 
     }
 
-    async create(createListDto: CreateListDto) {
-        const lastOrder = createListDto.order ?? 0
-        const list = await this.prisma.list.create({
-            data: {
-                title: createListDto.title,
-                projectId: createListDto.project_id,
-                order: lastOrder,
-            }
-        })
-        return list;
+    async create(data: Prisma.ListCreateInput): Promise<List> {
+        return this.prisma.list.create({data});
+    }
+    async findAll(params: {
+        skip?: number;
+        take?: number;
+        cursor?: Prisma.ListWhereUniqueInput;
+        where?: Prisma.ListWhereInput;
+        orderBy?: Prisma.ListOrderByWithRelationInput;
+        include?: Prisma.ListInclude;
+    }): Promise<List[]> {
+        const {skip, take, cursor, where, orderBy, include} = params;
+        return this.prisma.list.findMany({
+            skip,
+            take,
+            cursor,
+            where,
+            orderBy,
+            include,
+        });
     }
 
-    async findAll() {
-        return await this.prisma.list.findMany();
-    }
-
-    async findOne(id: string) {
-        try {
-            return await this.prisma.list.findFirst({
-                where: {
-                    id: id,
-                }
+    async findOne(where: Prisma.ListWhereUniqueInput): Promise<List | null> {
+            return await this.prisma.list.findUnique({
+                where
             })
-        } catch (error) {
-            throw new NotFoundException(
-                "List with id '" + id + "' not found",
-            );
-        }
-
     }
 
-    async update(id: string, updateListDto: UpdateListDto) {
-        try {
-            const data: any = {};
-            if (updateListDto.order) {
-                data.order = updateListDto.order;
-            }
-            if (updateListDto.title) {
-                data.title = updateListDto.title;
-            }
-            const lastOrder = updateListDto.order ?? 0
-            return await this.prisma.list.update(
-                {
-                    where: {
-                        id: id,
-                    },
-                    data
-                }
-            )
-        } catch (error) {
-            throw error;
-        }
-    }
 
-    async remove(id: string) {
 
-        const list = await this.prisma.list.findUnique({
-            where: {
-                id: id,
-            }
+    async update(params: {
+        where: Prisma.ListWhereUniqueInput;
+        data: Prisma.ListUpdateInput;
+    }) {
+        const {data, where} = params;
+        return await this.prisma.list.update({
+            data,
+            where,
         })
-        if (!list) {
-            throw new NotFoundException()
-        }
-        return await this.prisma.list.delete({
-                where: {
-                    id: id,
-                }
-            }
-        )
+
+    }
+
+    async remove(where: Prisma.ListWhereUniqueInput): Promise<List> {
+
+        return this.prisma.list.delete({
+            where
+        })
     }
 }

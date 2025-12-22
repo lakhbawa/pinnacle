@@ -10,20 +10,11 @@ export class UsersService {
     constructor(private prisma: PrismaService) {
     }
 
-    create(createUserDto: CreateUserDto) {
-        try {
+    create(data: Prisma.UserCreateInput) {
+
             return this.prisma.user.create({
-                data: {
-                    name: createUserDto.name,
-                    company: createUserDto.company,
-                    email: createUserDto.email,
-                    password: createUserDto.password
-                }
+                data
             })
-        } catch (error) {
-            console.log(error)
-            throw new InternalServerErrorException(error);
-        }
     }
 
 
@@ -45,56 +36,30 @@ export class UsersService {
         });
     }
 
-    async findOne(id: string) {
-        try {
-            return await this.prisma.user.findUnique({
-                where: {
-                    id: id
-                }
-            })
-        } catch (error) {
-            throw new InternalServerErrorException(error);
-        }
+    async findOne(where: Prisma.UserWhereUniqueInput): Promise<User | null> {
 
+            return await this.prisma.user.findUnique({
+                where
+            })
     }
 
-    async update(id: string, updateUserDto: UpdateUserDto) {
-        try {
-
-            const data: any = {}
-            if (updateUserDto.password) {
-                data.password = updateUserDto.password
-            }
-            if (updateUserDto.company) {
-                data.company = updateUserDto.company
-            }
-            if (updateUserDto.email) {
-                data.email = updateUserDto.email
-            }
-            if (updateUserDto.name) {
-                data.name = updateUserDto.name
-            }
+    async update(params: {
+        where: Prisma.UserWhereUniqueInput;
+        data: Prisma.UserUpdateInput
+    }) {
+       const {data, where} = params;
             return await this.prisma.user.update({
-                where: {
-                    id: id,
-                },
+                where,
                 data
             })
-        } catch (error) {
-            console.log(error)
-            throw new InternalServerErrorException(error);
-        }
+
     }
 
-    async remove(id: string) {
-        try {
-            return await this.prisma.user.delete({
-                where: {
-                    id: id
-                }
+    async remove(where: Prisma.UserWhereUniqueInput): Promise<User> {
+
+            return  this.prisma.user.delete({
+                where
             })
-        } catch (error) {
-            throw new InternalServerErrorException(error);
-        }
+
     }
 }

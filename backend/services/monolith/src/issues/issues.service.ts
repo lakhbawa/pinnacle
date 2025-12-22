@@ -1,80 +1,64 @@
-import {Injectable, InternalServerErrorException} from '@nestjs/common';
-import { CreateIssueDto } from './dto/create-issue.dto';
-import { UpdateIssueDto } from './dto/update-issue.dto';
+import {Injectable} from '@nestjs/common';
 import {PrismaService} from "../prisma.service";
+import {Issue, Prisma} from "@prisma/client";
 
 @Injectable()
 export class IssuesService {
 
-  constructor(private prisma : PrismaService) {
-  }
-
-  async create(createIssueDto: CreateIssueDto) {
-    try {
-      return await this.prisma.issue.create({
-        data: {
-          title: createIssueDto.title,
-          listId: createIssueDto.listId,
-          dueDate: createIssueDto.dueDate
-        }
-      })
-
-    } catch (error) {
-      throw new InternalServerErrorException(error);
+    constructor(private prisma: PrismaService) {
     }
-  }
 
-  async findAll() {
-    return await this.prisma.issue.findMany();
-  }
+    async create(data: Prisma.IssueCreateInput) {
 
-  findOne(id: string) {
-    const issue =  this.prisma.issue.findFirst({
-      where: {
-        id: id
-      }
-    })
-    if (!issue) {
-      throw new InternalServerErrorException('Not Found');
+        return await this.prisma.issue.create({
+            data
+        })
+
     }
-    return issue;
-  }
 
-  async update(id: string, updateIssueDto: UpdateIssueDto) {
-    
-    try {
-      const data: any = {};
-      if (updateIssueDto.title) {
-        data.title = updateIssueDto.title;
-      }
-      if (updateIssueDto.listId) {
-        data.listId = updateIssueDto.listId;
-      }
-      if (updateIssueDto.dueDate) {
-        data.dueDate = updateIssueDto.dueDate;
-      }
 
-      return await this.prisma.issue.update({
-        where: {
-          id: id
-        },
-        data
-      })
-      
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+    async findAll(params: {
+        skip?: number;
+        take?: number;
+        cursor?: Prisma.IssueWhereUniqueInput;
+        where?: Prisma.IssueWhereInput;
+        orderBy?: Prisma.IssueOrderByWithRelationInput;
+        include?: Prisma.IssueInclude;
+    }): Promise<Issue[]> {
+        const {skip, take, cursor, where, orderBy, include} = params;
+        return this.prisma.issue.findMany({
+            skip,
+            take,
+            cursor,
+            where,
+            orderBy,
+            include,
+        });
     }
-  }
 
-  async remove(id: string) {
-    try {
-      return await this.prisma.issue.delete({
-        where: {
-          id: id
-        }
-      })
-    } catch (error) {
-      throw new InternalServerErrorException(error);
+    findOne(where: Prisma.IssueWhereUniqueInput) {
+      return this.prisma.issue.findUnique({
+          where
+        });
     }
-  }
+
+    async update(params: {
+        where: Prisma.IssueWhereUniqueInput;
+        data: Prisma.IssueUpdateInput;
+    }) {
+        const {data, where} = params;
+        return await this.prisma.issue.update({
+            data,
+            where,
+        })
+
+    }
+
+
+    async remove(where: Prisma.IssueWhereUniqueInput): Promise<Issue> {
+        return this.prisma.issue.delete({
+            where
+        })
+
+    }
 }

@@ -1,34 +1,57 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { IssuesService } from './issues.service';
-import { CreateIssueDto } from './dto/create-issue.dto';
-import { UpdateIssueDto } from './dto/update-issue.dto';
+import {Controller, Get, Post, Body, Patch, Param, Delete} from '@nestjs/common';
+import {IssuesService} from './issues.service';
+import {CreateIssueDto} from './dto/create-issue.dto';
+import {UpdateIssueDto} from './dto/update-issue.dto';
 
 @Controller('api/issues')
 export class IssuesController {
-  constructor(private readonly issuesService: IssuesService) {}
+    constructor(private readonly issuesService: IssuesService) {
+    }
 
-  @Post()
-  create(@Body() createIssueDto: CreateIssueDto) {
-    return this.issuesService.create(createIssueDto);
-  }
+    @Post()
+    create(@Body() createIssueDto: CreateIssueDto) {
 
-  @Get()
-  findAll() {
-    return this.issuesService.findAll();
-  }
+      return this.issuesService.create({
+            title: createIssueDto.title,
+            list: {
+                connect: {
+                    id: createIssueDto.listId,
+                }
+            },
+            dueDate: createIssueDto.dueDate
+        });
+    }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.issuesService.findOne(id);
-  }
+    @Get()
+    findAll() {
+        return this.issuesService.findAll({});
+    }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateIssueDto: UpdateIssueDto) {
-    return this.issuesService.update(id, updateIssueDto);
-  }
+    @Get(':id')
+    findOne(@Param('id') id: string) {
+        return this.issuesService.findOne({id});
+    }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.issuesService.remove(id);
-  }
+    @Patch(':id')
+    update(@Param('id') id: string, @Body() updateIssueDto: UpdateIssueDto) {
+      const data: any = {};
+      if (updateIssueDto.title) {
+        data.title = updateIssueDto.title;
+      }
+      if (updateIssueDto.listId) {
+        data.listId = updateIssueDto.listId;
+      }
+      if (updateIssueDto.dueDate) {
+        data.dueDate = updateIssueDto.dueDate;
+      }
+      return this.issuesService.update({
+        where: { id: id },
+        data
+      });
+    }
+
+    @Delete(':id')
+    remove(@Param('id') id: string) {
+        return this.issuesService.remove({id});
+    }
 }
