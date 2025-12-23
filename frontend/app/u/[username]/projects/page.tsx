@@ -28,6 +28,7 @@ export default function Projects() {
     }, [])
 
     const deleteProject = (id: string) => async () => {
+        console.log("deleting project", id);
         const confirmed = confirm("Are you sure you want to delete this project?")
         if (confirmed) {
             try {
@@ -77,7 +78,7 @@ export default function Projects() {
                                         </Link>
                                         {/* ✅ Pass function reference, not function call */}
                                         <button
-                                            onClick={() => deleteProject(project.id)}
+                                            onClick={deleteProject(project.id)}
                                             className="font-medium bg-red-500 p-2 shadow-2xl text-white rounded cursor-pointer hover:bg-red-600"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
