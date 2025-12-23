@@ -2,11 +2,9 @@
 import {use, useEffect, useState} from "react";
 import api from "@/utils/fetchWrapper";
 import Link from "next/link";
+import ProjectLists from "@/app/components/projectView";
+import {Project} from "@/app/types/projectTypes";
 
-interface Project {
-    id: string;
-    title: string;
-}
 
 export default function ViewProjectPage({params}: { params: Promise<{ id: string, username:string }> }) {
 
@@ -78,37 +76,9 @@ export default function ViewProjectPage({params}: { params: Promise<{ id: string
             </div>
         )
     }
-
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
-            <div className="max-w-2xl mx-auto space-y-6">
-                <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-8">
-                    <div className="mb-6">
-                        <div className="flex items-center justify-between">
-                            <h2 className="text-3xl font-bold text-slate-800">{projectData.title}</h2>
-                            <span className="px-3 py-1 bg-slate-100 rounded-full text-slate-600 text-sm">
-                                ID: {id}
-                            </span>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-4">
-                        <Link
-                            href={`/u/${username}/projects/${id}/lists`}
-                            className="flex-1 text-center py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 font-medium shadow-sm"
-                        >
-                            View Lists
-                        </Link>
-                        <Link
-                            href={`/u/${username}/projects`}
-                            className="px-4 py-3 border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 transition-colors duration-200"
-                        >
-                            Back
-                        </Link>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <ProjectLists projectData={projectData} projectId={id} username={username}></ProjectLists>
     )
+
 
 }
