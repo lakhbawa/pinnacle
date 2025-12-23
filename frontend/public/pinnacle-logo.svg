@@ -1,0 +1,26 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Main mountain peaks forming a stylized "P" shape -->
+  <g id="logo">
+    <!-- Background circle (optional, can be removed for transparent background) -->
+    <circle cx="100" cy="100" r="95" fill="#4F46E5" opacity="0.1"/>
+    
+    <!-- Left peak -->
+    <path d="M 60 140 L 80 80 L 100 140 Z" fill="#4F46E5"/>
+    
+    <!-- Center tallest peak -->
+    <path d="M 85 140 L 100 50 L 115 140 Z" fill="#6366F1"/>
+    
+    <!-- Right peak -->
+    <path d="M 100 140 L 120 80 L 140 140 Z" fill="#818CF8"/>
+    
+    <!-- Summit flag/marker on the tallest peak -->
+    <circle cx="100" cy="50" r="4" fill="#FFFFFF"/>
+    <path d="M 100 50 L 100 45 L 108 47.5 Z" fill="#FFFFFF"/>
+    
+    <!-- Subtle shadow/depth -->
+    <path d="M 100 140 L 100 50 L 115 140 Z" fill="#4338CA" opacity="0.3"/>
+    
+    <!-- Base line -->
+    <line x1="50" y1="140" x2="150" y2="140" stroke="#4F46E5" stroke-width="2" stroke-linecap="round"/>
+  </g>
+</svg>
