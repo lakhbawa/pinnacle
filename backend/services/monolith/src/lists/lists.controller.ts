@@ -22,12 +22,13 @@ export class ListsController {
     }
 
     @Get()
-    findAll(@Query() query: { project_id: string }) {
+    findAll(@Query() query: { projectId: string }) {
         const where: Prisma.ListWhereInput = {};
 
-        if (query.project_id) {
-            where.projectId = query.project_id;
+        if (query.projectId) {
+            where.projectId = query.projectId;
         }
+        console.log(query);
         return this.listsService.findAll({
             where
         });
