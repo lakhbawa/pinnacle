@@ -2,10 +2,12 @@
 import {use, useEffect, useState} from "react";
 import fetchWrapper, {api} from "@/utils/fetchWrapper";
 import {useRouter} from "next/navigation";
+import {List} from "@/app/types/projectTypes";
 
 export default function UpdateIssue({params}: { params: Promise<{ id: string, listid: string, issueid: string }> }) {
     const router = useRouter();
     const {id, listid, issueid} = use(params);
+    const projectId = id
 
     console.log(issueid);
 
@@ -19,7 +21,9 @@ export default function UpdateIssue({params}: { params: Promise<{ id: string, li
         }
     )
     const [project, setProject] = useState()
-    const [list, setList] = useState()
+    const [lists, setLists] = useState([])
+
+    console.log(lists)
     useEffect(() => {
 
         async function fetchIssueData() {
@@ -37,11 +41,26 @@ export default function UpdateIssue({params}: { params: Promise<{ id: string, li
             }
         }
 
+        async function fetchListData() {
+            try {
+                setLoading(true)
+                const data = await api.get(`/lists?projectId=${projectId}`);
+                setLists(data)
+            } catch (err) {
+                setError(err instanceof Error ? err.message : 'Failed to load list')
+            } finally {
+                setLoading(false)
+            }
+        }
+
         if (issueid) {
             fetchIssueData()
         }
+        if (listid) {
+            fetchListData()
+        }
 
-    }, [issueid])
+    }, [issueid, listid])
 
 
     const onFieldChange = (e: any) => {
@@ -93,7 +112,17 @@ export default function UpdateIssue({params}: { params: Promise<{ id: string, li
             </div>
 
             <form onSubmit={updateIssue} className="space-y-6">
-                <input type="hidden" name="listId" value={listid}/>
+                <div>
+                <label htmlFor="listId" className="block text-sm font-medium text-gray-700 mb-2">
+                        Select List
+                    </label>
+
+                <select name="listId" onChange={onFieldChange} className="w-full py-2">
+                    {lists && lists.map((item:List) => (
+                        <option key={item.id} value={item.id}>{item.title}</option>
+                    ))}
+                </select>
+                    </div>
                 <div>
                     <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
                         Issue Title
