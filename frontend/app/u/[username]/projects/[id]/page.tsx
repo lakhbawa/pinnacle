@@ -8,12 +8,12 @@ interface Project {
     title: string;
 }
 
-export default function UpdateProject({params}: { params: Promise<{ id: string }> }) {
+export default function ViewProjectPage({params}: { params: Promise<{ id: string, username:string }> }) {
 
     const [projectData, setProjectData] = useState<Project | null>(null);
-    const {id} = use(params);
+    const {id, username} = use(params);
 
-    const username = 'lakhbawa'
+    // const username = 'lakhbawa'
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
 
@@ -21,8 +21,7 @@ export default function UpdateProject({params}: { params: Promise<{ id: string }
         async function fetchData() {
             try {
                 setLoading(true)
-                const data = await api.get(`/projects/${id}`);
-                console.log(data)
+                const data = await api.get(`/projects/${id}?include[]=lists&include[]=lists.issues`);
                 setProjectData(data)
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Failed to load project')
