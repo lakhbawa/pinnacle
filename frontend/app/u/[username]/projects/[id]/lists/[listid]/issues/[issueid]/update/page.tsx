@@ -2,7 +2,7 @@
 import {use, useEffect, useState} from "react";
 import fetchWrapper, {api} from "@/utils/fetchWrapper";
 import {useRouter} from "next/navigation";
-import {List} from "@/app/types/projectTypes";
+import {List, Project} from "@/app/types/projectTypes";
 
 export default function UpdateIssue({params}: { params: Promise<{ id: string, listid: string, issueid: string }> }) {
     const router = useRouter();
@@ -20,8 +20,8 @@ export default function UpdateIssue({params}: { params: Promise<{ id: string, li
             listId: listid,
         }
     )
-    const [project, setProject] = useState()
-    const [lists, setLists] = useState([])
+    const [project, setProject] = useState<Project>()
+    const [lists, setLists] = useState<List[]>([])
 
     console.log(lists)
     useEffect(() => {

@@ -2,6 +2,7 @@
 import {use, useEffect, useState} from "react";
 import fetchWrapper, {api} from "@/utils/fetchWrapper";
 import {useRouter} from "next/navigation";
+import {Project} from "@/app/types/projectTypes";
 
 export default function CreateList({params}: { params: Promise<{ id: string }> }) {
     const router = useRouter();
@@ -16,7 +17,7 @@ export default function CreateList({params}: { params: Promise<{ id: string }> }
             project_id: id
         }
     )
-    const [project, setProject] = useState()
+    const [project, setProject] = useState<Project>()
     useEffect(() => {
         async function fetchData() {
             try {

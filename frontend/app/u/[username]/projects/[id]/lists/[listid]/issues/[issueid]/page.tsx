@@ -2,21 +2,8 @@
 import {use, useEffect, useState} from "react";
 import fetchWrapper, {api} from "@/utils/fetchWrapper";
 import {useRouter} from "next/navigation";
+import {Issue} from "@/app/types/projectTypes";
 
-interface Project {
-    id: string,
-    title: string,
-}
-interface List {
-    id: string,
-    title: string,
-    project: Project,
-}
-interface Issue {
-    id: string,
-    title: string,
-    list: List,
-}
 export default function ShowIssue({params}: { params: Promise<{ id: string, listid: string, issueid: string }> }) {
     const router = useRouter();
     const {id, listid, issueid} = use(params);
@@ -27,7 +14,7 @@ export default function ShowIssue({params}: { params: Promise<{ id: string, list
     const [error, setError] = useState<string | null>(null)
 
 
-    const [issue, setIssue] = useState<List>()
+    const [issue, setIssue] = useState<Issue>()
     useEffect(() => {
 
 

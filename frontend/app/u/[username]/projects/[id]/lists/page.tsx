@@ -2,16 +2,8 @@
 import Link from "next/link";
 import {use, useEffect, useState} from "react";
 import api from "@/utils/fetchWrapper";
+import {List} from "@/app/types/projectTypes";
 
-interface Project {
-    id: string;
-    title: string;
-}
-interface List {
-    id: string;
-    title: string;
-    project: Project;
-}
 
 export default function Lists({params}: { params: Promise<{ id: string }> }) {
     const {id} = use(params);
