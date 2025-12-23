@@ -1,7 +1,8 @@
-import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Patch, Post, Query} from '@nestjs/common';
 import {IssuesService} from './issues.service';
 import {CreateIssueDto} from './dto/create-issue.dto';
 import {UpdateIssueDto} from './dto/update-issue.dto';
+import {Prisma} from "@prisma/client";
 
 @Controller('api/issues')
 export class IssuesController {
@@ -23,8 +24,15 @@ export class IssuesController {
     }
 
     @Get()
-    findAll() {
-        return this.issuesService.findAll({});
+    findAll(@Query() query: { list_id: string }) {
+        const where: Prisma.IssueWhereInput = {};
+
+        if (query.list_id) {
+            where.listId = query.list_id;
+        }
+        return this.issuesService.findAll({
+            where
+        });
     }
 
     @Get(':id')

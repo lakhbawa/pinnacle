@@ -1,8 +1,8 @@
-import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Patch, Post, Query} from '@nestjs/common';
 import {ProjectsService} from './projects.service';
 import {CreateProjectDto} from './dto/create-project.dto';
 import {UpdateProjectDto} from './dto/update-project.dto';
-
+import {buildInclude, normalizeQueryArray} from "../utils/prismaUtils";
 @Controller('api/projects')
 export class ProjectsController {
     constructor(private readonly projectsService: ProjectsService) {
@@ -19,7 +19,8 @@ export class ProjectsController {
     }
 
     @Get()
-    findAll() {
+    findAll(@Query() query: { include: any }) {
+        console.log('Received DTO:', query);
         return this.projectsService.findAll({
             include: {
                 lists: true
@@ -28,10 +29,10 @@ export class ProjectsController {
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.projectsService.findOne({
-            id
-        });
+    findOne(@Param('id') id: string, @Query() query: any) {
+        const includes = normalizeQueryArray(query, 'include');
+        const includeTree = includes.length ? buildInclude(includes) : undefined;
+        return this.projectsService.findOne({id}, includeTree);
     }
 
     @Patch(':id')

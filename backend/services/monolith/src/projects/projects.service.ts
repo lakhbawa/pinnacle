@@ -34,9 +34,10 @@ export class ProjectsService {
         });
     }
 
-    async findOne(ProjectWhereUniqueInput: Prisma.ProjectWhereUniqueInput): Promise<Project | null> {
+    async findOne(where: Prisma.ProjectWhereUniqueInput, include?: Prisma.ProjectInclude): Promise<Project | null> {
         return this.prisma.project.findUnique({
-            where: ProjectWhereUniqueInput
+            where,
+            include,
         })
     }
 
