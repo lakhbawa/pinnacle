@@ -49,12 +49,13 @@ export default function Home() {
                         <div className="flex items-center">
                             <div className="flex-shrink-0 flex items-center">
                                 {/* Replace with your logo */}
+                              <img src="/pinnacle-logo.svg" alt="logo" width={50} height={50} />
+
                                 <span className="text-2xl font-bold text-indigo-600">Pinnacle</span>
                             </div>
                         </div>
 
                         <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-8">
-
                             {desktopAuthLinks}
                         </div>
 
