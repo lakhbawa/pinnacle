@@ -6,7 +6,7 @@ import {useDroppable} from "@dnd-kit/core";
 import Link from "next/link";
 
 export function ListComponent({list, username, projectId}: { list: List, username: string, projectId: string }) {
-    const { setNodeRef: setDroppableRef } = useDroppable({
+    const {setNodeRef: setDroppableRef} = useDroppable({
         id: list.id
     });
 
@@ -68,7 +68,8 @@ export function ListComponent({list, username, projectId}: { list: List, usernam
             </div>
 
             <Link href={`/u/${username}/projects/${projectId}/lists/${list.id}/issues/create`}>
-                <button className="mt-4 w-full py-2 px-4 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition-colors text-sm">
+                <button
+                    className="mt-4 w-full py-2 px-4 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition-colors text-sm">
                     + Add Issue
                 </button>
             </Link>

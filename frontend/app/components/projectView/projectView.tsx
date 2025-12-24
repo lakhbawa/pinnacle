@@ -11,7 +11,12 @@ import {
     useSensors,
     DragEndEvent
 } from "@dnd-kit/core";
-import {arrayMove, sortableKeyboardCoordinates, SortableContext, horizontalListSortingStrategy} from "@dnd-kit/sortable";
+import {
+    arrayMove,
+    sortableKeyboardCoordinates,
+    SortableContext,
+    horizontalListSortingStrategy
+} from "@dnd-kit/sortable";
 import {useState} from "react";
 
 export default function ProjectLists({projectData, projectId, username}: {
@@ -29,7 +34,7 @@ export default function ProjectLists({projectData, projectId, username}: {
     )
 
     const handleDragEnd = (event: DragEndEvent) => {
-        const { active, over } = event;
+        const {active, over} = event;
 
         if (!over || active.id === over.id) return;
 
@@ -132,7 +137,8 @@ export default function ProjectLists({projectData, projectId, username}: {
                             ))}
                         </SortableContext>
 
-                        <div className="bg-slate-50 rounded-xl border-2 border-dashed border-slate-300 p-6 flex items-center justify-center">
+                        <div
+                            className="bg-slate-50 rounded-xl border-2 border-dashed border-slate-300 p-6 flex items-center justify-center">
                             <Link href={`/u/${username}/projects/${projectId}/lists/create`}>
                                 <button className="text-slate-600 hover:text-slate-800 transition-colors">
                                     + Add New List
