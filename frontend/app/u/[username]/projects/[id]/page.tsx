@@ -2,8 +2,8 @@
 import {use, useEffect, useState} from "react";
 import api from "@/utils/fetchWrapper";
 import Link from "next/link";
-import ProjectLists from "@/app/components/projectView";
 import {Project} from "@/app/types/projectTypes";
+import ProjectLists from "@/app/components/projectView/projectView";
 
 
 export default function ViewProjectPage({params}: { params: Promise<{ id: string, username:string }> }) {

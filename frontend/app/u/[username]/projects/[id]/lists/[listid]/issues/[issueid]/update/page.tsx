@@ -73,6 +73,7 @@ export default function UpdateIssue({params}: { params: Promise<{ id: string, li
 
     const updateIssue = function (event: any) {
         event.preventDefault()
+        console.log(formData)
         const res = fetchWrapper.patch('/issues/' + issueid, formData)
         if (res) {
             router.push('/u/lakhbawa/projects/' + id + '/lists/' + listid + '/issues');
@@ -117,7 +118,7 @@ export default function UpdateIssue({params}: { params: Promise<{ id: string, li
                         Select List
                     </label>
 
-                <select name="listId" onChange={onFieldChange} className="w-full py-2">
+                <select name="listId" onChange={onFieldChange} value={formData.listId} className="w-full py-2">
                     {lists && lists.map((item:List) => (
                         <option key={item.id} value={item.id}>{item.title}</option>
                     ))}
