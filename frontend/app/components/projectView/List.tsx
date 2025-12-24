@@ -10,7 +10,6 @@ export function ListComponent({list, username, projectId}: { list: List, usernam
 
         }
     )
-    console.log(list)
     return (
         <div className="space-y-3" ref={setNodeRef} id={list.id}>
             <SortableContext items={list.issues} strategy={verticalListSortingStrategy}>
