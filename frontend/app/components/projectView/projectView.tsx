@@ -2,10 +2,17 @@
 import {Issue, Project} from "@/app/types/projectTypes";
 import Link from "next/link";
 import {ListComponent} from "@/app/components/projectView/List";
-import {closestCorners, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors} from "@dnd-kit/core";
-import {arrayMove, sortableKeyboardCoordinates} from "@dnd-kit/sortable";
+import {
+    closestCorners,
+    DndContext,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    DragEndEvent
+} from "@dnd-kit/core";
+import {arrayMove, sortableKeyboardCoordinates, SortableContext, horizontalListSortingStrategy} from "@dnd-kit/sortable";
 import {useState} from "react";
-
 
 export default function ProjectLists({projectData, projectId, username}: {
     projectData: Project,
@@ -20,127 +27,120 @@ export default function ProjectLists({projectData, projectId, username}: {
             coordinateGetter: sortableKeyboardCoordinates
         }),
     )
-    function findIssue(issueId: string) {
-        for (let i = 0; i < project.lists.length; i++) {
-            for (let j= 0; j < project.lists[i].issues.length; j++) {
-                if (project.lists[i].issues[j].id === issueId) {
-                    return { listIndex: i, issueIndex: j, issue: project.lists[i].issues[j]};
+
+    const handleDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event;
+
+        if (!over || active.id === over.id) return;
+
+        setProject((prevProject) => {
+            const findIssueInProject = (issueId: string, projectToSearch: Project) => {
+                for (let i = 0; i < projectToSearch.lists.length; i++) {
+                    for (let j = 0; j < projectToSearch.lists[i].issues.length; j++) {
+                        if (projectToSearch.lists[i].issues[j].id === issueId) {
+                            return {
+                                listIndex: i,
+                                issueIndex: j,
+                                issue: projectToSearch.lists[i].issues[j]
+                            };
+                        }
+                    }
                 }
+                return undefined;
+            };
+
+            const findListIndex = (listId: string, projectToSearch: Project) => {
+                return projectToSearch.lists.findIndex(list => list.id === listId);
+            };
+
+            const activeListIndex = findListIndex(active.id as string, prevProject);
+            const overListIndex = findListIndex(over.id as string, prevProject);
+
+            if (activeListIndex !== -1 && overListIndex !== -1) {
+                // We're sorting lists
+                const newLists = arrayMove(prevProject.lists, activeListIndex, overListIndex);
+                return {
+                    ...prevProject,
+                    lists: newLists
+                };
             }
-        }
-        return null
-    }
 
-    const findListIndex = (listId: string, projectToSearch: Project) => {
-            return projectToSearch.lists.findIndex(list => list.id === listId);
-        };
+            const activeIssue = findIssueInProject(active.id as string, prevProject);
+            if (!activeIssue) return prevProject;
 
-    const handleDragEnd = (event: any) => {
-        const { active, over} = event;
+            let overIssue = findIssueInProject(over.id as string, prevProject);
+            let targetListIndex = -1;
+            let targetPosition = 0;
 
-        if(active.id === over.id) return;
+            if (overIssue) {
+                targetListIndex = overIssue.listIndex;
+                targetPosition = overIssue.issueIndex;
+            } else {
+                targetListIndex = findListIndex(over.id as string, prevProject);
+                targetPosition = 0;
 
-        const activeIssue: {listIndex: number, issueIndex: number, issue: Issue} | null = findIssue(active.id);
+                if (targetListIndex === -1) return prevProject;
+            }
 
-        if (!activeIssue) return project;
+            const newProject = {
+                ...prevProject,
+                lists: prevProject.lists.map(list => ({
+                    ...list,
+                    issues: [...list.issues]
+                }))
+            };
 
-        const overIssue: {listIndex: number, issueIndex: number, issue: Issue} | null = findIssue(over.id);
-        let targetListIndex = -1;
-        let targetPosition = 0;
-        if (overIssue) {
-            targetListIndex = overIssue.listIndex;
-            targetPosition = overIssue.issueIndex;
-        } else {
-            targetListIndex = findListIndex(over.id, project);
-            targetPosition = 0;
+            if (activeIssue.listIndex !== targetListIndex) {
+                const [movedIssue] = newProject.lists[activeIssue.listIndex].issues.splice(activeIssue.issueIndex, 1);
+                movedIssue.listId = newProject.lists[targetListIndex].id;
+                newProject.lists[targetListIndex].issues.splice(targetPosition, 0, movedIssue);
+            } else {
+                const updatedIssues = arrayMove(
+                    newProject.lists[activeIssue.listIndex].issues,
+                    activeIssue.issueIndex,
+                    targetPosition
+                );
+                newProject.lists[activeIssue.listIndex].issues = updatedIssues;
+            }
 
-            if (targetListIndex === -1) return project;
-        }
-
-       setProject((prevProject) => {
-        // Create a deep copy of the project
-        const newProject = {
-            ...prevProject,
-            lists: prevProject.lists.map(list => ({
-                ...list,
-                issues: [...list.issues]
-            }))
-        };
-
-        if (activeIssue.listIndex !== targetListIndex) {
-            // Moving between different lists
-            const [movedIssue] = newProject.lists[activeIssue.listIndex].issues.splice(activeIssue.issueIndex, 1);
-            movedIssue.listId = newProject.lists[targetListIndex].id;
-            newProject.lists[targetListIndex].issues.splice(targetPosition, 0, movedIssue);
-        } else {
-            // Moving within the same list
-            const updatedIssues = arrayMove(
-                newProject.lists[activeIssue.listIndex].issues,
-                activeIssue.issueIndex,
-                targetPosition,
-            );
-            newProject.lists[activeIssue.listIndex].issues = updatedIssues;
-        }
-
-        return newProject;
-    });
-        // console.log("Active", active.id);
-        // console.log("Over", over);
-
-    }
+            return newProject;
+        });
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
             <div className="max-w-7xl mx-auto">
                 <h1 className="text-3xl font-bold text-slate-800 mb-8">{project.title}</h1>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <DndContext
-        sensors={sensors}
-        collisionDetection={closestCorners}
-        onDragEnd={handleDragEnd}
-      >
-                    {project.lists.map((list, index) => (
-                        <div
-                            key={list.id}
-                            className="bg-white rounded-xl shadow-lg border border-slate-200 p-6"
+                <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCorners}
+                    onDragEnd={handleDragEnd}
+                >
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <SortableContext
+                            items={project.lists.map(list => list.id)}
+                            strategy={horizontalListSortingStrategy}
                         >
-                            <div className="flex items-stretch justify-between pb-3">
-                                <h2 className="text-xl font-semibold text-slate-700 mb-4">
-                                    {list.title}
-                                </h2>
-                                <Link href={`/u/${username}/projects/${projectId}/lists/${list.id}/update`}
-                                      className="font-medium bg-blue-500 p-3 shadow-2xl text-white rounded">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                         strokeWidth={1.5} stroke="currentColor" className="size-4">
-                                        <path strokeLinecap="round" strokeLinejoin="round"
-                                              d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/>
-                                    </svg>
-                                </Link>
-                            </div>
+                            {project.lists.map((list) => (
+                                <ListComponent
+                                    key={list.id}
+                                    list={list}
+                                    username={username}
+                                    projectId={projectId}
+                                />
+                            ))}
+                        </SortableContext>
 
-
-
-                            <ListComponent list={project.lists[index]} username={username} projectId={projectId} key={list.id}/>
-                            <Link href={`/u/${username}/projects/${projectId}/lists/${list.id}/issues/create`}>
-                                <button
-                                    className="mt-4 w-full py-2 px-4 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition-colors text-sm">
-                                    + Add Issue
+                        <div className="bg-slate-50 rounded-xl border-2 border-dashed border-slate-300 p-6 flex items-center justify-center">
+                            <Link href={`/u/${username}/projects/${projectId}/lists/create`}>
+                                <button className="text-slate-600 hover:text-slate-800 transition-colors">
+                                    + Add New List
                                 </button>
                             </Link>
                         </div>
-                    ))}
-                    </DndContext>
-
-                    <div
-                        className="bg-slate-50 rounded-xl border-2 border-dashed border-slate-300 p-6 flex items-center justify-center">
-                        <Link href={`/u/${username}/projects/${projectId}/lists/create`}>
-                            <button className="text-slate-600 hover:text-slate-800 transition-colors">
-                                + Add New List
-                            </button>
-                        </Link>
                     </div>
-                </div>
+                </DndContext>
             </div>
         </div>
     );
