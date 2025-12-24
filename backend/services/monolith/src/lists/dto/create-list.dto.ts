@@ -5,7 +5,7 @@ export class CreateListDto {
     @IsNotEmpty()
     @IsString()
     @MaxLength(255)
-    @MinLength(5)
+    @MinLength(2)
     title: string
 
     @IsNotEmpty()
