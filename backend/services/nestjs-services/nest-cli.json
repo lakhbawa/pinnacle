@@ -10,15 +10,6 @@
   "monorepo": true,
   "root": "apps/api_gateway",
   "projects": {
-    "boards": {
-      "type": "application",
-      "root": "apps/boards",
-      "entryFile": "main",
-      "sourceRoot": "apps/boards/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/boards/tsconfig.app.json"
-      }
-    },
     "monolith": {
       "type": "application",
       "root": "apps/monolith",
