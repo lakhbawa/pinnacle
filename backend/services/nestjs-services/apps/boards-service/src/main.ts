@@ -2,7 +2,7 @@ import {NestFactory} from '@nestjs/core';
 import {MicroserviceOptions, Transport} from "@nestjs/microservices";
 import {BoardsModule} from "./boards/boards.module";
 import { join } from 'path';
-import { BoardsService} from "@app/common";
+import {BOARDSSERVICE_PACKAGE_NAME} from "@app/common";
 
 async function bootstrap() {
 
@@ -13,7 +13,7 @@ async function bootstrap() {
         transport: Transport.GRPC,
         options: {
           protoPath: join(__dirname, "../boardsservice.proto"),
-          package: BoardsService
+          package: BOARDSSERVICE_PACKAGE_NAME
         }
       }
   )

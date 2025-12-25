@@ -35,7 +35,7 @@ export class BoardsController implements BoardsServiceController{
   }
 
   removeBoard(findOneBoardDto: FindOneBoardDto) {
-    return this.boardsService.remove(id);
+    return this.boardsService.remove(findOneBoardDto.id);
   }
 
   queryBoards(paginationDtoStream: Observable<PaginationDto>, metadata?: Metadata): Observable<Boards> {

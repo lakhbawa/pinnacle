@@ -1,7 +1,5 @@
 import {Injectable, NotFoundException, OnModuleInit} from '@nestjs/common';
-import { CreateBoardDto } from './dto/create-board.dto';
-import { UpdateBoardDto } from './dto/update-board.dto';
-import {Board, Boards, PaginationDto} from "@app/common";
+import {Board, Boards, CreateBoardDto, PaginationDto, UpdateBoardDto} from "@app/common";
 import { randomUUID } from "crypto";
 import {Observable, Subject} from "rxjs";
 
@@ -19,6 +17,7 @@ export class BoardsService implements OnModuleInit {
   create(createBoardDto: CreateBoardDto): Board {
     const board: Board = {
       ...createBoardDto,
+      id: randomUUID()
     }
     this.boards.push(board);
     return board;

@@ -1,0 +1,1 @@
+export const BOARDS_SERVICE = 'boardsservice'

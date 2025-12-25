@@ -17,4 +17,6 @@ Client Request -> NextJs -> API Gateway (Go + Gin) -> NestJs microservices
     - 4020
   - Issues Service
     - 4030
+  - API Gateway:
+    - 4050
 - NextJS runs on 3000
