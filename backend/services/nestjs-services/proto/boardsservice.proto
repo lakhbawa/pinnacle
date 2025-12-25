@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package boardsservice;
+
+service BoardsService {
+  rpc CreateBoard (CreateBoardDto) returns (Board) {}
+  rpc FindAllBoards (Empty) returns (Boards) {}
+  rpc FindOneBoard(FindOneBoardDto) returns (Board) {}
+  rpc UpdateBoard (UpdateBoardDto) returns (Board) {}
+  rpc RemoveBoard (FindOneBoardDto) returns (Board) {}
+  rpc QueryBoards (stream PaginationDto) returns (stream Boards) {}
+}
+
+message PaginationDto {
+  int32  page = 1;
+  int32 skip = 2;
+}
+message UpdateBoardDto {
+  string id = 1;
+}
+message FindOneBoardDto {
+  string id = 1;
+}
+message Empty {};
+
+message Boards {
+  repeated Board boards = 1;
+}
+
+message CreateBoardDto {
+  string title = 1;
+}
+message Board {
+  string id = 1;
+  string title = 2;
+}

@@ -1,35 +1,44 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { BoardsService } from './boards.service';
-import { CreateBoardDto } from './dto/create-board.dto';
-import { UpdateBoardDto } from './dto/update-board.dto';
+
+import {
+  Boards,
+  BoardsServiceController,
+  BoardsServiceControllerMethods,
+  CreateBoardDto,
+  FindOneBoardDto, PaginationDto,
+  UpdateBoardDto
+} from "@app/common";
+import {Observable} from "rxjs";
+import {Metadata} from "@grpc/grpc-js";
 
 @Controller()
-export class BoardsController {
+@BoardsServiceControllerMethods()
+export class BoardsController implements BoardsServiceController{
   constructor(private readonly boardsService: BoardsService) {}
 
-  @MessagePattern('createBoard')
-  create(@Payload() createBoardDto: CreateBoardDto) {
+  createBoard(createBoardDto: CreateBoardDto) {
     return this.boardsService.create(createBoardDto);
   }
 
-  @MessagePattern('findAllBoards')
-  findAll() {
+  findAllBoards() {
     return this.boardsService.findAll();
   }
 
-  @MessagePattern('findOneBoard')
-  findOne(@Payload() id: number) {
-    return this.boardsService.findOne(id);
+  findOneBoard(findOneBoardDto: FindOneBoardDto) {
+    return this.boardsService.findOne(findOneBoardDto.id);
   }
 
-  @MessagePattern('updateBoard')
-  update(@Payload() updateBoardDto: UpdateBoardDto) {
+  updateBoard(updateBoardDto: UpdateBoardDto) {
     return this.boardsService.update(updateBoardDto.id, updateBoardDto);
   }
 
-  @MessagePattern('removeBoard')
-  remove(@Payload() id: number) {
+  removeBoard(findOneBoardDto: FindOneBoardDto) {
     return this.boardsService.remove(id);
+  }
+
+  queryBoards(paginationDtoStream: Observable<PaginationDto>, metadata?: Metadata): Observable<Boards> {
+      return this.boardsService.queryBoards(paginationDtoStream);
   }
 }

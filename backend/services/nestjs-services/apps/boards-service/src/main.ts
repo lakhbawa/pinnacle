@@ -1,8 +1,23 @@
-import { NestFactory } from '@nestjs/core';
-import { BoardsServiceModule } from './boards-service.module';
+import {NestFactory} from '@nestjs/core';
+import {MicroserviceOptions, Transport} from "@nestjs/microservices";
+import {BoardsModule} from "./boards/boards.module";
+import { join } from 'path';
+import { BoardsService} from "@app/common";
 
 async function bootstrap() {
-  const app = await NestFactory.create(BoardsServiceModule);
-  await app.listen(process.env.port ?? 3000);
+
+
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+      BoardsModule,
+      {
+        transport: Transport.GRPC,
+        options: {
+          protoPath: join(__dirname, "../boardsservice.proto"),
+          package: BoardsService
+        }
+      }
+  )
+
+  await app.listen()
 }
 bootstrap();
