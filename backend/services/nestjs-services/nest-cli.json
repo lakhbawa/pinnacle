@@ -19,6 +19,15 @@
         "tsConfigPath": "apps/boards/tsconfig.app.json"
       }
     },
+    "monolith": {
+      "type": "application",
+      "root": "apps/monolith",
+      "entryFile": "main",
+      "sourceRoot": "apps/monolith/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/monolith/tsconfig.app.json"
+      }
+    },
     "api_gateway": {
       "type": "application",
       "root": "apps/api_gateway",

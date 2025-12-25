@@ -1,9 +1,9 @@
 import {Controller, Get} from '@nestjs/common';
-import {AppService} from './app.service.js';
+import {MonolithService} from './monolith.service';
 
 @Controller()
-export class AppController {
-    constructor(private readonly appService: AppService) {
+export class MonolithController {
+    constructor(private readonly appService: MonolithService) {
     }
 
     @Get()

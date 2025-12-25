@@ -1,12 +1,12 @@
 import { NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { MonolithModule } from './monolith.module';
 import {
   ClassSerializerInterceptor,
   ValidationPipe,
 } from '@nestjs/common';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(MonolithModule);
 
   app.enableCors();
 
