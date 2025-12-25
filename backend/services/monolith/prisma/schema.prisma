@@ -10,6 +10,12 @@ model Project {
   id        String   @id @default(uuid()) @map("uuid")
   title     String
   lists List[]
+
+  position String
+
+  userId String @map("user_id")
+  user User @relation(fields: [userId], references: [id])
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -22,7 +28,10 @@ model List {
     projectId String @map("project_id")
     project Project @relation(fields: [projectId], references: [id])
 
-    order Int @default(0)
+    userId String @map("user_id")
+    user User @relation(fields: [userId], references: [id])
+
+    position String
 
     issues Issue[]
 
@@ -40,7 +49,9 @@ model Issue {
     listId String @map("list_id")
     list List @relation(fields: [listId], references: [id])
 
-    order Int @default(0)
+    userId String @map("user_id")
+    user User @relation(fields: [userId], references: [id])
+    position String
 
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @default(now()) @map("updated_at")
@@ -59,6 +70,10 @@ model User {
     password String @map("password")
 
     isVerified Boolean @default(false) @map("is_verified")
+
+    issues Issue[]
+    lists List[]
+    projects Project[]
 
     @@map("users")
 }

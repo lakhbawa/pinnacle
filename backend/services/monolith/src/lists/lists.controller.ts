@@ -3,18 +3,26 @@ import {ListsService} from './lists.service';
 import {CreateListDto} from './dto/create-list.dto';
 import {UpdateListDto} from './dto/update-list.dto';
 import {Prisma} from "@prisma/client";
+import {UsersService} from "../users/users.service";
 
 @Controller('api/lists')
 export class ListsController {
-    constructor(private readonly listsService: ListsService) {
+    constructor(private readonly listsService: ListsService, private readonly userService: UsersService) {
     }
 
     @Post()
-    create(@Body() createListDto: CreateListDto) {
+    async create(@Body() createListDto: CreateListDto) {
         const order = createListDto.order
+        const users = await this.userService.findAll({})
+        const userId = users[0].id
         return this.listsService.create({
             title: createListDto.title,
-            order: order,
+            position: 'sdf',
+            user: {
+                connect: {
+                    id: userId,
+                }
+            },
             project: {
                 connect: {id: createListDto.project_id}
             }

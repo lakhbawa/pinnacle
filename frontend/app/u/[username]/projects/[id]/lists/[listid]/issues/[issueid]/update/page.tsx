@@ -76,7 +76,7 @@ export default function UpdateIssue({params}: { params: Promise<{ id: string, li
         console.log(formData)
         const res = fetchWrapper.patch('/issues/' + issueid, formData)
         if (res) {
-            router.push('/u/lakhbawa/projects/' + id + '/lists/' + listid + '/issues');
+            router.push('/u/lakhbawa/projects/' + id );
             console.log("issue updated successfully")
             console.log(res)
         } else {

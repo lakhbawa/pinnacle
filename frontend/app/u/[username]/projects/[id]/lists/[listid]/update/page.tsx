@@ -70,7 +70,7 @@ export default function CreateList({params}: { params: Promise<{ id: string, lis
         event.preventDefault()
         const res = fetchWrapper.patch('/lists/' + listid, formData)
         if (res) {
-            router.push('/u/lakhbawa/projects/' + id + '/lists');
+            router.push('/u/lakhbawa/projects/' + id );
             console.log("list updated successfully")
             console.log(res)
         } else {

@@ -4,7 +4,7 @@ export interface Issue {
     issueType: string;
     dueDate: string | null;
     listId: string;
-    order: number;
+    position: string;
     createdAt: string;
     updatedAt: string;
 }
@@ -13,7 +13,7 @@ export interface List {
     id: string;
     title: string;
     projectId: string;
-    order: number;
+    position: string;
     createdAt: string;
     updatedAt: string;
     issues: Issue[];
@@ -22,6 +22,7 @@ export interface List {
 export interface Project {
     id: string;
     title: string;
+    position: string;
     createdAt: string;
     updatedAt: string;
     lists: List[];

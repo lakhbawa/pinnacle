@@ -49,7 +49,7 @@ export default function CreateList({params}: { params: Promise<{ id: string }> }
         event.preventDefault()
         const res = fetchWrapper.post('/lists', formData)
         if (res) {
-            router.push('/u/lakhbawa/projects/' + id + '/lists');
+            router.push('/u/lakhbawa/projects/' + id);
             console.log("list created successfully")
             console.log(res)
         } else {

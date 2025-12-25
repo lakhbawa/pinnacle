@@ -3,17 +3,36 @@ import {IssuesService} from './issues.service';
 import {CreateIssueDto} from './dto/create-issue.dto';
 import {UpdateIssueDto} from './dto/update-issue.dto';
 import {Prisma} from "@prisma/client";
+import {LexicographicOrderGenerator} from "../utils/lexicographicOrder.util";
+import {UsersService} from "../users/users.service";
+import {ReorderIssueDto} from "./dto/recorder-issue.dto";
 
 @Controller('api/issues')
 export class IssuesController {
-    constructor(private readonly issuesService: IssuesService) {
+    constructor(private readonly issuesService: IssuesService, private readonly userService: UsersService) {
     }
 
     @Post()
-    create(@Body() createIssueDto: CreateIssueDto) {
+    async create(@Body() createIssueDto: CreateIssueDto) {
+        const users = await this.userService.findAll({})
+        console.log(users);
+
+        const userId = users[0].id
+
+        const issues = await this.issuesService.findAll({})
+        console.log(issues);
+        const lastIssueId = issues[issues.length]?.id ?? undefined;
+
+        const position = await this.issuesService.calculatePosition(userId, createIssueDto.listId, undefined, lastIssueId)
 
         return this.issuesService.create({
             title: createIssueDto.title,
+            position: position,
+            user: {
+                connect: {
+                    id: userId,
+                }
+            },
             list: {
                 connect: {
                     id: createIssueDto.listId,
@@ -31,7 +50,10 @@ export class IssuesController {
             where.listId = query.list_id;
         }
         return this.issuesService.findAll({
-            where
+            where,
+            orderBy: {
+                position: 'asc'
+            }
         });
     }
 
@@ -61,5 +83,15 @@ export class IssuesController {
     @Delete(':id')
     remove(@Param('id') id: string) {
         return this.issuesService.remove({id});
+    }
+
+    @Post(':id/reorder')
+    async reorder(@Param('id') id: string, @Body() reOrderIssueDto: ReorderIssueDto) {
+        const users = await this.userService.findAll({})
+        console.log(reOrderIssueDto);
+
+        const userId = users[0].id
+
+        return this.issuesService.reorder(userId, id, reOrderIssueDto);
     }
 }

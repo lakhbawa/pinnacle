@@ -3,18 +3,30 @@ import {ProjectsService} from './projects.service';
 import {CreateProjectDto} from './dto/create-project.dto';
 import {UpdateProjectDto} from './dto/update-project.dto';
 import {buildInclude, normalizeQueryArray} from "../utils/prismaUtils";
+import {UsersService} from "../users/users.service";
 @Controller('api/projects')
 export class ProjectsController {
-    constructor(private readonly projectsService: ProjectsService) {
+    constructor(private readonly projectsService: ProjectsService, private readonly userService: UsersService) {
     }
 
     @Post()
-    create(@Body() createProjectDto: CreateProjectDto) {
+    async create(@Body() createProjectDto: CreateProjectDto) {
         console.log('Received DTO:', createProjectDto);
         console.log('DTO type:', typeof createProjectDto.title);
         console.log('DTO value:', createProjectDto.title);
+        const users = await this.userService.findAll({})
+        console.log(users);
+        const userId = users[0].id
+        const position = 'asdfasdf';
+
         return this.projectsService.create({
-            title: createProjectDto.title
+            title: createProjectDto.title,
+            position,
+            user: {
+                connect: {
+                    id: userId,
+                }
+            }
         });
     }
 

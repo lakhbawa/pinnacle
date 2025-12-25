@@ -50,7 +50,7 @@ export default function CreateIssue({params}: { params: Promise<{ id: string, li
         event.preventDefault()
         const res = fetchWrapper.post('/issues', formData)
         if (res) {
-            router.push('/u/lakhbawa/projects/' + id + '/lists/' + listid);
+            router.push('/u/lakhbawa/projects/' + id);
             console.log("issue created successfully")
             console.log(res)
         } else {

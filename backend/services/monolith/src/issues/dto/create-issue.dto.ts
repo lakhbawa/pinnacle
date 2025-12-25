@@ -12,4 +12,9 @@ export class CreateIssueDto {
     @IsDateString()
     @IsOptional()
     dueDate?: string
+
+    @IsOptional()
+    afterIssueId?: string
+    @IsOptional()
+    beforeIssueId?: string
 }

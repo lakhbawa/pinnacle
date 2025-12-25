@@ -18,6 +18,8 @@ import {
     horizontalListSortingStrategy
 } from "@dnd-kit/sortable";
 import {useState} from "react";
+import fetchWrapper from "@/utils/fetchWrapper";
+import {list} from "postcss";
 
 export default function ProjectLists({projectData, projectId, username}: {
     projectData: Project,
@@ -105,6 +107,18 @@ export default function ProjectLists({projectData, projectId, username}: {
                     activeIssue.issueIndex,
                     targetPosition
                 );
+                const afterIssue = targetPosition > 0 ? updatedIssues[targetPosition - 1] : null;
+const beforeIssue = targetPosition < updatedIssues.length - 1 ? updatedIssues[targetPosition + 1] : null;
+
+const formData = {
+    afterIssueId: afterIssue?.id,
+    beforeIssueId: beforeIssue?.id,
+    listId: project.lists[targetListIndex].id,
+};
+                fetchWrapper.post(`/issues/${activeIssue.issue.id}/reorder`, formData).then((res) => {
+                    console.log(res);
+                })
+
                 newProject.lists[activeIssue.listIndex].issues = updatedIssues;
             }
 
