@@ -2,7 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/backend/services/boards" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/backend/services/monolith" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/backend/services/nestjs-services" vcs="Git" />
   </component>
 </project>
