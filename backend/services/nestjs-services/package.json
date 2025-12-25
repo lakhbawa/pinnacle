@@ -20,11 +20,14 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@grpc/grpc-js": "^1.14.3",
+    "@grpc/proto-loader": "^0.8.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
     "@nestjs/jwt": "^11.0.2",
     "@nestjs/mapped-types": "*",
+    "@nestjs/microservices": "^11.1.10",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
     "@prisma/adapter-pg": "^7.2.0",
@@ -37,7 +40,8 @@
     "passport-jwt": "^4.0.1",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "ts-proto": "^2.10.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
