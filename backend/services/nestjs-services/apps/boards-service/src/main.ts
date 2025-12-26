@@ -12,12 +12,13 @@ async function bootstrap() {
       {
         transport: Transport.GRPC,
         options: {
+            url: '0.0.0.0:4011',
           protoPath: join(__dirname, "../boardsservice.proto"),
           package: BOARDSSERVICE_PACKAGE_NAME
         }
       }
   )
 
-  await app.listen()
+  await app.listen() // default port is 5000
 }
 bootstrap();

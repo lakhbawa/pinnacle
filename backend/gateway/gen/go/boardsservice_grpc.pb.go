@@ -36,6 +36,8 @@ type BoardsServiceClient interface {
 	FindOneBoard(ctx context.Context, in *FindOneBoardDto, opts ...grpc.CallOption) (*Board, error)
 	UpdateBoard(ctx context.Context, in *UpdateBoardDto, opts ...grpc.CallOption) (*Board, error)
 	RemoveBoard(ctx context.Context, in *FindOneBoardDto, opts ...grpc.CallOption) (*Board, error)
+	// ⚠️ Streaming RPCs don't work with gRPC-gateway REST
+	// Keep for pure gRPC, but won't have HTTP endpoint
 	QueryBoards(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[PaginationDto, Boards], error)
 }
 
@@ -119,6 +121,8 @@ type BoardsServiceServer interface {
 	FindOneBoard(context.Context, *FindOneBoardDto) (*Board, error)
 	UpdateBoard(context.Context, *UpdateBoardDto) (*Board, error)
 	RemoveBoard(context.Context, *FindOneBoardDto) (*Board, error)
+	// ⚠️ Streaming RPCs don't work with gRPC-gateway REST
+	// Keep for pure gRPC, but won't have HTTP endpoint
 	QueryBoards(grpc.BidiStreamingServer[PaginationDto, Boards]) error
 	mustEmbedUnimplementedBoardsServiceServer()
 }

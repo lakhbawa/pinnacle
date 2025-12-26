@@ -27,7 +27,9 @@ services:
     volumes:
     - ./backend/gateway:/app
     - go-modules:/go/pkg/mod
-    command: tail -f /dev/null #go run cmd/api/main.go
+    command: go run cmd/api/main.go
+    ports:
+      - "4700:8080"
     depends_on:
       - pinnacle-redis
       - pinnacle-db

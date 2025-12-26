@@ -3,26 +3,36 @@ package main
 import (
 	"context"
 	"log"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	pb "github.com/lakhbawa/pinnacle/backend/gateway/proto/boardsservice"
+	pb "gateway/gen/go"
 )
 
 func main() {
-
 	router := gin.Default()
 
 	ctx := context.Background()
-
 	grpcMux := runtime.NewServeMux()
 
-	// connecting to our boardsservice grpc microservice
-	opts := grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 
-	err := pb.Register
+	err := pb.RegisterBoardsServiceHandlerFromEndpoint(
+		ctx,
+		grpcMux,
+		"host.docker.internal:4011",
+		opts,
+	)
+	if err != nil {
+		log.Fatalf("Failed to register gateway: %v", err)
+	}
+
+	router.Any("/api/v1/boards/*any", gin.WrapH(grpcMux))
+	router.Any("/api/v1/boards", gin.WrapH(grpcMux))
+
+	log.Println("API Gateway running on :8080")
+	router.Run(":8080")
 }

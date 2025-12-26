@@ -17,6 +17,8 @@ RUN buf mod update && buf generate
 # Copy go module files
 COPY go.mod go.sum* ./
 
+RUN go get google.golang.org/genproto/googleapis/api/annotations@latest
+
 # Download Go dependencies
 RUN go mod download
 
