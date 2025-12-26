@@ -15,6 +15,24 @@ services:
 #      - ./docker/config/nginx/conf.d.local/ssl:/etc/nginx/ssl/
 #    networks:
 #      - app-network
+  pinnacle-gateway:
+    build:
+      context: ./backend/gateway
+      dockerfile: Dockerfile.dev
+    env_file: .env
+    environment:
+      # Explicitly set these to ensure they're available
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+    volumes:
+    - ./backend/gateway:/app
+    - go-modules:/go/pkg/mod
+    command: tail -f /dev/null #go run cmd/api/main.go
+    depends_on:
+      - pinnacle-redis
+      - pinnacle-db
+    networks: [pinnacle-network]
+
   pinnacle-db:
     image: postgres:16
     environment:
@@ -57,6 +75,7 @@ volumes:
     driver: local
   redisdata:
     driver: local
+  go-modules:
 
 #  default:
 #    external:

@@ -17,6 +17,7 @@ message PaginationDto {
 }
 message UpdateBoardDto {
   string id = 1;
+  string title = 2;
 }
 message FindOneBoardDto {
   string id = 1;

@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package boardsservice;
+
+import "google/api/annotations.proto";
+
+option go_package = "https://github.com/lakhbawa/pinnacle/tree/main/backend/gateway/proto/boardsservice";
+
+service BoardsService {
+  rpc CreateBoard (CreateBoardDto) returns (Board) {
+    option (google.api.http) = {
+      post: "/api/v1/boards"
+      body: "*"
+    };
+  }
+  rpc FindAllBoards (Empty) returns (Boards) {
+    option (google.api.http) = {
+      get: "/api/v1/boards"
+    };
+  }
+  rpc FindOneBoard(FindOneBoardDto) returns (Board) {
+    option (google.api.http) = {
+      get: "/api/v1/boards/{id}"
+    };
+  }
+  rpc UpdateBoard (UpdateBoardDto) returns (Board) {
+    option (google.api.http) = {
+      patch: "/api/v1/boards/{id}"
+      body: "*"
+    };
+  }
+  rpc RemoveBoard (FindOneBoardDto) returns (Board) {
+    option (google.api.http) = {
+      delete: "/api/v1/boards/{id}"
+    };
+  }
+  rpc QueryBoards (stream PaginationDto) returns (stream Boards) {}
+}
+
+message PaginationDto {
+  int32  page = 1;
+  int32 skip = 2;
+}
+message UpdateBoardDto {
+  string id = 1;
+  string title = 2;
+}
+message FindOneBoardDto {
+  string id = 1;
+}
+message Empty {};
+
+message Boards {
+  repeated Board boards = 1;
+}
+
+message CreateBoardDto {
+  string title = 1;
+}
+message Board {
+  string id = 1;
+  string title = 2;
+}

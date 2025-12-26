@@ -1,0 +1,26 @@
+FROM golang:1.25.3
+
+WORKDIR /app
+
+# Install buf
+RUN go install github.com/bufbuild/buf/cmd/buf@latest
+
+# Copy buf config files (make them optional with *)
+COPY buf.yaml* buf.gen.yaml* buf.lock* ./
+
+# Copy proto files
+COPY proto/ proto/
+
+# Download proto dependencies and generate Go code
+RUN buf mod update && buf generate
+
+# Copy go module files
+COPY go.mod go.sum* ./
+
+# Download Go dependencies
+RUN go mod download
+
+# Copy rest of application
+COPY . .
+
+CMD ["go", "run", "cmd/main.go"]
