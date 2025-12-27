@@ -38,7 +38,7 @@ export class OutcomesController implements outcomes.OutcomeServiceController {
         });
 
         return {
-            outcomes: outcomesList.map(OutcomeMapper.toProto),
+            outcomes: outcomesList.map(o => OutcomeMapper.toProto(o)),
             nextPageToken: '',
             totalCount: outcomesList.length,
         };
