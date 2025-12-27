@@ -146,9 +146,10 @@ export class OutcomesController implements outcomes.OutcomeServiceController {
     }
 
     private toDate(timestamp: any): Date {
-        if (!timestamp) return new Date();
-        return new Date(timestamp.seconds * 1000 + timestamp.nanos / 1000000);
-    }
+    if (!timestamp) return new Date();
+    if (timestamp.seconds === undefined) return new Date();
+    return new Date(timestamp.seconds * 1000);
+}
 
     private toProtoStatus(status: string): outcomes.OutcomeStatus {
         const statusMap = {
