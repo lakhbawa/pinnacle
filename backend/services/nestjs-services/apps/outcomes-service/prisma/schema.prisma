@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Outcome {
+  id                    String    @id @default(uuid())
+  userId                String
+  title                 String
+  whyItMatters          String
+  successMetricValue    Float
+  successMetricUnit     String
+  deadline              DateTime
+  status                OutcomeStatus @default(ACTIVE)
+  createdAt             DateTime  @default(now())
+  completedAt           DateTime?
+  archivedAt            DateTime?
+
+  drivers               Driver[]
+  tasks                 Task[]
+
+  @@index([userId, status])
+  @@map("outcomes")
+}
+
+enum OutcomeStatus {
+  ACTIVE
+  PARKED
+  COMPLETED
+  ABANDONED
+}
+
+model Driver {
+  id                    String    @id @default(uuid())
+  outcomeId             String
+  title                 String
+  position              Float
+  createdAt             DateTime  @default(now())
+
+  outcome               Outcome   @relation(fields: [outcomeId], references: [id], onDelete: Cascade)
+  tasks                 Task[]
+  @@map("drivers")
+}
+
+model Task {
+  id                 String    @id @default(uuid())
+  driverId           String    @map("driver_id")
+  outcomeId          String    @map("outcome_id")
+  userId             String    @map("user_id")
+  title              String
+  isCompleted        Boolean   @default(false) @map("is_completed")
+  completedAt        DateTime? @map("completed_at")
+  scheduledFor       DateTime? @map("scheduled_for")
+  lastMovedOutcomeAt DateTime? @map("last_moved_outcome_at")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  driver  Driver  @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  outcome Outcome @relation(fields: [outcomeId], references: [id], onDelete: Cascade)
+
+  @@index([userId, scheduledFor])
+  @@index([outcomeId, isCompleted])
+  @@map("tasks")
+}

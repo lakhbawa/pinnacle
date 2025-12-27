@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.0
 // - protoc             (unknown)
-// source: boardsservice.proto
+// source: boardsservice/boardsservice.proto
 
-package _go
+package boardsservice
 
 import (
 	context "context"
@@ -306,5 +306,5 @@ var BoardsService_ServiceDesc = grpc.ServiceDesc{
 			ClientStreams: true,
 		},
 	},
-	Metadata: "boardsservice.proto",
+	Metadata: "boardsservice/boardsservice.proto",
 }

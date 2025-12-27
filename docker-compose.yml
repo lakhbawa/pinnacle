@@ -33,6 +33,8 @@ services:
     depends_on:
       - pinnacle-redis
       - pinnacle-db
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks: [pinnacle-network]
 
   pinnacle-db:
@@ -46,6 +48,18 @@ services:
       - ./docker/config/postgres/init-db.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "4732:5432"
+    networks: [pinnacle-network]
+  pinnacle-outcomes-service-db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: outcomes
+    volumes:
+      - dbdata_outcomes_service:/var/lib/postgresql/data
+      - ./docker/config/postgres/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "4442:5432"
     networks: [pinnacle-network]
 
   pinnacle-adminer:
@@ -66,7 +80,6 @@ services:
     networks:
       - pinnacle-network
 
-
 #Docker Networks
 networks:
   pinnacle-network:
@@ -74,6 +87,8 @@ networks:
 #Volumes
 volumes:
   dbdata:
+    driver: local
+  dbdata_outcomes_service:
     driver: local
   redisdata:
     driver: local

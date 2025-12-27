@@ -1,0 +1,134 @@
+syntax = "proto3";
+
+package outcomes.v1;
+
+option go_package = "gateway/gen/go/outcomesv1";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+
+enum OutcomeStatus {
+  OUTCOME_STATUS_UNSPECIFIED = 0;
+  OUTCOME_STATUS_ACTIVE = 1;
+  OUTCOME_STATUS_PARKED = 2;
+  OUTCOME_STATUS_COMPLETED = 3;
+  OUTCOME_STATUS_ABANDONED = 4;
+}
+
+service OutcomeService {
+  rpc CreateOutcome(CreateOutcomeRequest) returns (Outcome) {
+    option (google.api.http) = {
+      post: "/api/v1/outcomes"
+      body: "*"
+    };
+  }
+
+  rpc GetOutcome(GetOutcomeRequest) returns (Outcome) {
+    option (google.api.http) = {
+      get: "/api/v1/outcomes/{id}"
+    };
+  }
+
+  rpc ListOutcomes(ListOutcomesRequest) returns (ListOutcomesResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/outcomes"
+    };
+  }
+
+  rpc UpdateOutcome(UpdateOutcomeRequest) returns (Outcome) {
+    option (google.api.http) = {
+      patch: "/api/v1/outcomes/{id}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteOutcome(DeleteOutcomeRequest) returns (DeleteOutcomeResponse) {
+    option (google.api.http) = {
+      delete: "/api/v1/outcomes/{id}"
+    };
+  }
+}
+
+message Outcome {
+  string id = 1;
+  string user_id = 2;
+  string title = 3;
+  string why_it_matters = 4;
+  double success_metric_value = 5;
+  string success_metric_unit = 6;
+  google.protobuf.Timestamp deadline = 7;
+  OutcomeStatus status = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp completed_at = 10;
+  google.protobuf.Timestamp archived_at = 11;
+  repeated Driver drivers = 12;
+  repeated Task tasks = 13;
+}
+
+message Driver {
+  string id = 1;
+  string title = 2;
+  string outcome_id = 3;
+  float position = 4;
+  google.protobuf.Timestamp created_at = 5;
+  repeated Task tasks = 6;
+}
+
+message Task {
+  string id = 1;
+  string driver_id = 2;
+  string outcome_id = 3;
+  string user_id = 4;
+  string title = 5;
+  bool is_completed = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+  google.protobuf.Timestamp scheduled_for = 9;
+  google.protobuf.Timestamp last_moved_outcome_at = 10;
+  google.protobuf.Timestamp completed_at = 11;
+}
+
+message CreateOutcomeRequest {
+  string user_id = 1;
+  string title = 2;
+  string why_it_matters = 3;
+  double success_metric_value = 4;
+  string success_metric_unit = 5;
+  google.protobuf.Timestamp deadline = 6;
+}
+
+message GetOutcomeRequest {
+  string id = 1;
+}
+
+message UpdateOutcomeRequest {
+  string id = 1;
+  optional string title = 2;
+  optional string why_it_matters = 3;
+  optional double success_metric_value = 4;
+  optional string success_metric_unit = 5;
+  optional google.protobuf.Timestamp deadline = 6;
+  optional OutcomeStatus status = 7;
+}
+
+message ListOutcomesRequest {
+  string user_id = 1;
+  optional OutcomeStatus status = 2;
+  int32 page_size = 3;
+  string page_token = 4;
+}
+
+message ListOutcomesResponse {
+  repeated Outcome outcomes = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+message DeleteOutcomeRequest {
+  string id = 1;
+}
+
+message DeleteOutcomeResponse {
+  bool success = 1;
+}

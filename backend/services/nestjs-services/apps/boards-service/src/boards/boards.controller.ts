@@ -3,22 +3,17 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { BoardsService } from './boards.service';
 
 import {
-  Boards,
-  BoardsServiceController,
-  BoardsServiceControllerMethods,
-  CreateBoardDto,
-  FindOneBoardDto, PaginationDto,
-  UpdateBoardDto
+  boards
 } from "@app/common";
 import {Observable} from "rxjs";
 import {Metadata} from "@grpc/grpc-js";
 
 @Controller()
-@BoardsServiceControllerMethods()
-export class BoardsController implements BoardsServiceController{
+@boards.BoardsServiceControllerMethods()
+export class BoardsController implements boards.BoardsServiceController{
   constructor(private readonly boardsService: BoardsService) {}
 
-  createBoard(createBoardDto: CreateBoardDto) {
+  createBoard(createBoardDto: boards.CreateBoardDto) {
     return this.boardsService.create(createBoardDto);
   }
 
@@ -26,19 +21,19 @@ export class BoardsController implements BoardsServiceController{
     return this.boardsService.findAll();
   }
 
-  findOneBoard(findOneBoardDto: FindOneBoardDto) {
+  findOneBoard(findOneBoardDto: boards.FindOneBoardDto) {
     return this.boardsService.findOne(findOneBoardDto.id);
   }
 
-  updateBoard(updateBoardDto: UpdateBoardDto) {
+  updateBoard(updateBoardDto: boards.UpdateBoardDto) {
     return this.boardsService.update(updateBoardDto.id, updateBoardDto);
   }
 
-  removeBoard(findOneBoardDto: FindOneBoardDto) {
+  removeBoard(findOneBoardDto: boards.FindOneBoardDto) {
     return this.boardsService.remove(findOneBoardDto.id);
   }
 
-  queryBoards(paginationDtoStream: Observable<PaginationDto>, metadata?: Metadata): Observable<Boards> {
+  queryBoards(paginationDtoStream: Observable<boards.PaginationDto>, metadata?: Metadata): Observable<boards.Boards> {
       return this.boardsService.queryBoards(paginationDtoStream);
   }
 }

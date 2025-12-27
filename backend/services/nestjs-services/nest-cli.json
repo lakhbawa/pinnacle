@@ -18,7 +18,9 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/api-gateway/tsconfig.app.json",
-        "assets": ["proto/*.proto"],
+        "assets": [
+          "proto/*.proto"
+        ],
         "watchAssets": true
       }
     },
@@ -29,7 +31,9 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/boards-service/tsconfig.app.json",
-         "assets": ["proto/*.proto"],
+        "assets": [
+          "proto/*.proto"
+        ],
         "watchAssets": true
       }
     },
@@ -49,6 +53,18 @@
       "sourceRoot": "apps/monolith/src",
       "compilerOptions": {
         "tsConfigPath": "apps/monolith/tsconfig.app.json"
+      }
+    },
+    "outcomes-service": {
+      "type": "application",
+      "root": "apps/outcomes-service",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
+      "compilerOptions": {
+        "tsConfigPath": "apps/outcomes-service/tsconfig.app.json",
+        "assets": [
+          "proto/*.proto"
+        ]
       }
     }
   }

@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        (unknown)
-// source: boardsservice.proto
+// source: boardsservice/boardsservice.proto
 
-package _go
+package boardsservice
 
 import (
 	_ "google.golang.org/genproto/googleapis/api/annotations"
@@ -32,7 +32,7 @@ type PaginationDto struct {
 
 func (x *PaginationDto) Reset() {
 	*x = PaginationDto{}
-	mi := &file_boardsservice_proto_msgTypes[0]
+	mi := &file_boardsservice_boardsservice_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -44,7 +44,7 @@ func (x *PaginationDto) String() string {
 func (*PaginationDto) ProtoMessage() {}
 
 func (x *PaginationDto) ProtoReflect() protoreflect.Message {
-	mi := &file_boardsservice_proto_msgTypes[0]
+	mi := &file_boardsservice_boardsservice_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -57,7 +57,7 @@ func (x *PaginationDto) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PaginationDto.ProtoReflect.Descriptor instead.
 func (*PaginationDto) Descriptor() ([]byte, []int) {
-	return file_boardsservice_proto_rawDescGZIP(), []int{0}
+	return file_boardsservice_boardsservice_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *PaginationDto) GetPage() int32 {
@@ -84,7 +84,7 @@ type UpdateBoardDto struct {
 
 func (x *UpdateBoardDto) Reset() {
 	*x = UpdateBoardDto{}
-	mi := &file_boardsservice_proto_msgTypes[1]
+	mi := &file_boardsservice_boardsservice_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -96,7 +96,7 @@ func (x *UpdateBoardDto) String() string {
 func (*UpdateBoardDto) ProtoMessage() {}
 
 func (x *UpdateBoardDto) ProtoReflect() protoreflect.Message {
-	mi := &file_boardsservice_proto_msgTypes[1]
+	mi := &file_boardsservice_boardsservice_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -109,7 +109,7 @@ func (x *UpdateBoardDto) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateBoardDto.ProtoReflect.Descriptor instead.
 func (*UpdateBoardDto) Descriptor() ([]byte, []int) {
-	return file_boardsservice_proto_rawDescGZIP(), []int{1}
+	return file_boardsservice_boardsservice_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *UpdateBoardDto) GetId() string {
@@ -135,7 +135,7 @@ type FindOneBoardDto struct {
 
 func (x *FindOneBoardDto) Reset() {
 	*x = FindOneBoardDto{}
-	mi := &file_boardsservice_proto_msgTypes[2]
+	mi := &file_boardsservice_boardsservice_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -147,7 +147,7 @@ func (x *FindOneBoardDto) String() string {
 func (*FindOneBoardDto) ProtoMessage() {}
 
 func (x *FindOneBoardDto) ProtoReflect() protoreflect.Message {
-	mi := &file_boardsservice_proto_msgTypes[2]
+	mi := &file_boardsservice_boardsservice_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -160,7 +160,7 @@ func (x *FindOneBoardDto) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FindOneBoardDto.ProtoReflect.Descriptor instead.
 func (*FindOneBoardDto) Descriptor() ([]byte, []int) {
-	return file_boardsservice_proto_rawDescGZIP(), []int{2}
+	return file_boardsservice_boardsservice_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *FindOneBoardDto) GetId() string {
@@ -178,7 +178,7 @@ type Empty struct {
 
 func (x *Empty) Reset() {
 	*x = Empty{}
-	mi := &file_boardsservice_proto_msgTypes[3]
+	mi := &file_boardsservice_boardsservice_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -190,7 +190,7 @@ func (x *Empty) String() string {
 func (*Empty) ProtoMessage() {}
 
 func (x *Empty) ProtoReflect() protoreflect.Message {
-	mi := &file_boardsservice_proto_msgTypes[3]
+	mi := &file_boardsservice_boardsservice_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -203,7 +203,7 @@ func (x *Empty) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Empty.ProtoReflect.Descriptor instead.
 func (*Empty) Descriptor() ([]byte, []int) {
-	return file_boardsservice_proto_rawDescGZIP(), []int{3}
+	return file_boardsservice_boardsservice_proto_rawDescGZIP(), []int{3}
 }
 
 type Boards struct {
@@ -215,7 +215,7 @@ type Boards struct {
 
 func (x *Boards) Reset() {
 	*x = Boards{}
-	mi := &file_boardsservice_proto_msgTypes[4]
+	mi := &file_boardsservice_boardsservice_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -227,7 +227,7 @@ func (x *Boards) String() string {
 func (*Boards) ProtoMessage() {}
 
 func (x *Boards) ProtoReflect() protoreflect.Message {
-	mi := &file_boardsservice_proto_msgTypes[4]
+	mi := &file_boardsservice_boardsservice_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -240,7 +240,7 @@ func (x *Boards) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Boards.ProtoReflect.Descriptor instead.
 func (*Boards) Descriptor() ([]byte, []int) {
-	return file_boardsservice_proto_rawDescGZIP(), []int{4}
+	return file_boardsservice_boardsservice_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *Boards) GetBoards() []*Board {
@@ -259,7 +259,7 @@ type CreateBoardDto struct {
 
 func (x *CreateBoardDto) Reset() {
 	*x = CreateBoardDto{}
-	mi := &file_boardsservice_proto_msgTypes[5]
+	mi := &file_boardsservice_boardsservice_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -271,7 +271,7 @@ func (x *CreateBoardDto) String() string {
 func (*CreateBoardDto) ProtoMessage() {}
 
 func (x *CreateBoardDto) ProtoReflect() protoreflect.Message {
-	mi := &file_boardsservice_proto_msgTypes[5]
+	mi := &file_boardsservice_boardsservice_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -284,7 +284,7 @@ func (x *CreateBoardDto) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateBoardDto.ProtoReflect.Descriptor instead.
 func (*CreateBoardDto) Descriptor() ([]byte, []int) {
-	return file_boardsservice_proto_rawDescGZIP(), []int{5}
+	return file_boardsservice_boardsservice_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *CreateBoardDto) GetTitle() string {
@@ -304,7 +304,7 @@ type Board struct {
 
 func (x *Board) Reset() {
 	*x = Board{}
-	mi := &file_boardsservice_proto_msgTypes[6]
+	mi := &file_boardsservice_boardsservice_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -316,7 +316,7 @@ func (x *Board) String() string {
 func (*Board) ProtoMessage() {}
 
 func (x *Board) ProtoReflect() protoreflect.Message {
-	mi := &file_boardsservice_proto_msgTypes[6]
+	mi := &file_boardsservice_boardsservice_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -329,7 +329,7 @@ func (x *Board) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Board.ProtoReflect.Descriptor instead.
 func (*Board) Descriptor() ([]byte, []int) {
-	return file_boardsservice_proto_rawDescGZIP(), []int{6}
+	return file_boardsservice_boardsservice_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *Board) GetId() string {
@@ -346,11 +346,11 @@ func (x *Board) GetTitle() string {
 	return ""
 }
 
-var File_boardsservice_proto protoreflect.FileDescriptor
+var File_boardsservice_boardsservice_proto protoreflect.FileDescriptor
 
-const file_boardsservice_proto_rawDesc = "" +
+const file_boardsservice_boardsservice_proto_rawDesc = "" +
 	"\n" +
-	"\x13boardsservice.proto\x12\rboardsservice\x1a\x1cgoogle/api/annotations.proto\"7\n" +
+	"!boardsservice/boardsservice.proto\x12\rboardsservice\x1a\x1cgoogle/api/annotations.proto\"7\n" +
 	"\rPaginationDto\x12\x12\n" +
 	"\x04page\x18\x01 \x01(\x05R\x04page\x12\x12\n" +
 	"\x04skip\x18\x02 \x01(\x05R\x04skip\"6\n" +
@@ -373,23 +373,22 @@ const file_boardsservice_proto_rawDesc = "" +
 	"\fFindOneBoard\x12\x1e.boardsservice.FindOneBoardDto\x1a\x14.boardsservice.Board\"\x1b\x82\xd3\xe4\x93\x02\x15\x12\x13/api/v1/boards/{id}\x12b\n" +
 	"\vUpdateBoard\x12\x1d.boardsservice.UpdateBoardDto\x1a\x14.boardsservice.Board\"\x1e\x82\xd3\xe4\x93\x02\x18:\x01*2\x13/api/v1/boards/{id}\x12`\n" +
 	"\vRemoveBoard\x12\x1e.boardsservice.FindOneBoardDto\x1a\x14.boardsservice.Board\"\x1b\x82\xd3\xe4\x93\x02\x15*\x13/api/v1/boards/{id}\x12H\n" +
-	"\vQueryBoards\x12\x1c.boardsservice.PaginationDto\x1a\x15.boardsservice.Boards\"\x00(\x010\x01B\x8b\x01\n" +
-	"\x11com.boardsserviceB\x12BoardsserviceProtoP\x01Z\x0egateway/gen/go\xa2\x02\x03BXX\xaa\x02\rBoardsservice\xca\x02\rBoardsservice\xe2\x02\x19Boardsservice\\GPBMetadata\xea\x02\rBoardsserviceb\x06proto3"
+	"\vQueryBoards\x12\x1c.boardsservice.PaginationDto\x1a\x15.boardsservice.Boards\"\x00(\x010\x01B\x1eZ\x1cgateway/gen/go/boardsserviceb\x06proto3"
 
 var (
-	file_boardsservice_proto_rawDescOnce sync.Once
-	file_boardsservice_proto_rawDescData []byte
+	file_boardsservice_boardsservice_proto_rawDescOnce sync.Once
+	file_boardsservice_boardsservice_proto_rawDescData []byte
 )
 
-func file_boardsservice_proto_rawDescGZIP() []byte {
-	file_boardsservice_proto_rawDescOnce.Do(func() {
-		file_boardsservice_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_boardsservice_proto_rawDesc), len(file_boardsservice_proto_rawDesc)))
+func file_boardsservice_boardsservice_proto_rawDescGZIP() []byte {
+	file_boardsservice_boardsservice_proto_rawDescOnce.Do(func() {
+		file_boardsservice_boardsservice_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_boardsservice_boardsservice_proto_rawDesc), len(file_boardsservice_boardsservice_proto_rawDesc)))
 	})
-	return file_boardsservice_proto_rawDescData
+	return file_boardsservice_boardsservice_proto_rawDescData
 }
 
-var file_boardsservice_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
-var file_boardsservice_proto_goTypes = []any{
+var file_boardsservice_boardsservice_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_boardsservice_boardsservice_proto_goTypes = []any{
 	(*PaginationDto)(nil),   // 0: boardsservice.PaginationDto
 	(*UpdateBoardDto)(nil),  // 1: boardsservice.UpdateBoardDto
 	(*FindOneBoardDto)(nil), // 2: boardsservice.FindOneBoardDto
@@ -398,7 +397,7 @@ var file_boardsservice_proto_goTypes = []any{
 	(*CreateBoardDto)(nil),  // 5: boardsservice.CreateBoardDto
 	(*Board)(nil),           // 6: boardsservice.Board
 }
-var file_boardsservice_proto_depIdxs = []int32{
+var file_boardsservice_boardsservice_proto_depIdxs = []int32{
 	6, // 0: boardsservice.Boards.boards:type_name -> boardsservice.Board
 	5, // 1: boardsservice.BoardsService.CreateBoard:input_type -> boardsservice.CreateBoardDto
 	3, // 2: boardsservice.BoardsService.FindAllBoards:input_type -> boardsservice.Empty
@@ -419,26 +418,26 @@ var file_boardsservice_proto_depIdxs = []int32{
 	0, // [0:1] is the sub-list for field type_name
 }
 
-func init() { file_boardsservice_proto_init() }
-func file_boardsservice_proto_init() {
-	if File_boardsservice_proto != nil {
+func init() { file_boardsservice_boardsservice_proto_init() }
+func file_boardsservice_boardsservice_proto_init() {
+	if File_boardsservice_boardsservice_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_boardsservice_proto_rawDesc), len(file_boardsservice_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_boardsservice_boardsservice_proto_rawDesc), len(file_boardsservice_boardsservice_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_boardsservice_proto_goTypes,
-		DependencyIndexes: file_boardsservice_proto_depIdxs,
-		MessageInfos:      file_boardsservice_proto_msgTypes,
+		GoTypes:           file_boardsservice_boardsservice_proto_goTypes,
+		DependencyIndexes: file_boardsservice_boardsservice_proto_depIdxs,
+		MessageInfos:      file_boardsservice_boardsservice_proto_msgTypes,
 	}.Build()
-	File_boardsservice_proto = out.File
-	file_boardsservice_proto_goTypes = nil
-	file_boardsservice_proto_depIdxs = nil
+	File_boardsservice_boardsservice_proto = out.File
+	file_boardsservice_boardsservice_proto_goTypes = nil
+	file_boardsservice_boardsservice_proto_depIdxs = nil
 }

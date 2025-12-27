@@ -9,29 +9,40 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	pb "gateway/gen/go"
+    outcomespb "gateway/gen/go/outcomesv1"
+	boardspb "gateway/gen/go/boardsservice"
 )
 
 func main() {
 	router := gin.Default()
-
 	ctx := context.Background()
 	grpcMux := runtime.NewServeMux()
 
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 
-	err := pb.RegisterBoardsServiceHandlerFromEndpoint(
+	// Register Outcomes Service
+	err := outcomespb.RegisterOutcomeServiceHandlerFromEndpoint(
 		ctx,
 		grpcMux,
-		"host.docker.internal:4011",
+		"host.docker.internal:4440",
 		opts,
 	)
 	if err != nil {
-		log.Fatalf("Failed to register gateway: %v", err)
+		log.Fatalf("Failed to register outcomes gateway: %v", err)
 	}
 
-	router.Any("/api/v1/boards/*any", gin.WrapH(grpcMux))
-	router.Any("/api/v1/boards", gin.WrapH(grpcMux))
+	// Register Boards Service
+	err = boardspb.RegisterBoardsServiceHandlerFromEndpoint(
+		ctx,
+		grpcMux,
+		"host.docker.internal:4012",
+		opts,
+	)
+	if err != nil {
+		log.Fatalf("Failed to register boards gateway: %v", err)
+	}
+
+	router.Any("/api/*any", gin.WrapH(grpcMux))
 
 	log.Println("API Gateway running on :8080")
 	router.Run(":8080")

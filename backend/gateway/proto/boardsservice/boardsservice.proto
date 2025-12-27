@@ -2,7 +2,11 @@ syntax = "proto3";
 
 package boardsservice;
 
+option go_package = "gateway/gen/go/boardsservice";
+
+
 import "google/api/annotations.proto";
+
 
 service BoardsService {
   rpc CreateBoard (CreateBoardDto) returns (Board) {
