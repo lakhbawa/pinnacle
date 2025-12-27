@@ -70,7 +70,7 @@ export class OutcomesController implements outcomes.OutcomeServiceController {
             {id: request.id},
             {drivers: {include: {tasks: true}}, tasks: true}
         );
-        if (!outcome) throw new Error('Outcome not found');
+        if (!outcome) throw new RpcException('Outcome not found');
         return OutcomeMapper.toProto(outcome);
     }
 
