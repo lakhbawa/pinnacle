@@ -3,7 +3,7 @@ import { Controller } from '@nestjs/common';
 import { OutcomesService } from './outcomes.service';
 import { outcomes } from "@app/common";
 import { Prisma } from '@prisma/client';
-import { OutcomeMapper } from './outcome.mapper';
+import { OutcomeMapper } from '../mappers/outcome.mapper';
 
 @Controller()
 @outcomes.OutcomeServiceControllerMethods()
