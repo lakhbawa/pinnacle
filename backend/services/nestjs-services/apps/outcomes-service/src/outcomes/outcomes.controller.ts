@@ -1,13 +1,14 @@
 // outcomes.controller.ts
-import { Controller } from '@nestjs/common';
-import { OutcomesService } from './outcomes.service';
-import { outcomes } from "@app/common";
-import { Prisma, OutcomeStatus } from '@prisma/client';
+import {Controller} from '@nestjs/common';
+import {OutcomesService} from './outcomes.service';
+import {outcomes} from "@app/common";
+import {Prisma, OutcomeStatus} from '@prisma/client';
 
 @Controller()
 @outcomes.OutcomeServiceControllerMethods()
 export class OutcomesController implements outcomes.OutcomeServiceController {
-    constructor(private readonly outcomesService: OutcomesService) {}
+    constructor(private readonly outcomesService: OutcomesService) {
+    }
 
     async createOutcome(request: outcomes.CreateOutcomeRequest): Promise<outcomes.Outcome> {
         const outcome = await this.outcomesService.create({
@@ -23,17 +24,17 @@ export class OutcomesController implements outcomes.OutcomeServiceController {
     }
 
     async listOutcomes(request: outcomes.ListOutcomesRequest): Promise<outcomes.ListOutcomesResponse> {
-        const where: Prisma.OutcomeWhereInput = { userId: request.userId };
+        const where: Prisma.OutcomeWhereInput = {userId: request.userId};
 
         if (request.status) {
-        where.status = this.toPrismaStatus(request.status);
-    }
+            where.status = this.toPrismaStatus(request.status);
+        }
 
         const outcomesList = await this.outcomesService.findAll({
             where,
             take: request.pageSize || 20,
             include: {
-                drivers: { include: { tasks: true } },
+                drivers: {include: {tasks: true}},
                 tasks: true,
             },
         });
@@ -47,9 +48,9 @@ export class OutcomesController implements outcomes.OutcomeServiceController {
 
     async getOutcome(request: outcomes.GetOutcomeRequest): Promise<outcomes.Outcome> {
         const outcome = await this.outcomesService.findOne(
-            { id: request.id },
+            {id: request.id},
             {
-                drivers: { include: { tasks: true } },
+                drivers: {include: {tasks: true}},
                 tasks: true,
             }
         );
@@ -74,7 +75,7 @@ export class OutcomesController implements outcomes.OutcomeServiceController {
         if (request.status) data.status = this.toPrismaStatus(request.status);
 
         const outcome = await this.outcomesService.update({
-            where: { id: request.id },
+            where: {id: request.id},
             data,
         });
 
@@ -82,8 +83,8 @@ export class OutcomesController implements outcomes.OutcomeServiceController {
     }
 
     async deleteOutcome(request: outcomes.DeleteOutcomeRequest): Promise<outcomes.DeleteOutcomeResponse> {
-        await this.outcomesService.remove({ id: request.id });
-        return { success: true };
+        await this.outcomesService.remove({id: request.id});
+        return {success: true};
     }
 
     // === Helper Methods ===
@@ -146,10 +147,10 @@ export class OutcomesController implements outcomes.OutcomeServiceController {
     }
 
     private toDate(timestamp: any): Date {
-    if (!timestamp) return new Date();
-    if (timestamp.seconds === undefined) return new Date();
-    return new Date(timestamp.seconds * 1000);
-}
+        if (!timestamp) return new Date();
+        if (timestamp.seconds === undefined) return new Date();
+        return new Date(timestamp.seconds * 1000);
+    }
 
     private toProtoStatus(status: string): outcomes.OutcomeStatus {
         const statusMap = {
@@ -162,12 +163,12 @@ export class OutcomesController implements outcomes.OutcomeServiceController {
     }
 
     private toPrismaStatus(status: outcomes.OutcomeStatus): OutcomeStatus {
-    const statusMap: Record<number, OutcomeStatus> = {
-        [outcomes.OutcomeStatus.OUTCOME_STATUS_ACTIVE]: OutcomeStatus.ACTIVE,
-        [outcomes.OutcomeStatus.OUTCOME_STATUS_PARKED]: OutcomeStatus.PARKED,
-        [outcomes.OutcomeStatus.OUTCOME_STATUS_COMPLETED]: OutcomeStatus.COMPLETED,
-        [outcomes.OutcomeStatus.OUTCOME_STATUS_ABANDONED]: OutcomeStatus.ABANDONED,
-    };
-    return statusMap[status] || OutcomeStatus.ACTIVE;
-}
+        const statusMap: Record<number, OutcomeStatus> = {
+            [outcomes.OutcomeStatus.OUTCOME_STATUS_ACTIVE]: OutcomeStatus.ACTIVE,
+            [outcomes.OutcomeStatus.OUTCOME_STATUS_PARKED]: OutcomeStatus.PARKED,
+            [outcomes.OutcomeStatus.OUTCOME_STATUS_COMPLETED]: OutcomeStatus.COMPLETED,
+            [outcomes.OutcomeStatus.OUTCOME_STATUS_ABANDONED]: OutcomeStatus.ABANDONED,
+        };
+        return statusMap[status] || OutcomeStatus.ACTIVE;
+    }
 }
