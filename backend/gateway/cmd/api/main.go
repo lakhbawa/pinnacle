@@ -2,21 +2,100 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"log"
+	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/proto"
 
-    outcomespb "gateway/gen/go/outcomesv1"
 	boardspb "gateway/gen/go/boardsservice"
+	outcomespb "gateway/gen/go/outcomesv1"
 )
+
+func customMarshaler(ctx context.Context, w http.ResponseWriter, resp proto.Message) error {
+	w.Header().Set("Content-Type", "application/json")
+
+	return json.NewEncoder(w).Encode(APIResponse{
+		Success: true,
+		Data:    resp,
+	})
+}
+
+type APIResponse struct {
+	Success bool        `json:"success"`
+	Data    interface{} `json:"data,omitempty"`
+	Error   *APIError   `json:"error,omitempty"`
+}
+
+type APIError struct {
+	Message string            `json:"message"`
+	Code    string            `json:"code,omitempty"`
+	Errors  map[string]string `json:"errors,omitempty"`
+}
+
+func customHTTPError(
+	ctx context.Context,
+	mux *runtime.ServeMux,
+	marshaler runtime.Marshaler,
+	w http.ResponseWriter,
+	r *http.Request,
+	err error,
+) {
+	st, ok := status.FromError(err)
+
+	httpStatus := http.StatusInternalServerError
+	apiError := &APIError{
+		Message: "Internal server error",
+		Code:    "INTERNAL_ERROR",
+	}
+
+	if ok {
+		httpStatus = runtime.HTTPStatusFromCode(st.Code())
+		message := st.Message()
+
+		// Timestamp parsing error
+		if strings.Contains(message, "google.protobuf.Timestamp") {
+			httpStatus = http.StatusBadRequest
+			apiError.Message = "Invalid deadline format"
+			apiError.Code = "VALIDATION_ERROR"
+			apiError.Errors = map[string]string{
+				"deadline": "Use ISO-8601 format like 2025-06-30T23:59:59Z",
+			}
+		} else if strings.HasPrefix(message, "{") {
+			// Zod validation errors
+			var validationErrors map[string]string
+			if json.Unmarshal([]byte(message), &validationErrors) == nil {
+				apiError.Message = "Validation failed"
+				apiError.Code = "VALIDATION_ERROR"
+				apiError.Errors = validationErrors
+			}
+		} else {
+			apiError.Message = message
+			apiError.Code = st.Code().String()
+		}
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(httpStatus)
+	json.NewEncoder(w).Encode(APIResponse{
+		Success: false,
+		Error:   apiError,
+	})
+}
 
 func main() {
 	router := gin.Default()
 	ctx := context.Background()
-	grpcMux := runtime.NewServeMux()
+	grpcMux := runtime.NewServeMux(
+		runtime.WithErrorHandler(customHTTPError),
+		runtime.WithForwardResponseOption(customMarshaler),
+	)
 
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 
