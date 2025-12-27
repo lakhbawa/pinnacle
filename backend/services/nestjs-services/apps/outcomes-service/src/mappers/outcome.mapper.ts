@@ -1,6 +1,6 @@
 // outcome.mapper.ts
-import { outcomes } from "@app/common";
-import { OutcomeStatus } from '@prisma/client';
+import {outcomes} from "@app/common";
+import {OutcomeStatus} from '@prisma/client';
 
 export class OutcomeMapper {
     static toProto(outcome: any): outcomes.Outcome {
@@ -59,8 +59,10 @@ export class OutcomeMapper {
     }
 
     static toDate(timestamp: any): Date {
-        if (!timestamp?.seconds) return new Date();
-        return new Date(timestamp.seconds * 1000);
+        if (!timestamp) return new Date();
+        if (typeof timestamp === 'string') return new Date(timestamp);
+        if (timestamp.seconds !== undefined) return new Date(timestamp.seconds * 1000);
+        return new Date();
     }
 
     static toProtoStatus(status: string): outcomes.OutcomeStatus {
