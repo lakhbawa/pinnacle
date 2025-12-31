@@ -176,7 +176,7 @@ class FetchWrapper {
 
 // Create default instance
 export const api = new FetchWrapper({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4700/api/v1',
   headers: {
     'Content-Type': 'application/json',
   },

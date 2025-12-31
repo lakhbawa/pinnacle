@@ -2,13 +2,12 @@
 import {use, useEffect, useState} from "react";
 import api from "@/utils/fetchWrapper";
 import Link from "next/link";
-import {Project} from "@/app/types/projectTypes";
-import ProjectLists from "@/app/components/projectView/projectView";
+import {Outcome} from "@/app/types/outcomeTypes";
 
 
-export default function ViewProjectPage({params}: { params: Promise<{ id: string, username:string }> }) {
+export default function ViewOutcomePage({params}: { params: Promise<{ id: string, username:string }> }) {
 
-    const [projectData, setProjectData] = useState<Project | null>(null);
+    const [projectData, setOutcomeData] = useState<Outcome | null>(null);
     const {id, username} = use(params);
 
     // const username = 'lakhbawa'
@@ -19,8 +18,8 @@ export default function ViewProjectPage({params}: { params: Promise<{ id: string
         async function fetchData() {
             try {
                 setLoading(true)
-                const data = await api.get(`/projects/${id}?include[]=lists&include[]=lists.issues`);
-                setProjectData(data)
+                const data = await api.get(`/outcomes/${id}?include[]=lists&include[]=lists.issues`);
+                setOutcomeData(data.data)
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Failed to load project')
             } finally {
@@ -67,17 +66,22 @@ export default function ViewProjectPage({params}: { params: Promise<{ id: string
                 <div className="bg-slate-100 border border-slate-200 rounded-lg p-8 max-w-md text-center shadow-sm">
                     <p className="text-slate-600 font-medium">No project found</p>
                     <Link
-                        href="/projects"
+                        href="/outcomes"
                         className="mt-4 inline-block px-4 py-2 bg-slate-200 text-slate-700 rounded-md hover:bg-slate-300 transition-colors"
                     >
-                        Back to Projects
+                        Back to Outcomes
                     </Link>
                 </div>
             </div>
         )
     }
     return (
-        <ProjectLists projectData={projectData} projectId={id} username={username}></ProjectLists>
+        <>
+            { JSON.stringify(projectData)}
+            <h1>Outcome Details</h1>
+
+            Title : { projectData.title}
+        </>
     )
 
 

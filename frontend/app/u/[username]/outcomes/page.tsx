@@ -3,71 +3,73 @@ import Link from "next/link";
 import {useEffect, useState} from "react";
 import api from "@/utils/fetchWrapper";
 
-interface Project {
+interface Outcome {
     id: string;
     title: string;
 }
 
-export default function Projects() {
-    const [projects, setProjects] = useState<Project[]>([]);
+export default function Outcomes() {
+    const [outcomes, setOutcomes] = useState<Outcome[]>([]);
     const [loading, setLoading] = useState(true);
 
     const username = 'lakhbawa'
 
     useEffect(() => {
-        api.get<Project[]>('/projects')
+        console.log("running useeffect")
+        api.get<Outcome[]>('/outcomes')
             .then((data) => {
-                setProjects(data);
+                console.log('data', data);
+                setOutcomes(data.data.outcomes);
             })
             .catch((error) => {
-                console.error('Failed to fetch projects:', error);
+                console.error('Failed to fetch outcomes:', error);
             })
             .finally(() => {
                 setLoading(false);
             })
     }, [])
 
-    const deleteProject = (id: string) => async () => {
-        console.log("deleting project", id);
-        const confirmed = confirm("Are you sure you want to delete this project?")
+    const deleteOutcome = (id: string) => async () => {
+        console.log("deleting outcome", id);
+        const confirmed = confirm("Are you sure you want to delete this outcome?")
         if (confirmed) {
             try {
-                await api.delete(`/projects/${id}`)
-                // ✅ Remove deleted project from state
-                setProjects(projects.filter(p => p.id !== id))
-                console.log('Project deleted successfully')
+                await api.delete(`/outcomes/${id}`)
+                // ✅ Remove deleted outcome from state
+                setOutcomes(outcomes.filter(p => p.id !== id))
+                console.log('Outcome deleted successfully')
             } catch (error) {
-                console.error('Failed to delete project:', error)
-                alert('Failed to delete project')
+                console.error('Failed to delete outcome:', error)
+                alert('Failed to delete outcome')
             }
         }
     }
 
-    if (loading) return <div className="p-4">Loading projects...</div>
+    if (loading) return <div className="p-4">Loading outcomes...</div>
 
     return (
         <>
             <section className="container mx-auto p-4">
 
-                <h1 className="p-4 font-bold bg-primary-600 text-white ">Your Projects</h1>
+                <h1 className="p-4 font-bold bg-primary-600 text-white ">Your Outcomes</h1>
                 <section className="bg-gray-200 p-3">
 
                     <section className="grid overflow-x-auto gap-3 grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
-                        {projects.length === 0 ? (
-                            <div className="p-4 text-gray-500">No projects yet. Create your first one!</div>
+                        {outcomes.length === 0 ? (
+                            <div className="p-4 text-gray-500">No outcomes yet. Create your first one!</div>
                         ) : (
-                            projects.map((project) => (
+                            outcomes.map((outcome) => (
                                 <div
                                     className="px-4 py-5 min-w-[200px] rounded bg-primary-200 border-2 border-primary-300 flex flex-row items-start justify-between"
-                                    key={project.id}>
+                                    key={outcome.id}>
                                     <div className="pb-6">
-                                        <Link href={`/u/${username}/projects/${project.id}`}
+                                        <Link href={`/u/${username}/outcomes/${outcome.id}`}
                                               className="font-semibold text-primary-600">
-                                            {project.title}
+                                            {outcome.title}
                                         </Link>
                                     </div>
                                     <div className="actions flex gap-3">
-                                        <Link href={`/u/${username}/projects/${project.id}/update`}
+                                        <Link href={`/u/${username}/outcomes/${outcome.id}/update`}
                                               className="font-medium bg-blue-500 p-2 shadow-2xl text-white rounded">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                  strokeWidth={1.5} stroke="currentColor" className="size-4">
@@ -78,7 +80,7 @@ export default function Projects() {
                                         </Link>
                                         {/* ✅ Pass function reference, not function call */}
                                         <button
-                                            onClick={deleteProject(project.id)}
+                                            onClick={deleteOutcome(outcome.id)}
                                             className="font-medium bg-red-500 p-2 shadow-2xl text-white rounded cursor-pointer hover:bg-red-600"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -95,9 +97,9 @@ export default function Projects() {
                     </section>
                 </section>
 
-                <Link href={`/u/${username}/projects/create`}
+                <Link href={`/u/${username}/outcomes/create`}
                       className="font-medium bg-blue-500 p-3 my-3 inline-block shadow-2xl text-white rounded">
-                    Create Project
+                    Create Outcome
                 </Link>
             </section>
 

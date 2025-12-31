@@ -3,7 +3,7 @@ import {use, useEffect, useState} from "react";
 import api from "@/utils/fetchWrapper";
 import {useRouter} from "next/navigation";
 
-export default function UpdateProject({params}: { params: Promise<{ id: string }> }) {
+export default function UpdateOutcome({params}: { params: Promise<{ id: string }> }) {
     const {id} = use(params);
 
 
@@ -17,11 +17,11 @@ export default function UpdateProject({params}: { params: Promise<{ id: string }
         async function fetchData() {
             try {
                 setLoading(true)
-                const data = await api.get(`/projects/${id}`);
-                console.log(data)
+                const data = await api.get(`/outcomes/${id}`);
+                const outcomeData = data.data
                 setFormData({
                     ...formData,
-                    title: data.title,
+                    title: outcomeData.title,
                 })
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Failed to load project')
@@ -37,12 +37,12 @@ export default function UpdateProject({params}: { params: Promise<{ id: string }
 
     const router = useRouter()
 
-    const updateProject = async (event: React.FormEvent) => {
+    const updateOutcome = async (event: React.FormEvent) => {
         event.preventDefault()
         try {
-            const response = await api.patch(`/projects/${id}`, formData)
+            const response = await api.patch(`/outcomes/${id}`, formData)
             console.log(response)
-            router.push('/u/lakhbawa/projects/');
+            router.push('/u/lakhbawa/outcomes/');
             // TODO: Show success message or redirect
         } catch (err) {
             console.error('Update failed:', err)
@@ -60,18 +60,18 @@ export default function UpdateProject({params}: { params: Promise<{ id: string }
     return (
         <div className="max-w-2xl mx-auto py-8 px-4">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">
-                Update Project
+                Update Outcome
                 <span className="text-sm font-normal text-gray-500 ml-2">ID: {id}</span>
             </h2>
 
             <div className="bg-white shadow-sm rounded-lg p-6 border border-gray-200">
-                <form onSubmit={updateProject} className="space-y-4">
+                <form onSubmit={updateOutcome} className="space-y-4">
                     <div>
                         <label
                             htmlFor="title"
                             className="block text-sm font-medium text-gray-700 mb-1"
                         >
-                            Project Title
+                            Outcome Title
                         </label>
                         <input
                             type="text"
@@ -94,7 +94,7 @@ export default function UpdateProject({params}: { params: Promise<{ id: string }
                                      rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2
                                      focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
                         >
-                            Update Project
+                            Update Outcome
                         </button>
                     </div>
                 </form>
