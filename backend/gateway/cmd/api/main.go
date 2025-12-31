@@ -3,12 +3,14 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"io"
 	"log"
 	"net/http"
 	"strings"
-
+    "github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
@@ -17,6 +19,35 @@ import (
 	boardspb "gateway/gen/go/boardsservice"
 	outcomespb "gateway/gen/go/outcomesv1"
 )
+type WrappedMarshaler struct {
+    runtime.Marshaler
+}
+
+func (m *WrappedMarshaler) Marshal(v interface{}) ([]byte, error) {
+    // Wrap in success response
+    wrapped := APIResponse{
+        Success: true,
+        Data:    v,
+    }
+    return json.Marshal(wrapped)
+}
+
+func (m *WrappedMarshaler) NewEncoder(w io.Writer) runtime.Encoder {
+    return &wrappedEncoder{w: w}
+}
+
+type wrappedEncoder struct {
+    w io.Writer
+}
+
+func (e *wrappedEncoder) Encode(v interface{}) error {
+    wrapped := APIResponse{
+        Success: true,
+        Data:    v,
+    }
+    return json.NewEncoder(e.w).Encode(wrapped)
+}
+
 
 func customMarshaler(ctx context.Context, w http.ResponseWriter, resp proto.Message) error {
 	w.Header().Set("Content-Type", "application/json")
@@ -91,11 +122,27 @@ func customHTTPError(
 
 func main() {
 	router := gin.Default()
+
+	router.Use(cors.New(cors.Config{
+        AllowOrigins:     []string{"http://localhost:3000"},
+        AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+        AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
+        ExposeHeaders:    []string{"Content-Length"},
+        AllowCredentials: true,
+    }))
+
 	ctx := context.Background()
-	grpcMux := runtime.NewServeMux(
-		runtime.WithErrorHandler(customHTTPError),
-		runtime.WithForwardResponseOption(customMarshaler),
-	)
+grpcMux := runtime.NewServeMux(
+        runtime.WithErrorHandler(customHTTPError),
+        runtime.WithMarshalerOption(runtime.MIMEWildcard, &WrappedMarshaler{
+            Marshaler: &runtime.JSONPb{
+                MarshalOptions: protojson.MarshalOptions{
+                    EmitUnpopulated: true,
+                    UseProtoNames:   false, // Use camelCase
+                },
+            },
+        }),
+    )
 
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 
