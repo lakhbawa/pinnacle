@@ -1,6 +1,8 @@
 # Work In Progress
+## System Design 
+![System Design](/architecture/system-design-v2.png)
 
-![Test Image 1](/architecture/system-design-v1.png)
+
 ### Ideal Request Cycle after Development:
 Client Request -> NextJs -> API Gateway (Go + Gin) -> NestJs microservices
 
