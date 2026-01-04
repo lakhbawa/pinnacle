@@ -7,7 +7,7 @@ you from getting distracted by low-impact things. Prioritisation is at heart the
 ![System Design](/architecture/system-design-v2.png)
 
 ## Stack Startup
-- Open 3-4 Terminal Tabs
+- Open 3-4 Terminal Tabs, run following commands in separate terminal tabs
 - `make up`
 - `make start-gateway`
 - `make start-outcome`
