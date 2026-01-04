@@ -60,6 +60,7 @@ export class OutcomeMapper {
     };
   }
 
+
   static toDate(timestamp: any): Date {
     if (!timestamp) return new Date();
     if (typeof timestamp === 'string') return new Date(timestamp);
