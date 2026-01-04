@@ -6,6 +6,12 @@ you to get to focus on low impact things. Prioritization is at heart the pinnacl
 
 ![System Design](/architecture/system-design-v2.png)
 
+## Stack Startup
+- `make up`
+- `make start-gateway`
+- `make start-outcome`
+- `make start-frontend`
+- Open `127.0.0.1:3000`
 
 ### Ideal Request Cycle after Development:
 Client Request -> NextJs -> API Gateway (Go + Gin) -> NestJs microservices
