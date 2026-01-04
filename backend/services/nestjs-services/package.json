@@ -17,7 +17,12 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./apps/nestjs-services/test/jest-e2e.json"
+    "test:e2e": "jest --config ./apps/nestjs-services/test/jest-e2e.json",
+
+
+    "prisma:generate:monolith": "prisma generate --schema=apps/monolith/prisma/schema.prisma",
+    "prisma:generate:outcomes": "prisma generate --schema=apps/outcomes-service/prisma/schema.prisma",
+    "prisma:generate:all": "npm run prisma:generate:monolith && npm run prisma:generate:outcomes"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.14.3",
