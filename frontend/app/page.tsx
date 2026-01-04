@@ -139,7 +139,7 @@ export default function HomePage() {
                     Sign out
                   </button>
                   <Link
-                    href="/dashboard"
+                    href="/u/lakhbawa/outcomes"
                     className="bg-[#FF6B35] hover:bg-[#FF8556] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all hover:-translate-y-0.5 shadow-[0_0_20px_rgba(255,107,53,0.15)] hover:shadow-[0_4px_24px_rgba(255,107,53,0.15)]"
                   >
                     Dashboard
