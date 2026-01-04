@@ -1,7 +1,7 @@
 'use client'
 import Link from "next/link";
 import {useEffect, useState} from "react";
-import api from "@/utils/fetchWrapper";
+import {outcomeAPI} from "@/utils/fetchWrapper";
 
 interface Outcome {
     id: string;
@@ -16,7 +16,7 @@ export default function Outcomes() {
 
     useEffect(() => {
         console.log("running useeffect")
-        api.get<Outcome[]>('/outcomes')
+        outcomeAPI.get<Outcome[]>('/outcomes')
             .then((data) => {
                 console.log('data', data);
                 setOutcomes(data.data.outcomes);
@@ -34,7 +34,7 @@ export default function Outcomes() {
         const confirmed = confirm("Are you sure you want to delete this outcome?")
         if (confirmed) {
             try {
-                await api.delete(`/outcomes/${id}`)
+                await outcomeAPI.delete(`/outcomes/${id}`)
                 // ✅ Remove deleted outcome from state
                 setOutcomes(outcomes.filter(p => p.id !== id))
                 console.log('Outcome deleted successfully')

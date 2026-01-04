@@ -1,6 +1,6 @@
 'use client'
 import {use, useEffect, useState} from "react";
-import api from "@/utils/fetchWrapper";
+import {outcomeAPI} from "@/utils/fetchWrapper";
 import Link from "next/link";
 import {Outcome} from "@/app/types/outcomeTypes";
 
@@ -18,7 +18,7 @@ export default function ViewOutcomePage({params}: { params: Promise<{ id: string
         async function fetchData() {
             try {
                 setLoading(true)
-                const data = await api.get(`/outcomes/${id}?include[]=lists&include[]=lists.issues`);
+                const data = await outcomeAPI.get(`/outcomes/${id}?include[]=lists&include[]=lists.issues`);
                 setOutcomeData(data.data)
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Failed to load project')

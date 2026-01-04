@@ -212,7 +212,7 @@ export const authAPI = createAPI('auth', {
 });
 
 export const outcomeAPI = createAPI('outcome', {
-  baseURL: process.env.NEXT_PUBLIC_OUTCOME_URL || 'http://127.0.0.1:4002/api/v1',
+  baseURL: process.env.NEXT_PUBLIC_OUTCOME_URL || 'http://127.0.0.1:4700/api/v1',
   headers: { 'Content-Type': 'application/json' },
   timeout: 30000,
 });

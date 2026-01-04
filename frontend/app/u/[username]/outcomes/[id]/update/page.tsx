@@ -1,6 +1,6 @@
 'use client'
 import {use, useEffect, useState} from "react";
-import api from "@/utils/fetchWrapper";
+import {outcomeAPI} from "@/utils/fetchWrapper";
 import {useRouter} from "next/navigation";
 
 export default function UpdateOutcome({params}: { params: Promise<{ id: string }> }) {
@@ -17,7 +17,7 @@ export default function UpdateOutcome({params}: { params: Promise<{ id: string }
         async function fetchData() {
             try {
                 setLoading(true)
-                const data = await api.get(`/outcomes/${id}`);
+                const data = await outcomeAPI.get(`/outcomes/${id}`);
                 const outcomeData = data.data
                 setFormData({
                     ...formData,
@@ -40,7 +40,7 @@ export default function UpdateOutcome({params}: { params: Promise<{ id: string }
     const updateOutcome = async (event: React.FormEvent) => {
         event.preventDefault()
         try {
-            const response = await api.patch(`/outcomes/${id}`, formData)
+            const response = await outcomeAPI.patch(`/outcomes/${id}`, formData)
             console.log(response)
             router.push('/u/lakhbawa/outcomes/');
             // TODO: Show success message or redirect

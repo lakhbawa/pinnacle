@@ -1,6 +1,6 @@
 'use client'
 import {useState} from "react";
-import api from "@/utils/fetchWrapper";
+import {outcomeAPI} from "@/utils/fetchWrapper";
 import {useRouter} from "next/navigation";
 
 export default function CreateOutcome() {
@@ -11,7 +11,7 @@ export default function CreateOutcome() {
 
     const createOutcome = async (event: any) => {
         event.preventDefault()
-        const response = await api.post('/outcomes', formData)
+        const response = await outcomeAPI.post('/outcomes', formData)
         if (response) {
             router.push('/u/lakhbawa/outcomes');
         } else {
