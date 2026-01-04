@@ -19,17 +19,21 @@ export class OutcomesController implements outcomes.OutcomeServiceController {
         const result = createOutcomeSchema.safeParse(request);
 
         if (!result.success) {
-            const errors = result.error.issues.reduce((acc, issue) => {
-                const field = issue.path.join('.');
-                acc[field] = issue.message;
-                return acc;
-            }, {} as Record<string, string>);
-
-            throw new RpcException({
-                code: Status.INVALID_ARGUMENT,
-                message: JSON.stringify(errors),
-            });
+    const errors = result.error.issues.reduce((acc, issue) => {
+        const field = issue.path.join('.');
+        // Use array to collect multiple errors per field
+        if (!acc[field]) {
+            acc[field] = [];
         }
+        acc[field].push(issue.message);
+        return acc;
+    }, {} as Record<string, string[]>);
+
+    throw new RpcException({
+        code: Status.INVALID_ARGUMENT,
+        message: JSON.stringify(errors),
+    });
+}
 
 
         const outcome = await this.outcomesService.create({

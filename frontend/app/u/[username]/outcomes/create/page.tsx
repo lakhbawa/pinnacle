@@ -1,19 +1,32 @@
 'use client'
 import {useState} from "react";
-import {outcomeAPI} from "@/utils/fetchWrapper";
+import {APIError, outcomeAPI} from "@/utils/fetchWrapper";
 import {useRouter} from "next/navigation";
+import FieldError from "@/app/components/FieldError";
+import FormErrors from "@/app/components/FormErrors";
 
+interface ApiResponseError {
+    message: string;
+    code: string;
+    errors: Record<string, string> | undefined;
+}
+interface ApiResponse {
+    success: boolean;
+    error?: ApiResponseError;
+}
 export default function CreateOutcome() {
 
     const userId = 'user-123'
     const [formData, setFormData] = useState({
-        title: '',
-        userId: userId,
-        why_it_matters: '',
-        success_metric_unit: '',
-        success_metric_value: 0,
-        deadline: new Date(),
-    })
+  title: '',
+  userId: userId,
+  whyItMatters: '',           // Changed
+  successMetricUnit: '',      // Changed
+  successMetricValue: 0,      // Changed
+  deadline: '',
+})
+
+    const [errors, setErrors] = useState<Record<string, string[]>>({})
 
     const handleChange = (event: any) => {
         const {name, value} = event.target;
@@ -30,23 +43,33 @@ export default function CreateOutcome() {
 
         console.log('Creating Outcome...', formData);
 
-        formData.deadline = new Date(formData.deadline)
 
-
-        const response = await outcomeAPI.post('/outcomes', formData)
-        if (response) {
-            console.log(response)
+        const response = await outcomeAPI.post<ApiResponse>
+        ('/outcomes', {
+            ...formData,
+            deadline: new Date(formData.deadline)
+        }).then(res => {
+            console.log('Creating Outcome...');
+            console.log(res)
             router.push('/u/lakhbawa/outcomes');
-        } else {
-            console.log(response)
-        }
+        }).catch(error => {
+
+            if (error instanceof APIError) {
+    const fieldErrors = error.getValidationErrors();
+    setErrors(fieldErrors ?? {})  // Use empty object if null
+  }
+        })
     }
 
-    return (
+    console.log(errors)
 
+    return (
+<>
+
+<FormErrors errors={errors} />
         <form onSubmit={createOutcome} className="space-y-6">
 
-            <input type="hidden" name="user_id" value={userId}/>
+            <input type="hidden" name="userId" value={userId}/>
 
             <div>
                 <input
@@ -61,8 +84,8 @@ export default function CreateOutcome() {
                 />
             </div>
             <div>
-                <textarea className="border-2 border-gray-300 rounded-lg" name="why_it_matters" id="why_it_matters"
-                          placeholder="Why It matters" cols="30" rows="10" value={formData.why_it_matters}
+                <textarea className="border-2 border-gray-300 rounded-lg" name="whyItMatters" id="whyItMatters"
+                          placeholder="Why It matters" cols="30" rows="10" value={formData.whyItMatters}
                           onChange={handleChange}></textarea>
             </div>
 
@@ -72,11 +95,11 @@ export default function CreateOutcome() {
                     <input
                         type="text"
                         id="success_metric_unit"
-                        name="success_metric_unit"
+                        name="successMetricUnit"
                         placeholder="Success Metric Unit"
                         required
                         className="border-2 border-gray-300 rounded-lg"
-                        value={formData.success_metric_unit}
+                        value={formData.successMetricUnit}
                         onChange={handleChange}
                     />
                 </div>
@@ -85,11 +108,11 @@ export default function CreateOutcome() {
                     <input
                         type="number"
                         id="success_metric_value"
-                        name="success_metric_value"
+                        name="successMetricValue"
                         placeholder="Success Metric Value"
                         required
                         className="border-2 border-gray-300 rounded-lg"
-                        value={formData.success_metric_value}
+                        value={formData.successMetricValue}
                         onChange={handleChange}
                     />
                 </div>
@@ -126,5 +149,6 @@ export default function CreateOutcome() {
 
 
         </form>
+    </>
     )
 }
