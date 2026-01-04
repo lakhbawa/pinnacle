@@ -4,7 +4,7 @@
     "declaration": false,
     "outDir": "../../dist/apps/outcomes-service",
     "paths": {
-      "@prisma/client": ["./generated/prisma"],
+      "@prisma/client": ["./src/generated/prisma-client"],
       "@app/common": ["libs/common/src/index.ts"],
       "@app/common/*": ["libs/common/src/*"]
     }

@@ -2,7 +2,7 @@ import {Injectable, InternalServerErrorException} from '@nestjs/common';
 import {CreateUserDto} from './dto/create-user.dto';
 import {UpdateUserDto} from './dto/update-user.dto';
 import {PrismaService} from "../prisma.service";
-import {Prisma, User} from "@prisma/client";
+import {Prisma, User} from '../generated/prisma-client';
 
 @Injectable()
 export class UsersService {

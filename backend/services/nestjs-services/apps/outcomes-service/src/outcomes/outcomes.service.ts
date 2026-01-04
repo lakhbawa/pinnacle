@@ -1,7 +1,7 @@
 // outcomes.service.ts
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from "../prisma.service";
-import { Prisma, Outcome } from '@prisma/client';
+import { Prisma, Outcome } from '../generated/prisma-client';
 
 @Injectable()
 export class OutcomesService {

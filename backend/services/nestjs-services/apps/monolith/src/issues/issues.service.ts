@@ -1,6 +1,6 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {PrismaService} from "../prisma.service";
-import {Issue, Prisma} from "@prisma/client";
+import {Issue, Prisma} from '../generated/prisma-client';
 import {LexicographicOrderGenerator} from "../utils/lexicographicOrder.util";
 import {ReorderIssueDto} from "./dto/recorder-issue.dto";
 

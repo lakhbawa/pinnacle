@@ -2,7 +2,7 @@ import {Body, Controller, Delete, Get, Param, Patch, Post, Query} from '@nestjs/
 import {ListsService} from './lists.service';
 import {CreateListDto} from './dto/create-list.dto';
 import {UpdateListDto} from './dto/update-list.dto';
-import {Prisma} from "@prisma/client";
+import {Prisma} from '../generated/prisma-client';
 import {UsersService} from "../users/users.service";
 
 @Controller('api/lists')

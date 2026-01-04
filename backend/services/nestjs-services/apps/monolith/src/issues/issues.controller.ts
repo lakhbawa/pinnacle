@@ -2,7 +2,7 @@ import {Body, Controller, Delete, Get, Param, Patch, Post, Query} from '@nestjs/
 import {IssuesService} from './issues.service';
 import {CreateIssueDto} from './dto/create-issue.dto';
 import {UpdateIssueDto} from './dto/update-issue.dto';
-import {Prisma} from "@prisma/client";
+import {Prisma} from '../generated/prisma-client';
 import {LexicographicOrderGenerator} from "../utils/lexicographicOrder.util";
 import {UsersService} from "../users/users.service";
 import {ReorderIssueDto} from "./dto/recorder-issue.dto";

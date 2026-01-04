@@ -1,6 +1,6 @@
 // outcome.mapper.ts
 import {outcomes} from "@app/common";
-import {OutcomeStatus} from '@prisma/client';
+import {OutcomeStatus} from '../generated/prisma-client';
 
 export class OutcomeMapper {
     static toProto(outcome: any): outcomes.Outcome {
