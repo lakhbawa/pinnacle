@@ -1,26 +1,54 @@
 import { Injectable } from '@nestjs/common';
-import { CreateDriverDto } from './dto/create-driver.dto';
-import { UpdateDriverDto } from './dto/update-driver.dto';
+import { PrismaService } from "../prisma.service";
+import { Prisma, Driver } from '../generated/prisma-client';
 
 @Injectable()
 export class DriversService {
-  create(createDriverDto: CreateDriverDto) {
-    return 'This action adds a new driver';
-  }
+    constructor(private prisma: PrismaService) {}
 
-  findAll() {
-    return `This action returns all drivers`;
-  }
+    async create(data: Prisma.DriverCreateInput): Promise<Driver> {
+        return this.prisma.driver.create({ data });
+    }
 
-  findOne(id: number) {
-    return `This action returns a #${id} driver`;
-  }
+    async count(params: { where?: Prisma.DriverWhereInput }): Promise<number> {
+        return this.prisma.driver.count(params);
+    }
 
-  update(id: number, updateDriverDto: UpdateDriverDto) {
-    return `This action updates a #${id} driver`;
-  }
+    async findAll(params: {
+        skip?: number;
+        take?: number;
+        cursor?: Prisma.DriverWhereUniqueInput;
+        where?: Prisma.DriverWhereInput;
+        orderBy?: Prisma.DriverOrderByWithRelationInput;
+        include?: Prisma.DriverInclude;
+    }): Promise<Driver[]> {
+        const { skip, take, cursor, where, orderBy, include } = params;
+        return this.prisma.driver.findMany({
+            skip,
+            take,
+            cursor,
+            where,
+            orderBy,
+            include,
+        });
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} driver`;
-  }
+    async findOne(
+        where: Prisma.DriverWhereUniqueInput,
+        include?: Prisma.DriverInclude
+    ): Promise<Driver | null> {
+        return this.prisma.driver.findUnique({ where, include });
+    }
+
+    async update(params: {
+        where: Prisma.DriverWhereUniqueInput;
+        data: Prisma.DriverUpdateInput;
+    }): Promise<Driver> {
+        const { data, where } = params;
+        return this.prisma.driver.update({ data, where });
+    }
+
+    async remove(where: Prisma.DriverWhereUniqueInput): Promise<Driver> {
+        return this.prisma.driver.delete({ where });
+    }
 }

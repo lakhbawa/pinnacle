@@ -1,33 +1,63 @@
 import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
 import { DriversService } from './drivers.service';
-import { CreateDriverDto } from './dto/create-driver.dto';
-import { UpdateDriverDto } from './dto/update-driver.dto';
-import { outcomes } from '@app/common';
+import {CreateDriverRequest, DeleteDriverRequest, DeleteDriverResponse,
+  DriversServiceController,
+  DriversServiceControllerMethods,
+  GetDriverRequest,
+  ListDriversRequest,
+  ListDriversResponse,
+  UpdateDriverRequest
+} from "@app/common/types/outcomes_service/v1/drivers";
+import {Driver} from '@app/common/types/outcomes_service/v1/models';
+import {Observable} from 'rxjs';
+import {formatZodErrors} from "@app/common/helpers/validation/utils";
+import {RpcException} from "@nestjs/microservices";
+import {Status} from "@grpc/grpc-js/build/src/constants";
+import {createDriverSchema} from "../validators/outcomes-service.schema";
+import {DriverMapper} from "../mappers/driver.mapper";
 
-@outcomes.Driver
 @Controller()
-
-export class DriversController {
-  constructor(private readonly driversService: DriversService) {}
-
-  create(@Payload() createDriverDto: CreateDriverDto) {
-    return this.driversService.create(createDriverDto);
+@DriversServiceControllerMethods()
+export class DriversController implements DriversServiceController {
+  constructor(private readonly driversService: DriversService) {
   }
 
-  findAll() {
-    return this.driversService.findAll();
-  }
+  async createDriver(request: CreateDriverRequest): Promise<Driver> {
+    console.log('Received request2:', JSON.stringify(request, null, 2));
+        const result = createDriverSchema.safeParse(request);
 
-  findOne(@Payload() id: number) {
-    return this.driversService.findOne(id);
-  }
+    if (!result.success) {
+      const errors = formatZodErrors(result.error);
 
-  update(@Payload() updateDriverDto: UpdateDriverDto) {
-    return this.driversService.update(updateDriverDto.id, updateDriverDto);
-  }
+      throw new RpcException({
+        code: Status.INVALID_ARGUMENT,
+        message: JSON.stringify(errors),
+      });
+    }
 
-  remove(@Payload() id: number) {
-    return this.driversService.remove(id);
-  }
+    const driver = await this.driversService.create({
+      title: request.title,
+      outcome: {
+        connect: {
+          id: request.outcome_id
+        }
+      },
+      user_id:request.user_id
+    });
+
+    return DriverMapper.toProtoDriver(driver);
+    }
+    getDriver(request: GetDriverRequest): Promise<Driver> | Observable<Driver> | Driver {
+        throw new Error('Method not implemented.');
+    }
+    listDrivers(request: ListDriversRequest): Promise<ListDriversResponse> | Observable<ListDriversResponse> | ListDriversResponse {
+        throw new Error('Method not implemented.');
+    }
+    updateDriver(request: UpdateDriverRequest): Promise<Driver> | Observable<Driver> | Driver {
+        throw new Error('Method not implemented.');
+    }
+    deleteDriver(request: DeleteDriverRequest): Promise<DeleteDriverResponse> | Observable<DeleteDriverResponse> | DeleteDriverResponse {
+        throw new Error('Method not implemented.');
+    }
+
 }

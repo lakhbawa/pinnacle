@@ -44,8 +44,9 @@ enum OutcomeStatus {
 model Driver {
   id         String   @id @default(uuid())
   outcome_id String
+  user_id              String
   title      String
-  position   Float
+  position   Float?
   created_at DateTime @default(now())
 
   outcome Outcome @relation(fields: [outcome_id], references: [id], onDelete: Cascade)

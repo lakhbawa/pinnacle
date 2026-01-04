@@ -24,9 +24,10 @@ const (
 
 type CreateDriverRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	OutcomeId     string                 `protobuf:"bytes,1,opt,name=outcome_id,json=outcomeId,proto3" json:"outcome_id,omitempty"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	Title         string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
-	Position      float32                `protobuf:"fixed32,3,opt,name=position,proto3" json:"position,omitempty"`
+	OutcomeId     string                 `protobuf:"bytes,3,opt,name=outcome_id,json=outcomeId,proto3" json:"outcome_id,omitempty"`
+	Position      *float32               `protobuf:"fixed32,4,opt,name=position,proto3,oneof" json:"position,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -61,9 +62,9 @@ func (*CreateDriverRequest) Descriptor() ([]byte, []int) {
 	return file_outcomes_service_v1_drivers_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CreateDriverRequest) GetOutcomeId() string {
+func (x *CreateDriverRequest) GetUserId() string {
 	if x != nil {
-		return x.OutcomeId
+		return x.UserId
 	}
 	return ""
 }
@@ -75,9 +76,16 @@ func (x *CreateDriverRequest) GetTitle() string {
 	return ""
 }
 
-func (x *CreateDriverRequest) GetPosition() float32 {
+func (x *CreateDriverRequest) GetOutcomeId() string {
 	if x != nil {
-		return x.Position
+		return x.OutcomeId
+	}
+	return ""
+}
+
+func (x *CreateDriverRequest) GetPosition() float32 {
+	if x != nil && x.Position != nil {
+		return *x.Position
 	}
 	return 0
 }
@@ -422,12 +430,14 @@ var File_outcomes_service_v1_drivers_proto protoreflect.FileDescriptor
 
 const file_outcomes_service_v1_drivers_proto_rawDesc = "" +
 	"\n" +
-	"!outcomes_service/v1/drivers.proto\x12\x13outcomes_service.v1\x1a\x1cgoogle/api/annotations.proto\x1a outcomes_service/v1/models.proto\"f\n" +
-	"\x13CreateDriverRequest\x12\x1d\n" +
+	"!outcomes_service/v1/drivers.proto\x12\x13outcomes_service.v1\x1a\x1cgoogle/api/annotations.proto\x1a outcomes_service/v1/models.proto\"\x91\x01\n" +
+	"\x13CreateDriverRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x14\n" +
+	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1d\n" +
 	"\n" +
-	"outcome_id\x18\x01 \x01(\tR\toutcomeId\x12\x14\n" +
-	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1a\n" +
-	"\bposition\x18\x03 \x01(\x02R\bposition\"\"\n" +
+	"outcome_id\x18\x03 \x01(\tR\toutcomeId\x12\x1f\n" +
+	"\bposition\x18\x04 \x01(\x02H\x00R\bposition\x88\x01\x01B\v\n" +
+	"\t_position\"\"\n" +
 	"\x10GetDriverRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"x\n" +
 	"\x13UpdateDriverRequest\x12\x0e\n" +
@@ -454,11 +464,11 @@ const file_outcomes_service_v1_drivers_proto_rawDesc = "" +
 	"\x13DeleteDriverRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"0\n" +
 	"\x14DeleteDriverResponse\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess2\x97\x05\n" +
-	"\x0eDriversService\x12\x87\x01\n" +
-	"\fCreateDriver\x12(.outcomes_service.v1.CreateDriverRequest\x1a\x1b.outcomes_service.v1.Driver\"0\x82\xd3\xe4\x93\x02*:\x01*\"%/api/v1/outcomes/{outcome_id}/drivers\x12m\n" +
-	"\tGetDriver\x12%.outcomes_service.v1.GetDriverRequest\x1a\x1b.outcomes_service.v1.Driver\"\x1c\x82\xd3\xe4\x93\x02\x16\x12\x14/api/v1/drivers/{id}\x12\x8f\x01\n" +
-	"\vListDrivers\x12'.outcomes_service.v1.ListDriversRequest\x1a(.outcomes_service.v1.ListDriversResponse\"-\x82\xd3\xe4\x93\x02'\x12%/api/v1/outcomes/{outcome_id}/drivers\x12v\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess2\xe9\x04\n" +
+	"\x0eDriversService\x12q\n" +
+	"\fCreateDriver\x12(.outcomes_service.v1.CreateDriverRequest\x1a\x1b.outcomes_service.v1.Driver\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/v1/drivers\x12m\n" +
+	"\tGetDriver\x12%.outcomes_service.v1.GetDriverRequest\x1a\x1b.outcomes_service.v1.Driver\"\x1c\x82\xd3\xe4\x93\x02\x16\x12\x14/api/v1/drivers/{id}\x12y\n" +
+	"\vListDrivers\x12'.outcomes_service.v1.ListDriversRequest\x1a(.outcomes_service.v1.ListDriversResponse\"\x17\x82\xd3\xe4\x93\x02\x11\x12\x0f/api/v1/drivers\x12v\n" +
 	"\fUpdateDriver\x12(.outcomes_service.v1.UpdateDriverRequest\x1a\x1b.outcomes_service.v1.Driver\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*2\x14/api/v1/drivers/{id}\x12\x81\x01\n" +
 	"\fDeleteDriver\x12(.outcomes_service.v1.DeleteDriverRequest\x1a).outcomes_service.v1.DeleteDriverResponse\"\x1c\x82\xd3\xe4\x93\x02\x16*\x14/api/v1/drivers/{id}B$Z\"gateway/gen/go/outcomes_service/v1b\x06proto3"
 
@@ -510,6 +520,7 @@ func file_outcomes_service_v1_drivers_proto_init() {
 		return
 	}
 	file_outcomes_service_v1_models_proto_init()
+	file_outcomes_service_v1_drivers_proto_msgTypes[0].OneofWrappers = []any{}
 	file_outcomes_service_v1_drivers_proto_msgTypes[2].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

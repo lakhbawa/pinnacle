@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import Long from 'long';
-import { required, positiveNumber, requiredNumber } from "../../../../libs/validation";
+import { required, positiveNumber, requiredNumber } from "@app/common/helpers/validation/validation-rules";
+
 
 const longToNumber = (v: unknown) => {
   if (v === undefined || v === null || v === '') return undefined;
@@ -24,4 +25,12 @@ export const createOutcomeSchema = z.object({
   }),
 });
 
+export const createDriverSchema = z.object({
+  user_id: required(),
+  title: required(),
+  outcome_id: required(),
+})
+
 export type CreateOutcomeInput = z.infer<typeof createOutcomeSchema>;
+
+export type CreateDriverInput = z.infer<typeof createDriverSchema>;

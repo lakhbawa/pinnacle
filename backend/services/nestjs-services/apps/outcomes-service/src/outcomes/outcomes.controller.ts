@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import {Prisma} from '../generated/prisma-client';
 import { OutcomeMapper } from '../mappers/outcome.mapper';
-import { createOutcomeSchema } from '../validators/outcome.schema';
+import { createOutcomeSchema } from '../validators/outcomes-service.schema';
 import { RpcException } from '@nestjs/microservices';
 import { Status } from '@grpc/grpc-js/build/src/constants';
 import {
@@ -12,6 +12,7 @@ import {
 } from "@app/common/types/outcomes_service/v1/outcomes";
 import {OutcomesService} from "./outcomes.service";
 import {Outcome} from "@app/common/types/outcomes_service/v1/models";
+import {formatZodErrors} from "@app/common/helpers/validation/utils";
 
 @Controller()
 @OutcomesServiceControllerMethods()
@@ -23,17 +24,7 @@ export class OutcomesController implements OutcomesServiceController {
     const result = createOutcomeSchema.safeParse(request);
 
     if (!result.success) {
-      const errors = result.error.issues.reduce(
-        (acc, issue) => {
-          const field = issue.path.join('.');
-          if (!acc[field]) {
-            acc[field] = [];
-          }
-          acc[field].push(issue.message);
-          return acc;
-        },
-        {} as Record<string, string[]>
-      );
+      const errors = formatZodErrors(result.error);
 
       throw new RpcException({
         code: Status.INVALID_ARGUMENT,

@@ -9,7 +9,7 @@ import "outcomes_service/v1/models.proto";
 service DriversService {
   rpc CreateDriver(CreateDriverRequest) returns (Driver) {
     option (google.api.http) = {
-      post: "/api/v1/outcomes/{outcome_id}/drivers"
+      post: "/api/v1/drivers"
       body: "*"
     };
   }
@@ -22,7 +22,7 @@ service DriversService {
 
   rpc ListDrivers(ListDriversRequest) returns (ListDriversResponse) {
     option (google.api.http) = {
-      get: "/api/v1/outcomes/{outcome_id}/drivers"
+      get: "/api/v1/drivers"
     };
   }
 
@@ -41,9 +41,10 @@ service DriversService {
 }
 
 message CreateDriverRequest {
-  string outcome_id = 1;
+  string user_id = 1;
   string title = 2;
-  float position = 3;
+  string outcome_id = 3;
+  optional float position = 4;
 }
 
 message GetDriverRequest {
