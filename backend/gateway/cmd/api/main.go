@@ -3,6 +3,11 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"io"
+	"log"
+	"net/http"
+	"strings"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -11,10 +16,6 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
-	"io"
-	"log"
-	"net/http"
-	"strings"
 
 	boardspb "gateway/gen/go/boardsservice"
 	outcomespb "gateway/gen/go/outcomesv1"
