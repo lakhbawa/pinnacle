@@ -4,15 +4,38 @@ import {outcomeAPI} from "@/utils/fetchWrapper";
 import {useRouter} from "next/navigation";
 
 export default function CreateOutcome() {
+
+    const userId = 'user-123'
     const [formData, setFormData] = useState({
-        title: ''
+        title: '',
+        userId: userId,
+        why_it_matters: '',
+        success_metric_unit: '',
+        success_metric_value: 0,
+        deadline: new Date(),
     })
+
+    const handleChange = (event: any) => {
+        const {name, value} = event.target;
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            [name]: value
+        }));
+    };
+
     const router = useRouter();
 
     const createOutcome = async (event: any) => {
         event.preventDefault()
+
+        console.log('Creating Outcome...', formData);
+
+        formData.deadline = new Date(formData.deadline)
+
+
         const response = await outcomeAPI.post('/outcomes', formData)
         if (response) {
+            console.log(response)
             router.push('/u/lakhbawa/outcomes');
         } else {
             console.log(response)
@@ -22,51 +45,86 @@ export default function CreateOutcome() {
     return (
 
         <form onSubmit={createOutcome} className="space-y-6">
+
+            <input type="hidden" name="user_id" value={userId}/>
+
             <div>
-                <label
-                    htmlFor="title"
-                    className="block text-sm font-semibold text-slate-700 mb-2"
-                >
-                    Outcome Title
-                </label>
                 <input
                     type="text"
                     id="title"
                     name="title"
-                    placeholder="e.g., Website Redesign, Marketing Campaign"
+                    placeholder="Outcome Title"
                     required
-                    className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg
-                                     focus:border-blue-500 focus:ring-4 focus:ring-blue-100
-                                     outline-none transition-all duration-200
-                                     placeholder:text-slate-400"
+                    className="border-2 border-gray-300 rounded-lg"
                     value={formData.title}
-                    onChange={(e) => setFormData({title: e.target.value})}
+                    onChange={handleChange}
                 />
-                <p className="mt-2 text-sm text-slate-500">
-                    Choose a descriptive name for your outcome
-                </p>
+            </div>
+            <div>
+                <textarea className="border-2 border-gray-300 rounded-lg" name="why_it_matters" id="why_it_matters"
+                          placeholder="Why It matters" cols="30" rows="10" value={formData.why_it_matters}
+                          onChange={handleChange}></textarea>
             </div>
 
-            <div className="flex gap-3 pt-4">
+            <div>
+
+                <div>
+                    <input
+                        type="text"
+                        id="success_metric_unit"
+                        name="success_metric_unit"
+                        placeholder="Success Metric Unit"
+                        required
+                        className="border-2 border-gray-300 rounded-lg"
+                        value={formData.success_metric_unit}
+                        onChange={handleChange}
+                    />
+                </div>
+
+                <div>
+                    <input
+                        type="number"
+                        id="success_metric_value"
+                        name="success_metric_value"
+                        placeholder="Success Metric Value"
+                        required
+                        className="border-2 border-gray-300 rounded-lg"
+                        value={formData.success_metric_value}
+                        onChange={handleChange}
+                    />
+                </div>
+
+
+                <div>
+                    <input
+                        type="datetime-local"
+                        id="deadline"
+                        name="deadline"
+                        placeholder="Deadline"
+                        required
+                        className="border-2 border-gray-300 rounded-lg"
+                        value={formData.deadline}
+                        onChange={handleChange}
+
+                    />
+                </div>
+
                 <button
                     type="submit"
-                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold
-                                     py-3 px-6 rounded-lg transition-colors duration-200
-                                     shadow-md hover:shadow-lg active:scale-[0.98]
-                                     disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="border-2 border-gray-300 rounded-lg bg-black text-white p-3"
                 >
                     Create Outcome
                 </button>
                 <button
                     type="button"
                     onClick={() => window.history.back()}
-                    className="px-6 py-3 border-2 border-slate-300 text-slate-700
-                                     font-semibold rounded-lg hover:bg-slate-50
-                                     transition-colors duration-200"
+                    className=""
                 >
                     Cancel
                 </button>
             </div>
+
+
         </form>
     )
 }
