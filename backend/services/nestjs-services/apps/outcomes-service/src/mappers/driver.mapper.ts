@@ -1,4 +1,4 @@
-import {Driver, Task} from "@app/common/types/outcomes_service/v1/models";
+import {Driver, Action} from "@app/common/types/outcomes_service/v1/models";
 
 export class DriverMapper {
     static toProtoDriver(driver: any): Driver {
@@ -8,12 +8,12 @@ export class DriverMapper {
             outcome_id: driver.outcome_id,
             position: driver.position,
             created_at: this.toTimestamp(driver.created_at),
-            tasks: driver.tasks?.map((t) => this.toProtoTask(t)) || [],
+            actions: driver.actions?.map((t) => this.toProtoAction(t)) || [],
             outcome: undefined,
         };
     }
 
-    static toProtoTask(task: any): Task {
+    static toProtoAction(task: any): Action {
         return {
             id: task.id,
             driver_id: task.driver_id,

@@ -1,4 +1,4 @@
-import {Driver, Outcome, Task, OutcomeStatus} from "@app/common/types/outcomes_service/v1/models";
+import {Driver, Outcome, Action, OutcomeStatus} from "@app/common/types/outcomes_service/v1/models";
 import {OutcomeStatus as PrismaOutcomeStatus} from '../generated/prisma-client';
 import {RpcException} from "@nestjs/microservices";
 import {Status} from "@grpc/grpc-js/build/src/constants";
@@ -18,7 +18,7 @@ export class OutcomeMapper {
       completed_at: outcome.completed_at ? this.toTimestamp(outcome.completed_at) : undefined,
       archived_at: outcome.archived_at ? this.toTimestamp(outcome.archived_at) : undefined,
       drivers: outcome.drivers?.map((d) => this.toProtoDriver(d)) || [],
-      tasks: outcome.tasks?.map((t) => this.toProtoTask(t)) || [],
+      actions: outcome.actions?.map((t) => this.toProtoAction(t)) || [],
     };
   }
 
@@ -29,12 +29,12 @@ export class OutcomeMapper {
       outcome_id: driver.outcome_id,
       position: driver.position,
       created_at: this.toTimestamp(driver.created_at),
-      tasks: driver.tasks?.map((t) => this.toProtoTask(t)) || [],
+      actions: driver.actions?.map((t) => this.toProtoAction(t)) || [],
       outcome: undefined,
     };
   }
 
-  static toProtoTask(task: any): Task {
+  static toProtoAction(task: any): Action {
     return {
       id: task.id,
       driver_id: task.driver_id,

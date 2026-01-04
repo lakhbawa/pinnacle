@@ -76,7 +76,7 @@ export class DriversController implements DriversServiceController {
                 skip,
                 take: pageSize,
                 include: {
-                    tasks: true,
+                    actions: true,
                 },
                 orderBy: {created_at: 'desc'},
             }),

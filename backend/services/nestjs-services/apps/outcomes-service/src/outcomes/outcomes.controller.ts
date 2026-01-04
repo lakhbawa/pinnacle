@@ -62,8 +62,8 @@ export class OutcomesController implements OutcomesServiceController {
                 skip,
                 take: pageSize,
                 include: {
-                    drivers: {include: {tasks: true}},
-                    tasks: true,
+                    drivers: {include: {actions: true}},
+                    actions: true,
                 },
                 orderBy: {created_at: 'desc'},
             }),
@@ -80,7 +80,7 @@ export class OutcomesController implements OutcomesServiceController {
     async getOutcome(request: GetOutcomeRequest): Promise<Outcome> {
         const outcome = await this.outcomesService.findOne(
             {id: request.id},
-            {drivers: {include: {tasks: true}}, tasks: true}
+            {drivers: {include: {actions: true}}, actions: true}
         );
         if (!outcome) {
             throw new RpcException({

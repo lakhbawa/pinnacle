@@ -31,7 +31,7 @@ export interface Outcome {
   completed_at: Timestamp | undefined;
   archived_at: Timestamp | undefined;
   drivers: Driver[];
-  tasks: Task[];
+  actions: Action[];
 }
 
 export interface Driver {
@@ -40,11 +40,11 @@ export interface Driver {
   outcome_id: string;
   position: number;
   created_at: Timestamp | undefined;
-  tasks: Task[];
+  actions: Action[];
   outcome: Outcome | undefined;
 }
 
-export interface Task {
+export interface Action {
   id: string;
   driver_id: string;
   outcome_id: string;

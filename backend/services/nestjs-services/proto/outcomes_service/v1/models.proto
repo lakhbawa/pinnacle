@@ -28,7 +28,7 @@ message Outcome {
   google.protobuf.Timestamp completed_at = 10;
   google.protobuf.Timestamp archived_at = 11;
   repeated Driver drivers = 12;
-  repeated Task tasks = 13;
+  repeated Action actions = 13;
 }
 
 message Driver {
@@ -37,11 +37,11 @@ message Driver {
   string outcome_id = 3;
   float position = 4;
   google.protobuf.Timestamp created_at = 5;
-  repeated Task tasks = 6;
+  repeated Action actions = 6;
   Outcome outcome = 7;
 }
 
-message Task {
+message Action {
   string id = 1;
   string driver_id = 2;
   string outcome_id = 3;

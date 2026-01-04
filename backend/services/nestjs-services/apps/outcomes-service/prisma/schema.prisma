@@ -27,7 +27,7 @@ model Outcome {
   archived_at          DateTime?
 
   drivers Driver[]
-  tasks   Task[]
+  actions   Action[]
 
   @@index([user_id, status])
   @@map("outcomes")
@@ -50,12 +50,12 @@ model Driver {
   created_at DateTime @default(now())
 
   outcome Outcome @relation(fields: [outcome_id], references: [id], onDelete: Cascade)
-  tasks   Task[]
+  actions   Action[]
 
   @@map("drivers")
 }
 
-model Task {
+model Action {
   id                     String    @id @default(uuid())
   driver_id              String
   outcome_id             String
@@ -73,5 +73,5 @@ model Task {
 
   @@index([user_id, scheduled_for])
   @@index([outcome_id, is_completed])
-  @@map("tasks")
+  @@map("actions")
 }

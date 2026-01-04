@@ -91,7 +91,7 @@ type Outcome struct {
 	CompletedAt        *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=completed_at,json=completedAt,proto3" json:"completed_at,omitempty"`
 	ArchivedAt         *timestamppb.Timestamp `protobuf:"bytes,11,opt,name=archived_at,json=archivedAt,proto3" json:"archived_at,omitempty"`
 	Drivers            []*Driver              `protobuf:"bytes,12,rep,name=drivers,proto3" json:"drivers,omitempty"`
-	Tasks              []*Task                `protobuf:"bytes,13,rep,name=tasks,proto3" json:"tasks,omitempty"`
+	Actions            []*Action              `protobuf:"bytes,13,rep,name=actions,proto3" json:"actions,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -210,9 +210,9 @@ func (x *Outcome) GetDrivers() []*Driver {
 	return nil
 }
 
-func (x *Outcome) GetTasks() []*Task {
+func (x *Outcome) GetActions() []*Action {
 	if x != nil {
-		return x.Tasks
+		return x.Actions
 	}
 	return nil
 }
@@ -224,7 +224,7 @@ type Driver struct {
 	Title         string                 `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
 	Position      float32                `protobuf:"fixed32,4,opt,name=position,proto3" json:"position,omitempty"`
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	Tasks         []*Task                `protobuf:"bytes,6,rep,name=tasks,proto3" json:"tasks,omitempty"`
+	Actions       []*Action              `protobuf:"bytes,6,rep,name=actions,proto3" json:"actions,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -294,14 +294,14 @@ func (x *Driver) GetCreatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
-func (x *Driver) GetTasks() []*Task {
+func (x *Driver) GetActions() []*Action {
 	if x != nil {
-		return x.Tasks
+		return x.Actions
 	}
 	return nil
 }
 
-type Task struct {
+type Action struct {
 	state              protoimpl.MessageState `protogen:"open.v1"`
 	Id                 string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	DriverId           string                 `protobuf:"bytes,2,opt,name=driver_id,json=driverId,proto3" json:"driver_id,omitempty"`
@@ -318,20 +318,20 @@ type Task struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *Task) Reset() {
-	*x = Task{}
+func (x *Action) Reset() {
+	*x = Action{}
 	mi := &file_outcomes_service_v1_models_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Task) String() string {
+func (x *Action) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Task) ProtoMessage() {}
+func (*Action) ProtoMessage() {}
 
-func (x *Task) ProtoReflect() protoreflect.Message {
+func (x *Action) ProtoReflect() protoreflect.Message {
 	mi := &file_outcomes_service_v1_models_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -343,82 +343,82 @@ func (x *Task) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Task.ProtoReflect.Descriptor instead.
-func (*Task) Descriptor() ([]byte, []int) {
+// Deprecated: Use Action.ProtoReflect.Descriptor instead.
+func (*Action) Descriptor() ([]byte, []int) {
 	return file_outcomes_service_v1_models_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *Task) GetId() string {
+func (x *Action) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *Task) GetDriverId() string {
+func (x *Action) GetDriverId() string {
 	if x != nil {
 		return x.DriverId
 	}
 	return ""
 }
 
-func (x *Task) GetOutcomeId() string {
+func (x *Action) GetOutcomeId() string {
 	if x != nil {
 		return x.OutcomeId
 	}
 	return ""
 }
 
-func (x *Task) GetUserId() string {
+func (x *Action) GetUserId() string {
 	if x != nil {
 		return x.UserId
 	}
 	return ""
 }
 
-func (x *Task) GetTitle() string {
+func (x *Action) GetTitle() string {
 	if x != nil {
 		return x.Title
 	}
 	return ""
 }
 
-func (x *Task) GetIsCompleted() bool {
+func (x *Action) GetIsCompleted() bool {
 	if x != nil {
 		return x.IsCompleted
 	}
 	return false
 }
 
-func (x *Task) GetCreatedAt() *timestamppb.Timestamp {
+func (x *Action) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.CreatedAt
 	}
 	return nil
 }
 
-func (x *Task) GetUpdatedAt() *timestamppb.Timestamp {
+func (x *Action) GetUpdatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.UpdatedAt
 	}
 	return nil
 }
 
-func (x *Task) GetScheduledFor() *timestamppb.Timestamp {
+func (x *Action) GetScheduledFor() *timestamppb.Timestamp {
 	if x != nil {
 		return x.ScheduledFor
 	}
 	return nil
 }
 
-func (x *Task) GetLastMovedOutcomeAt() *timestamppb.Timestamp {
+func (x *Action) GetLastMovedOutcomeAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.LastMovedOutcomeAt
 	}
 	return nil
 }
 
-func (x *Task) GetCompletedAt() *timestamppb.Timestamp {
+func (x *Action) GetCompletedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.CompletedAt
 	}
@@ -429,7 +429,7 @@ var File_outcomes_service_v1_models_proto protoreflect.FileDescriptor
 
 const file_outcomes_service_v1_models_proto_rawDesc = "" +
 	"\n" +
-	" outcomes_service/v1/models.proto\x12\x13outcomes_service.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\xe3\x04\n" +
+	" outcomes_service/v1/models.proto\x12\x13outcomes_service.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\xe9\x04\n" +
 	"\aOutcome\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x14\n" +
@@ -445,8 +445,8 @@ const file_outcomes_service_v1_models_proto_rawDesc = "" +
 	" \x01(\v2\x1a.google.protobuf.TimestampR\vcompletedAt\x12;\n" +
 	"\varchived_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\n" +
 	"archivedAt\x125\n" +
-	"\adrivers\x18\f \x03(\v2\x1b.outcomes_service.v1.DriverR\adrivers\x12/\n" +
-	"\x05tasks\x18\r \x03(\v2\x19.outcomes_service.v1.TaskR\x05tasks\"\xd5\x01\n" +
+	"\adrivers\x18\f \x03(\v2\x1b.outcomes_service.v1.DriverR\adrivers\x125\n" +
+	"\aactions\x18\r \x03(\v2\x1b.outcomes_service.v1.ActionR\aactions\"\xdb\x01\n" +
 	"\x06Driver\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
@@ -454,9 +454,9 @@ const file_outcomes_service_v1_models_proto_rawDesc = "" +
 	"\x05title\x18\x03 \x01(\tR\x05title\x12\x1a\n" +
 	"\bposition\x18\x04 \x01(\x02R\bposition\x129\n" +
 	"\n" +
-	"created_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12/\n" +
-	"\x05tasks\x18\x06 \x03(\v2\x19.outcomes_service.v1.TaskR\x05tasks\"\xe9\x03\n" +
-	"\x04Task\x12\x0e\n" +
+	"created_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x125\n" +
+	"\aactions\x18\x06 \x03(\v2\x1b.outcomes_service.v1.ActionR\aactions\"\xeb\x03\n" +
+	"\x06Action\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
 	"\tdriver_id\x18\x02 \x01(\tR\bdriverId\x12\x1d\n" +
 	"\n" +
@@ -497,7 +497,7 @@ var file_outcomes_service_v1_models_proto_goTypes = []any{
 	(OutcomeStatus)(0),            // 0: outcomes_service.v1.OutcomeStatus
 	(*Outcome)(nil),               // 1: outcomes_service.v1.Outcome
 	(*Driver)(nil),                // 2: outcomes_service.v1.Driver
-	(*Task)(nil),                  // 3: outcomes_service.v1.Task
+	(*Action)(nil),                // 3: outcomes_service.v1.Action
 	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
 }
 var file_outcomes_service_v1_models_proto_depIdxs = []int32{
@@ -507,14 +507,14 @@ var file_outcomes_service_v1_models_proto_depIdxs = []int32{
 	4,  // 3: outcomes_service.v1.Outcome.completed_at:type_name -> google.protobuf.Timestamp
 	4,  // 4: outcomes_service.v1.Outcome.archived_at:type_name -> google.protobuf.Timestamp
 	2,  // 5: outcomes_service.v1.Outcome.drivers:type_name -> outcomes_service.v1.Driver
-	3,  // 6: outcomes_service.v1.Outcome.tasks:type_name -> outcomes_service.v1.Task
+	3,  // 6: outcomes_service.v1.Outcome.actions:type_name -> outcomes_service.v1.Action
 	4,  // 7: outcomes_service.v1.Driver.created_at:type_name -> google.protobuf.Timestamp
-	3,  // 8: outcomes_service.v1.Driver.tasks:type_name -> outcomes_service.v1.Task
-	4,  // 9: outcomes_service.v1.Task.created_at:type_name -> google.protobuf.Timestamp
-	4,  // 10: outcomes_service.v1.Task.updated_at:type_name -> google.protobuf.Timestamp
-	4,  // 11: outcomes_service.v1.Task.scheduled_for:type_name -> google.protobuf.Timestamp
-	4,  // 12: outcomes_service.v1.Task.last_moved_outcome_at:type_name -> google.protobuf.Timestamp
-	4,  // 13: outcomes_service.v1.Task.completed_at:type_name -> google.protobuf.Timestamp
+	3,  // 8: outcomes_service.v1.Driver.actions:type_name -> outcomes_service.v1.Action
+	4,  // 9: outcomes_service.v1.Action.created_at:type_name -> google.protobuf.Timestamp
+	4,  // 10: outcomes_service.v1.Action.updated_at:type_name -> google.protobuf.Timestamp
+	4,  // 11: outcomes_service.v1.Action.scheduled_for:type_name -> google.protobuf.Timestamp
+	4,  // 12: outcomes_service.v1.Action.last_moved_outcome_at:type_name -> google.protobuf.Timestamp
+	4,  // 13: outcomes_service.v1.Action.completed_at:type_name -> google.protobuf.Timestamp
 	14, // [14:14] is the sub-list for method output_type
 	14, // [14:14] is the sub-list for method input_type
 	14, // [14:14] is the sub-list for extension type_name
