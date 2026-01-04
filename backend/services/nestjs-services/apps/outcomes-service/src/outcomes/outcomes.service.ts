@@ -11,6 +11,10 @@ export class OutcomesService {
         return this.prisma.outcome.create({ data });
     }
 
+    async count(params: { where?: Prisma.OutcomeWhereInput }): Promise<number> {
+        return this.prisma.outcome.count(params);
+    }
+
     async findAll(params: {
         skip?: number;
         take?: number;

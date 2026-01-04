@@ -1,21 +1,21 @@
-syntax ="proto3";
+syntax = "proto3";
 
 package outcomes.v1;
 
 import "google/protobuf/timestamp.proto";
 
 enum OutcomeStatus {
-  OUTCOME_STATUS_UNSPECIFIED = 0;  // Required
+  OUTCOME_STATUS_UNSPECIFIED = 0;
   OUTCOME_STATUS_ACTIVE = 1;
   OUTCOME_STATUS_PARKED = 2;
   OUTCOME_STATUS_COMPLETED = 3;
   OUTCOME_STATUS_ABANDONED = 4;
 }
+
 message Outcome {
   string id = 1;
-  string user_id = 2;  // changed from userId
+  string user_id = 2;
   string title = 3;
-
   string why_it_matters = 4;
   double success_metric_value = 5;
   string success_metric_unit = 6;
@@ -24,7 +24,6 @@ message Outcome {
   google.protobuf.Timestamp created_at = 9;
   google.protobuf.Timestamp completed_at = 10;
   google.protobuf.Timestamp archived_at = 11;
-
   repeated Driver drivers = 12;
   repeated Task tasks = 13;
 }
@@ -46,24 +45,13 @@ message Task {
   string user_id = 4;
   string title = 5;
   bool is_completed = 6;
-
   google.protobuf.Timestamp created_at = 7;
   google.protobuf.Timestamp updated_at = 8;
   google.protobuf.Timestamp scheduled_for = 9;
   google.protobuf.Timestamp last_moved_outcome_at = 10;
-
   google.protobuf.Timestamp completed_at = 11;
-
   Outcome outcome = 12;
   Driver driver = 13;
-}
-
-service OutcomeService {
-  rpc CreateOutcome(CreateOutcomeRequest) returns (Outcome);
-  rpc GetOutcome(GetOutcomeRequest) returns (Outcome);
-  rpc UpdateOutcome(UpdateOutcomeRequest) returns (Outcome);
-  rpc DeleteOutcome(DeleteOutcomeRequest) returns (DeleteOutcomeResponse);
-  rpc ListOutcomes(ListOutcomesRequest) returns (ListOutcomesResponse);
 }
 
 message CreateOutcomeRequest {
@@ -78,6 +66,7 @@ message CreateOutcomeRequest {
 message GetOutcomeRequest {
   string id = 1;
 }
+
 message UpdateOutcomeRequest {
   string id = 1;
   optional string title = 2;
@@ -96,9 +85,12 @@ message ListOutcomesRequest {
 }
 
 message ListOutcomesResponse {
-  repeated Outcome outcomes = 1;
+  repeated Outcome data = 1;
   string next_page_token = 2;
   int32 total_count = 3;
+  int32 page_size = 4;
+  int32 current_page = 5;
+  int32 total_pages = 6;
 }
 
 message DeleteOutcomeRequest {
@@ -107,4 +99,12 @@ message DeleteOutcomeRequest {
 
 message DeleteOutcomeResponse {
   bool success = 1;
+}
+
+service OutcomeService {
+  rpc CreateOutcome(CreateOutcomeRequest) returns (Outcome);
+  rpc GetOutcome(GetOutcomeRequest) returns (Outcome);
+  rpc UpdateOutcome(UpdateOutcomeRequest) returns (Outcome);
+  rpc DeleteOutcome(DeleteOutcomeRequest) returns (DeleteOutcomeResponse);
+  rpc ListOutcomes(ListOutcomesRequest) returns (ListOutcomesResponse);
 }

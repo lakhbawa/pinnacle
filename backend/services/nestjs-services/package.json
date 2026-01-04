@@ -19,7 +19,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/nestjs-services/test/jest-e2e.json",
 
-
+    "proto:generate": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./libs/common/src/types --ts_proto_opt=nestJs=true --ts_proto_opt=snakeToCamel=false -I./proto -I./node_modules ./proto/*.proto",
     "prisma:generate:monolith": "prisma generate --schema=apps/monolith/prisma/schema.prisma",
     "prisma:generate:outcomes": "prisma generate --schema=apps/outcomes-service/prisma/schema.prisma",
     "prisma:generate:all": "npm run prisma:generate:monolith && npm run prisma:generate:outcomes"

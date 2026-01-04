@@ -2,16 +2,37 @@
 import {use, useEffect, useState} from "react";
 import {outcomeAPI} from "@/utils/fetchWrapper";
 import {useRouter} from "next/navigation";
+import FormErrors from "@/app/components/FormErrors";
 
 export default function UpdateOutcome({params}: { params: Promise<{ id: string }> }) {
     const {id} = use(params);
 
 
+    const userId = 'user-123'
     const [formData, setFormData] = useState({
-        title: ''
+        title: '',
+        why_it_matters: '',           // Changed
+        success_metric_unit: '',      // Changed
+        success_metric_value: 0,      // Changed
+        deadline: '',
     })
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
+    const [errors, setErrors] = useState<Record<string, string[]>>({})
+
+    const handleChange = (event: any) => {
+        const {name, value} = event.target;
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            [name]: value
+        }));
+    };
+
+    function toDateTimeLocal(isoString: string): string {
+  if (!isoString) return '';
+  const date = new Date(isoString);
+  return date.toISOString().slice(0, 16); // "2026-01-21T13:31"
+}
 
     useEffect(() => {
         async function fetchData() {
@@ -19,10 +40,16 @@ export default function UpdateOutcome({params}: { params: Promise<{ id: string }
                 setLoading(true)
                 const data = await outcomeAPI.get(`/outcomes/${id}`);
                 const outcomeData = data.data
+                console.log(outcomeData)
                 setFormData({
                     ...formData,
                     title: outcomeData.title,
+                    why_it_matters: outcomeData.why_it_matters,
+                    success_metric_unit: outcomeData.success_metric_unit,
+                    success_metric_value: outcomeData.success_metric_value,
+                    deadline: toDateTimeLocal(outcomeData.deadline),
                 })
+
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Failed to load project')
             } finally {
@@ -40,7 +67,10 @@ export default function UpdateOutcome({params}: { params: Promise<{ id: string }
     const updateOutcome = async (event: React.FormEvent) => {
         event.preventDefault()
         try {
-            const response = await outcomeAPI.patch(`/outcomes/${id}`, formData)
+            const response = await outcomeAPI.patch(`/outcomes/${id}`, {
+      ...formData,
+      deadline: new Date(formData.deadline)
+    })
             console.log(response)
             router.push('/u/lakhbawa/outcomes/');
             // TODO: Show success message or redirect
@@ -58,48 +88,91 @@ export default function UpdateOutcome({params}: { params: Promise<{ id: string }
     </div>
 
     return (
-        <div className="max-w-2xl mx-auto py-8 px-4">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">
-                Update Outcome
-                <span className="text-sm font-normal text-gray-500 ml-2">ID: {id}</span>
-            </h2>
+        <>
 
-            <div className="bg-white shadow-sm rounded-lg p-6 border border-gray-200">
-                <form onSubmit={updateOutcome} className="space-y-4">
+            <FormErrors errors={errors}/>
+            <form onSubmit={updateOutcome} className="space-y-6">
+
+                <input type="hidden" name="userId" value={userId}/>
+
+                <div>
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        placeholder="Outcome Title"
+                        required
+                        className="border-2 border-gray-300 rounded-lg"
+                        value={formData.title}
+                        onChange={handleChange}
+                    />
+                </div>
+                <div>
+                <textarea className="border-2 border-gray-300 rounded-lg" name="why_it_matters" id="why_it_matters"
+                          placeholder="Why It matters" cols="30" rows="10" value={formData.why_it_matters}
+                          onChange={handleChange}></textarea>
+                </div>
+
+                <div>
+
                     <div>
-                        <label
-                            htmlFor="title"
-                            className="block text-sm font-medium text-gray-700 mb-1"
-                        >
-                            Outcome Title
-                        </label>
                         <input
                             type="text"
-                            id="title"
-                            name="title"
-                            placeholder="Enter project title"
+                            id="success_metric_unit"
+                            name="success_metric_unit"
+                            placeholder="Success Metric Unit"
                             required
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2
-                                     focus:ring-blue-500 focus:border-blue-500 outline-none
-                                     transition-colors duration-200"
-                            value={formData.title}
-                            onChange={(e) => setFormData({title: e.target.value})}
+                            className="border-2 border-gray-300 rounded-lg"
+                            value={formData.success_metric_unit}
+                            onChange={handleChange}
                         />
                     </div>
 
-                    <div className="pt-4">
-                        <button
-                            type="submit"
-                            className="w-full sm:w-auto px-6 py-2.5 bg-blue-600 text-white font-medium
-                                     rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2
-                                     focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
-                        >
-                            Update Outcome
-                        </button>
+                    <div>
+                        <input
+                            type="number"
+                            id="success_metric_value"
+                            name="success_metric_value"
+                            placeholder="Success Metric Value"
+                            required
+                            className="border-2 border-gray-300 rounded-lg"
+                            value={formData.success_metric_value}
+                            onChange={handleChange}
+                        />
                     </div>
-                </form>
-            </div>
-        </div>
-    )
 
+
+                    <div>
+                        <input
+                            type="datetime-local"
+                            id="deadline"
+                            name="deadline"
+                            placeholder="Deadline"
+                            required
+                            className="border-2 border-gray-300 rounded-lg"
+                            value={formData.deadline}
+                            onChange={handleChange}
+
+                        />
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="border-2 border-gray-300 rounded-lg bg-black text-white p-3"
+                    >
+                        Update Outcome
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => window.history.back()}
+                        className=""
+                    >
+                        Cancel
+                    </button>
+                </div>
+
+
+            </form>
+        </>
+    )
 }

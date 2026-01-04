@@ -15,60 +15,146 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/encoding/protojson"
-	"google.golang.org/protobuf/proto"
 
 	boardspb "gateway/gen/go/boardsservice"
 	outcomespb "gateway/gen/go/outcomesv1"
 )
 
-type WrappedMarshaler struct {
-	runtime.Marshaler
-}
-
-func (m *WrappedMarshaler) Marshal(v interface{}) ([]byte, error) {
-	// Wrap in success response
-	wrapped := APIResponse{
-		Success: true,
-		Data:    v,
-	}
-	return json.Marshal(wrapped)
-}
-
-func (m *WrappedMarshaler) NewEncoder(w io.Writer) runtime.Encoder {
-	return &wrappedEncoder{w: w}
-}
-
-type wrappedEncoder struct {
-	w io.Writer
-}
-
-func (e *wrappedEncoder) Encode(v interface{}) error {
-	wrapped := APIResponse{
-		Success: true,
-		Data:    v,
-	}
-	return json.NewEncoder(e.w).Encode(wrapped)
-}
-
-func customMarshaler(ctx context.Context, w http.ResponseWriter, resp proto.Message) error {
-	w.Header().Set("Content-Type", "application/json")
-
-	return json.NewEncoder(w).Encode(APIResponse{
-		Success: true,
-		Data:    resp,
-	})
-}
-
 type APIResponse struct {
 	Success bool        `json:"success"`
 	Data    interface{} `json:"data,omitempty"`
 	Error   *APIError   `json:"error,omitempty"`
+	Meta    *Meta       `json:"meta,omitempty"`
 }
 
 type APIError struct {
 	Message string              `json:"message"`
 	Code    string              `json:"code,omitempty"`
-	Errors  map[string][]string `json:"errors,omitempty"` // Arrays like Laravel
+	Errors  map[string][]string `json:"errors,omitempty"`
+}
+
+type Meta struct {
+	Total       int    `json:"total,omitempty"`
+	PerPage     int    `json:"per_page,omitempty"`
+	CurrentPage int    `json:"current_page,omitempty"`
+	TotalPages  int    `json:"total_pages,omitempty"`
+	NextPage    string `json:"next_page,omitempty"`
+}
+
+type LaravelStyleMarshaler struct {
+	jsonpb *runtime.JSONPb
+}
+
+func NewLaravelStyleMarshaler() *LaravelStyleMarshaler {
+	return &LaravelStyleMarshaler{
+		jsonpb: &runtime.JSONPb{
+			MarshalOptions: protojson.MarshalOptions{
+				EmitUnpopulated: true,
+				UseProtoNames:   true,
+			},
+			UnmarshalOptions: protojson.UnmarshalOptions{
+				DiscardUnknown: true,
+			},
+		},
+	}
+}
+
+func (m *LaravelStyleMarshaler) ContentType(_ interface{}) string {
+	return "application/json"
+}
+
+func (m *LaravelStyleMarshaler) Marshal(v interface{}) ([]byte, error) {
+	protoBytes, err := m.jsonpb.Marshal(v)
+	if err != nil {
+		return nil, err
+	}
+
+	var protoData interface{}
+	if err := json.Unmarshal(protoBytes, &protoData); err != nil {
+		return nil, err
+	}
+
+	response := m.wrapResponse(protoData)
+	return json.Marshal(response)
+}
+
+func (m *LaravelStyleMarshaler) wrapResponse(data interface{}) APIResponse {
+	dataMap, ok := data.(map[string]interface{})
+	if !ok {
+		return APIResponse{Success: true, Data: data}
+	}
+
+	// Check if it's a list response (has "data" array)
+	if listData, hasData := dataMap["data"]; hasData {
+		if _, isArray := listData.([]interface{}); isArray {
+			meta := m.extractMeta(dataMap)
+			return APIResponse{Success: true, Data: listData, Meta: meta}
+		}
+	}
+
+	// Single resource response
+	return APIResponse{Success: true, Data: data}
+}
+
+func (m *LaravelStyleMarshaler) extractMeta(dataMap map[string]interface{}) *Meta {
+	meta := &Meta{}
+	hasMeta := false
+
+	if total, ok := dataMap["total_count"].(float64); ok {
+		meta.Total = int(total)
+		hasMeta = true
+	}
+
+	if perPage, ok := dataMap["page_size"].(float64); ok {
+		meta.PerPage = int(perPage)
+		hasMeta = true
+	}
+
+	if currentPage, ok := dataMap["current_page"].(float64); ok {
+		meta.CurrentPage = int(currentPage)
+		hasMeta = true
+	}
+
+	if totalPages, ok := dataMap["total_pages"].(float64); ok {
+		meta.TotalPages = int(totalPages)
+		hasMeta = true
+	}
+
+	if nextPage, ok := dataMap["next_page_token"].(string); ok && nextPage != "" {
+		meta.NextPage = nextPage
+		hasMeta = true
+	}
+
+	if hasMeta {
+		return meta
+	}
+	return nil
+}
+
+func (m *LaravelStyleMarshaler) Unmarshal(data []byte, v interface{}) error {
+	return m.jsonpb.Unmarshal(data, v)
+}
+
+func (m *LaravelStyleMarshaler) NewDecoder(r io.Reader) runtime.Decoder {
+	return m.jsonpb.NewDecoder(r)
+}
+
+func (m *LaravelStyleMarshaler) NewEncoder(w io.Writer) runtime.Encoder {
+	return &laravelEncoder{w: w, marshaler: m}
+}
+
+type laravelEncoder struct {
+	w         io.Writer
+	marshaler *LaravelStyleMarshaler
+}
+
+func (e *laravelEncoder) Encode(v interface{}) error {
+	data, err := e.marshaler.Marshal(v)
+	if err != nil {
+		return err
+	}
+	_, err = e.w.Write(data)
+	return err
 }
 
 func customHTTPError(
@@ -92,7 +178,6 @@ func customHTTPError(
 		message := st.Message()
 
 		if strings.HasPrefix(message, "{") {
-			// Try parsing as array format first (new Laravel-style)
 			var arrayErrors map[string][]string
 			if json.Unmarshal([]byte(message), &arrayErrors) == nil {
 				httpStatus = http.StatusUnprocessableEntity
@@ -100,7 +185,6 @@ func customHTTPError(
 				apiError.Code = "VALIDATION_ERROR"
 				apiError.Errors = arrayErrors
 			} else {
-				// Fallback: parse as single-string format and convert
 				var stringErrors map[string]string
 				if json.Unmarshal([]byte(message), &stringErrors) == nil {
 					httpStatus = http.StatusUnprocessableEntity
@@ -129,6 +213,7 @@ func customHTTPError(
 		Error:   apiError,
 	})
 }
+
 func convertToArrayFormat(errors map[string]string) map[string][]string {
 	result := make(map[string][]string)
 	for field, msg := range errors {
@@ -151,19 +236,11 @@ func main() {
 	ctx := context.Background()
 	grpcMux := runtime.NewServeMux(
 		runtime.WithErrorHandler(customHTTPError),
-		runtime.WithMarshalerOption(runtime.MIMEWildcard, &WrappedMarshaler{
-			Marshaler: &runtime.JSONPb{
-				MarshalOptions: protojson.MarshalOptions{
-					EmitUnpopulated: true,
-					UseProtoNames:   false, // Use camelCase
-				},
-			},
-		}),
+		runtime.WithMarshalerOption(runtime.MIMEWildcard, NewLaravelStyleMarshaler()),
 	)
 
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 
-	// Register Outcomes Service
 	err := outcomespb.RegisterOutcomeServiceHandlerFromEndpoint(
 		ctx,
 		grpcMux,
@@ -174,7 +251,6 @@ func main() {
 		log.Fatalf("Failed to register outcomes gateway: %v", err)
 	}
 
-	// Register Boards Service
 	err = boardspb.RegisterBoardsServiceHandlerFromEndpoint(
 		ctx,
 		grpcMux,

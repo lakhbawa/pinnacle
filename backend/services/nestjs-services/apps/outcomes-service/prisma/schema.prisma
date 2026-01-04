@@ -14,22 +14,22 @@ datasource db {
 }
 
 model Outcome {
-  id                    String    @id @default(uuid())
-  userId                String
-  title                 String
-  whyItMatters          String
-  successMetricValue    Float
-  successMetricUnit     String
-  deadline              DateTime
-  status                OutcomeStatus @default(ACTIVE)
-  createdAt             DateTime  @default(now())
-  completedAt           DateTime?
-  archivedAt            DateTime?
+  id                   String        @id @default(uuid())
+  user_id              String
+  title                String
+  why_it_matters       String
+  success_metric_value Float
+  success_metric_unit  String
+  deadline             DateTime
+  status               OutcomeStatus @default(ACTIVE)
+  created_at           DateTime      @default(now())
+  completed_at         DateTime?
+  archived_at          DateTime?
 
-  drivers               Driver[]
-  tasks                 Task[]
+  drivers Driver[]
+  tasks   Task[]
 
-  @@index([userId, status])
+  @@index([user_id, status])
   @@map("outcomes")
 }
 
@@ -41,34 +41,35 @@ enum OutcomeStatus {
 }
 
 model Driver {
-  id                    String    @id @default(uuid())
-  outcomeId             String
-  title                 String
-  position              Float
-  createdAt             DateTime  @default(now())
+  id         String   @id @default(uuid())
+  outcome_id String
+  title      String
+  position   Float
+  created_at DateTime @default(now())
 
-  outcome               Outcome   @relation(fields: [outcomeId], references: [id], onDelete: Cascade)
-  tasks                 Task[]
+  outcome Outcome @relation(fields: [outcome_id], references: [id], onDelete: Cascade)
+  tasks   Task[]
+
   @@map("drivers")
 }
 
 model Task {
-  id                 String    @id @default(uuid())
-  driverId           String    @map("driver_id")
-  outcomeId          String    @map("outcome_id")
-  userId             String    @map("user_id")
-  title              String
-  isCompleted        Boolean   @default(false) @map("is_completed")
-  completedAt        DateTime? @map("completed_at")
-  scheduledFor       DateTime? @map("scheduled_for")
-  lastMovedOutcomeAt DateTime? @map("last_moved_outcome_at")
-  createdAt          DateTime  @default(now()) @map("created_at")
-  updatedAt          DateTime  @updatedAt @map("updated_at")
+  id                     String    @id @default(uuid())
+  driver_id              String
+  outcome_id             String
+  user_id                String
+  title                  String
+  is_completed           Boolean   @default(false)
+  completed_at           DateTime?
+  scheduled_for          DateTime?
+  last_moved_outcome_at  DateTime?
+  created_at             DateTime  @default(now())
+  updated_at             DateTime  @updatedAt
 
-  driver  Driver  @relation(fields: [driverId], references: [id], onDelete: Cascade)
-  outcome Outcome @relation(fields: [outcomeId], references: [id], onDelete: Cascade)
+  driver  Driver  @relation(fields: [driver_id], references: [id], onDelete: Cascade)
+  outcome Outcome @relation(fields: [outcome_id], references: [id], onDelete: Cascade)
 
-  @@index([userId, scheduledFor])
-  @@index([outcomeId, isCompleted])
+  @@index([user_id, scheduled_for])
+  @@index([outcome_id, is_completed])
   @@map("tasks")
 }

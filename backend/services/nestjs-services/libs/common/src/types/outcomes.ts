@@ -2,17 +2,16 @@
 // versions:
 //   protoc-gen-ts_proto  v2.10.1
 //   protoc               v6.33.2
-// source: proto/outcomes.proto
+// source: outcomes.proto
 
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { Timestamp } from "../google/protobuf/timestamp";
+import { Timestamp } from "./google/protobuf/timestamp";
 
 export const protobufPackage = "outcomes.v1";
 
 export enum OutcomeStatus {
-  /** OUTCOME_STATUS_UNSPECIFIED - Required */
   OUTCOME_STATUS_UNSPECIFIED = 0,
   OUTCOME_STATUS_ACTIVE = 1,
   OUTCOME_STATUS_PARKED = 2,
@@ -23,17 +22,16 @@ export enum OutcomeStatus {
 
 export interface Outcome {
   id: string;
-  /** changed from userId */
-  userId: string;
+  user_id: string;
   title: string;
-  whyItMatters: string;
-  successMetricValue: number;
-  successMetricUnit: string;
+  why_it_matters: string;
+  success_metric_value: number;
+  success_metric_unit: string;
   deadline: Timestamp | undefined;
   status: OutcomeStatus;
-  createdAt: Timestamp | undefined;
-  completedAt: Timestamp | undefined;
-  archivedAt: Timestamp | undefined;
+  created_at: Timestamp | undefined;
+  completed_at: Timestamp | undefined;
+  archived_at: Timestamp | undefined;
   drivers: Driver[];
   tasks: Task[];
 }
@@ -41,35 +39,35 @@ export interface Outcome {
 export interface Driver {
   id: string;
   title: string;
-  outcomeId: string;
+  outcome_id: string;
   position: number;
-  createdAt: Timestamp | undefined;
+  created_at: Timestamp | undefined;
   tasks: Task[];
   outcome: Outcome | undefined;
 }
 
 export interface Task {
   id: string;
-  driverId: string;
-  outcomeId: string;
-  userId: string;
+  driver_id: string;
+  outcome_id: string;
+  user_id: string;
   title: string;
-  isCompleted: boolean;
-  createdAt: Timestamp | undefined;
-  updatedAt: Timestamp | undefined;
-  scheduledFor: Timestamp | undefined;
-  lastMovedOutcomeAt: Timestamp | undefined;
-  completedAt: Timestamp | undefined;
+  is_completed: boolean;
+  created_at: Timestamp | undefined;
+  updated_at: Timestamp | undefined;
+  scheduled_for: Timestamp | undefined;
+  last_moved_outcome_at: Timestamp | undefined;
+  completed_at: Timestamp | undefined;
   outcome: Outcome | undefined;
   driver: Driver | undefined;
 }
 
 export interface CreateOutcomeRequest {
-  userId: string;
+  user_id: string;
   title: string;
-  whyItMatters: string;
-  successMetricValue: number;
-  successMetricUnit: string;
+  why_it_matters: string;
+  success_metric_value: number;
+  success_metric_unit: string;
   deadline: Timestamp | undefined;
 }
 
@@ -80,24 +78,27 @@ export interface GetOutcomeRequest {
 export interface UpdateOutcomeRequest {
   id: string;
   title?: string | undefined;
-  whyItMatters?: string | undefined;
-  successMetricValue?: number | undefined;
-  successMetricUnit?: string | undefined;
+  why_it_matters?: string | undefined;
+  success_metric_value?: number | undefined;
+  success_metric_unit?: string | undefined;
   deadline?: Timestamp | undefined;
   status?: OutcomeStatus | undefined;
 }
 
 export interface ListOutcomesRequest {
-  userId: string;
+  user_id: string;
   status?: OutcomeStatus | undefined;
-  pageSize: number;
-  pageToken: string;
+  page_size: number;
+  page_token: string;
 }
 
 export interface ListOutcomesResponse {
-  outcomes: Outcome[];
-  nextPageToken: string;
-  totalCount: number;
+  data: Outcome[];
+  next_page_token: string;
+  total_count: number;
+  page_size: number;
+  current_page: number;
+  total_pages: number;
 }
 
 export interface DeleteOutcomeRequest {

@@ -226,6 +226,7 @@ type Driver struct {
 	Position      float32                `protobuf:"fixed32,4,opt,name=position,proto3" json:"position,omitempty"`
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	Tasks         []*Task                `protobuf:"bytes,6,rep,name=tasks,proto3" json:"tasks,omitempty"`
+	Outcome       *Outcome               `protobuf:"bytes,7,opt,name=outcome,proto3" json:"outcome,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -302,6 +303,13 @@ func (x *Driver) GetTasks() []*Task {
 	return nil
 }
 
+func (x *Driver) GetOutcome() *Outcome {
+	if x != nil {
+		return x.Outcome
+	}
+	return nil
+}
+
 type Task struct {
 	state              protoimpl.MessageState `protogen:"open.v1"`
 	Id                 string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -315,6 +323,8 @@ type Task struct {
 	ScheduledFor       *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=scheduled_for,json=scheduledFor,proto3" json:"scheduled_for,omitempty"`
 	LastMovedOutcomeAt *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=last_moved_outcome_at,json=lastMovedOutcomeAt,proto3" json:"last_moved_outcome_at,omitempty"`
 	CompletedAt        *timestamppb.Timestamp `protobuf:"bytes,11,opt,name=completed_at,json=completedAt,proto3" json:"completed_at,omitempty"`
+	Outcome            *Outcome               `protobuf:"bytes,12,opt,name=outcome,proto3" json:"outcome,omitempty"`
+	Driver             *Driver                `protobuf:"bytes,13,opt,name=driver,proto3" json:"driver,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -422,6 +432,20 @@ func (x *Task) GetLastMovedOutcomeAt() *timestamppb.Timestamp {
 func (x *Task) GetCompletedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.CompletedAt
+	}
+	return nil
+}
+
+func (x *Task) GetOutcome() *Outcome {
+	if x != nil {
+		return x.Outcome
+	}
+	return nil
+}
+
+func (x *Task) GetDriver() *Driver {
+	if x != nil {
+		return x.Driver
 	}
 	return nil
 }
@@ -716,9 +740,12 @@ func (x *ListOutcomesRequest) GetPageToken() string {
 
 type ListOutcomesResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Outcomes      []*Outcome             `protobuf:"bytes,1,rep,name=outcomes,proto3" json:"outcomes,omitempty"`
+	Data          []*Outcome             `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty"`
 	NextPageToken string                 `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
 	TotalCount    int32                  `protobuf:"varint,3,opt,name=total_count,json=totalCount,proto3" json:"total_count,omitempty"`
+	PageSize      int32                  `protobuf:"varint,4,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	CurrentPage   int32                  `protobuf:"varint,5,opt,name=current_page,json=currentPage,proto3" json:"current_page,omitempty"`
+	TotalPages    int32                  `protobuf:"varint,6,opt,name=total_pages,json=totalPages,proto3" json:"total_pages,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -753,9 +780,9 @@ func (*ListOutcomesResponse) Descriptor() ([]byte, []int) {
 	return file_outcomesv1_outcomes_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *ListOutcomesResponse) GetOutcomes() []*Outcome {
+func (x *ListOutcomesResponse) GetData() []*Outcome {
 	if x != nil {
-		return x.Outcomes
+		return x.Data
 	}
 	return nil
 }
@@ -770,6 +797,27 @@ func (x *ListOutcomesResponse) GetNextPageToken() string {
 func (x *ListOutcomesResponse) GetTotalCount() int32 {
 	if x != nil {
 		return x.TotalCount
+	}
+	return 0
+}
+
+func (x *ListOutcomesResponse) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *ListOutcomesResponse) GetCurrentPage() int32 {
+	if x != nil {
+		return x.CurrentPage
+	}
+	return 0
+}
+
+func (x *ListOutcomesResponse) GetTotalPages() int32 {
+	if x != nil {
+		return x.TotalPages
 	}
 	return 0
 }
@@ -883,7 +931,7 @@ const file_outcomesv1_outcomes_proto_rawDesc = "" +
 	"\varchived_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\n" +
 	"archivedAt\x12-\n" +
 	"\adrivers\x18\f \x03(\v2\x13.outcomes.v1.DriverR\adrivers\x12'\n" +
-	"\x05tasks\x18\r \x03(\v2\x11.outcomes.v1.TaskR\x05tasks\"\xcd\x01\n" +
+	"\x05tasks\x18\r \x03(\v2\x11.outcomes.v1.TaskR\x05tasks\"\xfd\x01\n" +
 	"\x06Driver\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1d\n" +
@@ -892,7 +940,8 @@ const file_outcomesv1_outcomes_proto_rawDesc = "" +
 	"\bposition\x18\x04 \x01(\x02R\bposition\x129\n" +
 	"\n" +
 	"created_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12'\n" +
-	"\x05tasks\x18\x06 \x03(\v2\x11.outcomes.v1.TaskR\x05tasks\"\xe9\x03\n" +
+	"\x05tasks\x18\x06 \x03(\v2\x11.outcomes.v1.TaskR\x05tasks\x12.\n" +
+	"\aoutcome\x18\a \x01(\v2\x14.outcomes.v1.OutcomeR\aoutcome\"\xc6\x04\n" +
 	"\x04Task\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
 	"\tdriver_id\x18\x02 \x01(\tR\bdriverId\x12\x1d\n" +
@@ -908,7 +957,9 @@ const file_outcomesv1_outcomes_proto_rawDesc = "" +
 	"\rscheduled_for\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\fscheduledFor\x12M\n" +
 	"\x15last_moved_outcome_at\x18\n" +
 	" \x01(\v2\x1a.google.protobuf.TimestampR\x12lastMovedOutcomeAt\x12=\n" +
-	"\fcompleted_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\vcompletedAt\"\x85\x02\n" +
+	"\fcompleted_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\vcompletedAt\x12.\n" +
+	"\aoutcome\x18\f \x01(\v2\x14.outcomes.v1.OutcomeR\aoutcome\x12+\n" +
+	"\x06driver\x18\r \x01(\v2\x13.outcomes.v1.DriverR\x06driver\"\x85\x02\n" +
 	"\x14CreateOutcomeRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12$\n" +
@@ -938,12 +989,16 @@ const file_outcomesv1_outcomes_proto_rawDesc = "" +
 	"\tpage_size\x18\x03 \x01(\x05R\bpageSize\x12\x1d\n" +
 	"\n" +
 	"page_token\x18\x04 \x01(\tR\tpageTokenB\t\n" +
-	"\a_status\"\x91\x01\n" +
-	"\x14ListOutcomesResponse\x120\n" +
-	"\boutcomes\x18\x01 \x03(\v2\x14.outcomes.v1.OutcomeR\boutcomes\x12&\n" +
+	"\a_status\"\xea\x01\n" +
+	"\x14ListOutcomesResponse\x12(\n" +
+	"\x04data\x18\x01 \x03(\v2\x14.outcomes.v1.OutcomeR\x04data\x12&\n" +
 	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\x12\x1f\n" +
 	"\vtotal_count\x18\x03 \x01(\x05R\n" +
-	"totalCount\"&\n" +
+	"totalCount\x12\x1b\n" +
+	"\tpage_size\x18\x04 \x01(\x05R\bpageSize\x12!\n" +
+	"\fcurrent_page\x18\x05 \x01(\x05R\vcurrentPage\x12\x1f\n" +
+	"\vtotal_pages\x18\x06 \x01(\x05R\n" +
+	"totalPages\"&\n" +
 	"\x14DeleteOutcomeRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"1\n" +
 	"\x15DeleteOutcomeResponse\x12\x18\n" +
@@ -1000,31 +1055,34 @@ var file_outcomesv1_outcomes_proto_depIdxs = []int32{
 	3,  // 6: outcomes.v1.Outcome.tasks:type_name -> outcomes.v1.Task
 	11, // 7: outcomes.v1.Driver.created_at:type_name -> google.protobuf.Timestamp
 	3,  // 8: outcomes.v1.Driver.tasks:type_name -> outcomes.v1.Task
-	11, // 9: outcomes.v1.Task.created_at:type_name -> google.protobuf.Timestamp
-	11, // 10: outcomes.v1.Task.updated_at:type_name -> google.protobuf.Timestamp
-	11, // 11: outcomes.v1.Task.scheduled_for:type_name -> google.protobuf.Timestamp
-	11, // 12: outcomes.v1.Task.last_moved_outcome_at:type_name -> google.protobuf.Timestamp
-	11, // 13: outcomes.v1.Task.completed_at:type_name -> google.protobuf.Timestamp
-	11, // 14: outcomes.v1.CreateOutcomeRequest.deadline:type_name -> google.protobuf.Timestamp
-	11, // 15: outcomes.v1.UpdateOutcomeRequest.deadline:type_name -> google.protobuf.Timestamp
-	0,  // 16: outcomes.v1.UpdateOutcomeRequest.status:type_name -> outcomes.v1.OutcomeStatus
-	0,  // 17: outcomes.v1.ListOutcomesRequest.status:type_name -> outcomes.v1.OutcomeStatus
-	1,  // 18: outcomes.v1.ListOutcomesResponse.outcomes:type_name -> outcomes.v1.Outcome
-	4,  // 19: outcomes.v1.OutcomeService.CreateOutcome:input_type -> outcomes.v1.CreateOutcomeRequest
-	5,  // 20: outcomes.v1.OutcomeService.GetOutcome:input_type -> outcomes.v1.GetOutcomeRequest
-	7,  // 21: outcomes.v1.OutcomeService.ListOutcomes:input_type -> outcomes.v1.ListOutcomesRequest
-	6,  // 22: outcomes.v1.OutcomeService.UpdateOutcome:input_type -> outcomes.v1.UpdateOutcomeRequest
-	9,  // 23: outcomes.v1.OutcomeService.DeleteOutcome:input_type -> outcomes.v1.DeleteOutcomeRequest
-	1,  // 24: outcomes.v1.OutcomeService.CreateOutcome:output_type -> outcomes.v1.Outcome
-	1,  // 25: outcomes.v1.OutcomeService.GetOutcome:output_type -> outcomes.v1.Outcome
-	8,  // 26: outcomes.v1.OutcomeService.ListOutcomes:output_type -> outcomes.v1.ListOutcomesResponse
-	1,  // 27: outcomes.v1.OutcomeService.UpdateOutcome:output_type -> outcomes.v1.Outcome
-	10, // 28: outcomes.v1.OutcomeService.DeleteOutcome:output_type -> outcomes.v1.DeleteOutcomeResponse
-	24, // [24:29] is the sub-list for method output_type
-	19, // [19:24] is the sub-list for method input_type
-	19, // [19:19] is the sub-list for extension type_name
-	19, // [19:19] is the sub-list for extension extendee
-	0,  // [0:19] is the sub-list for field type_name
+	1,  // 9: outcomes.v1.Driver.outcome:type_name -> outcomes.v1.Outcome
+	11, // 10: outcomes.v1.Task.created_at:type_name -> google.protobuf.Timestamp
+	11, // 11: outcomes.v1.Task.updated_at:type_name -> google.protobuf.Timestamp
+	11, // 12: outcomes.v1.Task.scheduled_for:type_name -> google.protobuf.Timestamp
+	11, // 13: outcomes.v1.Task.last_moved_outcome_at:type_name -> google.protobuf.Timestamp
+	11, // 14: outcomes.v1.Task.completed_at:type_name -> google.protobuf.Timestamp
+	1,  // 15: outcomes.v1.Task.outcome:type_name -> outcomes.v1.Outcome
+	2,  // 16: outcomes.v1.Task.driver:type_name -> outcomes.v1.Driver
+	11, // 17: outcomes.v1.CreateOutcomeRequest.deadline:type_name -> google.protobuf.Timestamp
+	11, // 18: outcomes.v1.UpdateOutcomeRequest.deadline:type_name -> google.protobuf.Timestamp
+	0,  // 19: outcomes.v1.UpdateOutcomeRequest.status:type_name -> outcomes.v1.OutcomeStatus
+	0,  // 20: outcomes.v1.ListOutcomesRequest.status:type_name -> outcomes.v1.OutcomeStatus
+	1,  // 21: outcomes.v1.ListOutcomesResponse.data:type_name -> outcomes.v1.Outcome
+	4,  // 22: outcomes.v1.OutcomeService.CreateOutcome:input_type -> outcomes.v1.CreateOutcomeRequest
+	5,  // 23: outcomes.v1.OutcomeService.GetOutcome:input_type -> outcomes.v1.GetOutcomeRequest
+	7,  // 24: outcomes.v1.OutcomeService.ListOutcomes:input_type -> outcomes.v1.ListOutcomesRequest
+	6,  // 25: outcomes.v1.OutcomeService.UpdateOutcome:input_type -> outcomes.v1.UpdateOutcomeRequest
+	9,  // 26: outcomes.v1.OutcomeService.DeleteOutcome:input_type -> outcomes.v1.DeleteOutcomeRequest
+	1,  // 27: outcomes.v1.OutcomeService.CreateOutcome:output_type -> outcomes.v1.Outcome
+	1,  // 28: outcomes.v1.OutcomeService.GetOutcome:output_type -> outcomes.v1.Outcome
+	8,  // 29: outcomes.v1.OutcomeService.ListOutcomes:output_type -> outcomes.v1.ListOutcomesResponse
+	1,  // 30: outcomes.v1.OutcomeService.UpdateOutcome:output_type -> outcomes.v1.Outcome
+	10, // 31: outcomes.v1.OutcomeService.DeleteOutcome:output_type -> outcomes.v1.DeleteOutcomeResponse
+	27, // [27:32] is the sub-list for method output_type
+	22, // [22:27] is the sub-list for method input_type
+	22, // [22:22] is the sub-list for extension type_name
+	22, // [22:22] is the sub-list for extension extendee
+	0,  // [0:22] is the sub-list for field type_name
 }
 
 func init() { file_outcomesv1_outcomes_proto_init() }
