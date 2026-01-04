@@ -11,6 +11,7 @@ you from getting distracted by low-impact things. Prioritisation is at heart the
 - `make up`
 - `make start-gateway`
 - `make start-outcome`
+  `make start-monolith`
 - `make start-frontend`
 - Open `127.0.0.1:3000`
 
