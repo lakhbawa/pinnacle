@@ -3,51 +3,51 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 	"io"
 	"log"
 	"net/http"
 	"strings"
-    "github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"google.golang.org/protobuf/encoding/protojson"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/status"
-	"google.golang.org/protobuf/proto"
 
 	boardspb "gateway/gen/go/boardsservice"
 	outcomespb "gateway/gen/go/outcomesv1"
 )
+
 type WrappedMarshaler struct {
-    runtime.Marshaler
+	runtime.Marshaler
 }
 
 func (m *WrappedMarshaler) Marshal(v interface{}) ([]byte, error) {
-    // Wrap in success response
-    wrapped := APIResponse{
-        Success: true,
-        Data:    v,
-    }
-    return json.Marshal(wrapped)
+	// Wrap in success response
+	wrapped := APIResponse{
+		Success: true,
+		Data:    v,
+	}
+	return json.Marshal(wrapped)
 }
 
 func (m *WrappedMarshaler) NewEncoder(w io.Writer) runtime.Encoder {
-    return &wrappedEncoder{w: w}
+	return &wrappedEncoder{w: w}
 }
 
 type wrappedEncoder struct {
-    w io.Writer
+	w io.Writer
 }
 
 func (e *wrappedEncoder) Encode(v interface{}) error {
-    wrapped := APIResponse{
-        Success: true,
-        Data:    v,
-    }
-    return json.NewEncoder(e.w).Encode(wrapped)
+	wrapped := APIResponse{
+		Success: true,
+		Data:    v,
+	}
+	return json.NewEncoder(e.w).Encode(wrapped)
 }
-
 
 func customMarshaler(ctx context.Context, w http.ResponseWriter, resp proto.Message) error {
 	w.Header().Set("Content-Type", "application/json")
@@ -65,9 +65,9 @@ type APIResponse struct {
 }
 
 type APIError struct {
-	Message string            `json:"message"`
-	Code    string            `json:"code,omitempty"`
-	Errors  map[string]string `json:"errors,omitempty"`
+	Message string              `json:"message"`
+	Code    string              `json:"code,omitempty"`
+	Errors  map[string][]string `json:"errors,omitempty"` // Arrays like Laravel
 }
 
 func customHTTPError(
@@ -90,21 +90,30 @@ func customHTTPError(
 		httpStatus = runtime.HTTPStatusFromCode(st.Code())
 		message := st.Message()
 
-		// Timestamp parsing error
-		if strings.Contains(message, "google.protobuf.Timestamp") {
-			httpStatus = http.StatusBadRequest
-			apiError.Message = "Invalid deadline format"
-			apiError.Code = "VALIDATION_ERROR"
-			apiError.Errors = map[string]string{
-				"deadline": "Use ISO-8601 format like 2025-06-30T23:59:59Z",
-			}
-		} else if strings.HasPrefix(message, "{") {
-			// Zod validation errors
-			var validationErrors map[string]string
-			if json.Unmarshal([]byte(message), &validationErrors) == nil {
-				apiError.Message = "Validation failed"
+		if strings.HasPrefix(message, "{") {
+			// Try parsing as array format first (new Laravel-style)
+			var arrayErrors map[string][]string
+			if json.Unmarshal([]byte(message), &arrayErrors) == nil {
+				httpStatus = http.StatusUnprocessableEntity
+				apiError.Message = "The given data was invalid."
 				apiError.Code = "VALIDATION_ERROR"
-				apiError.Errors = validationErrors
+				apiError.Errors = arrayErrors
+			} else {
+				// Fallback: parse as single-string format and convert
+				var stringErrors map[string]string
+				if json.Unmarshal([]byte(message), &stringErrors) == nil {
+					httpStatus = http.StatusUnprocessableEntity
+					apiError.Message = "The given data was invalid."
+					apiError.Code = "VALIDATION_ERROR"
+					apiError.Errors = convertToArrayFormat(stringErrors)
+				}
+			}
+		} else if strings.Contains(message, "google.protobuf.Timestamp") {
+			httpStatus = http.StatusUnprocessableEntity
+			apiError.Message = "The given data was invalid."
+			apiError.Code = "VALIDATION_ERROR"
+			apiError.Errors = map[string][]string{
+				"deadline": {"The deadline must be a valid ISO-8601 date format."},
 			}
 		} else {
 			apiError.Message = message
@@ -119,30 +128,37 @@ func customHTTPError(
 		Error:   apiError,
 	})
 }
+func convertToArrayFormat(errors map[string]string) map[string][]string {
+	result := make(map[string][]string)
+	for field, msg := range errors {
+		result[field] = []string{msg}
+	}
+	return result
+}
 
 func main() {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
-        AllowOrigins:     []string{"http://127.0.0.1:3000"},
-        AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-        AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
-        ExposeHeaders:    []string{"Content-Length"},
-        AllowCredentials: true,
-    }))
+		AllowOrigins:     []string{"http://127.0.0.1:3000"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}))
 
 	ctx := context.Background()
-grpcMux := runtime.NewServeMux(
-        runtime.WithErrorHandler(customHTTPError),
-        runtime.WithMarshalerOption(runtime.MIMEWildcard, &WrappedMarshaler{
-            Marshaler: &runtime.JSONPb{
-                MarshalOptions: protojson.MarshalOptions{
-                    EmitUnpopulated: true,
-                    UseProtoNames:   false, // Use camelCase
-                },
-            },
-        }),
-    )
+	grpcMux := runtime.NewServeMux(
+		runtime.WithErrorHandler(customHTTPError),
+		runtime.WithMarshalerOption(runtime.MIMEWildcard, &WrappedMarshaler{
+			Marshaler: &runtime.JSONPb{
+				MarshalOptions: protojson.MarshalOptions{
+					EmitUnpopulated: true,
+					UseProtoNames:   false, // Use camelCase
+				},
+			},
+		}),
+	)
 
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 
