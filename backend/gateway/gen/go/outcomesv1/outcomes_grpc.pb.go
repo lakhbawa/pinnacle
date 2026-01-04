@@ -24,6 +24,11 @@ const (
 	OutcomeService_ListOutcomes_FullMethodName  = "/outcomes.v1.OutcomeService/ListOutcomes"
 	OutcomeService_UpdateOutcome_FullMethodName = "/outcomes.v1.OutcomeService/UpdateOutcome"
 	OutcomeService_DeleteOutcome_FullMethodName = "/outcomes.v1.OutcomeService/DeleteOutcome"
+	OutcomeService_CreateDriver_FullMethodName  = "/outcomes.v1.OutcomeService/CreateDriver"
+	OutcomeService_GetDriver_FullMethodName     = "/outcomes.v1.OutcomeService/GetDriver"
+	OutcomeService_ListDrivers_FullMethodName   = "/outcomes.v1.OutcomeService/ListDrivers"
+	OutcomeService_UpdateDriver_FullMethodName  = "/outcomes.v1.OutcomeService/UpdateDriver"
+	OutcomeService_DeleteDriver_FullMethodName  = "/outcomes.v1.OutcomeService/DeleteDriver"
 )
 
 // OutcomeServiceClient is the client API for OutcomeService service.
@@ -35,6 +40,11 @@ type OutcomeServiceClient interface {
 	ListOutcomes(ctx context.Context, in *ListOutcomesRequest, opts ...grpc.CallOption) (*ListOutcomesResponse, error)
 	UpdateOutcome(ctx context.Context, in *UpdateOutcomeRequest, opts ...grpc.CallOption) (*Outcome, error)
 	DeleteOutcome(ctx context.Context, in *DeleteOutcomeRequest, opts ...grpc.CallOption) (*DeleteOutcomeResponse, error)
+	CreateDriver(ctx context.Context, in *CreateDriverRequest, opts ...grpc.CallOption) (*Driver, error)
+	GetDriver(ctx context.Context, in *GetDriverRequest, opts ...grpc.CallOption) (*Driver, error)
+	ListDrivers(ctx context.Context, in *ListDriversRequest, opts ...grpc.CallOption) (*ListDriversResponse, error)
+	UpdateDriver(ctx context.Context, in *UpdateDriverRequest, opts ...grpc.CallOption) (*Driver, error)
+	DeleteDriver(ctx context.Context, in *DeleteDriverRequest, opts ...grpc.CallOption) (*DeleteDriverResponse, error)
 }
 
 type outcomeServiceClient struct {
@@ -95,6 +105,56 @@ func (c *outcomeServiceClient) DeleteOutcome(ctx context.Context, in *DeleteOutc
 	return out, nil
 }
 
+func (c *outcomeServiceClient) CreateDriver(ctx context.Context, in *CreateDriverRequest, opts ...grpc.CallOption) (*Driver, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Driver)
+	err := c.cc.Invoke(ctx, OutcomeService_CreateDriver_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *outcomeServiceClient) GetDriver(ctx context.Context, in *GetDriverRequest, opts ...grpc.CallOption) (*Driver, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Driver)
+	err := c.cc.Invoke(ctx, OutcomeService_GetDriver_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *outcomeServiceClient) ListDrivers(ctx context.Context, in *ListDriversRequest, opts ...grpc.CallOption) (*ListDriversResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListDriversResponse)
+	err := c.cc.Invoke(ctx, OutcomeService_ListDrivers_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *outcomeServiceClient) UpdateDriver(ctx context.Context, in *UpdateDriverRequest, opts ...grpc.CallOption) (*Driver, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Driver)
+	err := c.cc.Invoke(ctx, OutcomeService_UpdateDriver_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *outcomeServiceClient) DeleteDriver(ctx context.Context, in *DeleteDriverRequest, opts ...grpc.CallOption) (*DeleteDriverResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteDriverResponse)
+	err := c.cc.Invoke(ctx, OutcomeService_DeleteDriver_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OutcomeServiceServer is the server API for OutcomeService service.
 // All implementations must embed UnimplementedOutcomeServiceServer
 // for forward compatibility.
@@ -104,6 +164,11 @@ type OutcomeServiceServer interface {
 	ListOutcomes(context.Context, *ListOutcomesRequest) (*ListOutcomesResponse, error)
 	UpdateOutcome(context.Context, *UpdateOutcomeRequest) (*Outcome, error)
 	DeleteOutcome(context.Context, *DeleteOutcomeRequest) (*DeleteOutcomeResponse, error)
+	CreateDriver(context.Context, *CreateDriverRequest) (*Driver, error)
+	GetDriver(context.Context, *GetDriverRequest) (*Driver, error)
+	ListDrivers(context.Context, *ListDriversRequest) (*ListDriversResponse, error)
+	UpdateDriver(context.Context, *UpdateDriverRequest) (*Driver, error)
+	DeleteDriver(context.Context, *DeleteDriverRequest) (*DeleteDriverResponse, error)
 	mustEmbedUnimplementedOutcomeServiceServer()
 }
 
@@ -128,6 +193,21 @@ func (UnimplementedOutcomeServiceServer) UpdateOutcome(context.Context, *UpdateO
 }
 func (UnimplementedOutcomeServiceServer) DeleteOutcome(context.Context, *DeleteOutcomeRequest) (*DeleteOutcomeResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteOutcome not implemented")
+}
+func (UnimplementedOutcomeServiceServer) CreateDriver(context.Context, *CreateDriverRequest) (*Driver, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateDriver not implemented")
+}
+func (UnimplementedOutcomeServiceServer) GetDriver(context.Context, *GetDriverRequest) (*Driver, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetDriver not implemented")
+}
+func (UnimplementedOutcomeServiceServer) ListDrivers(context.Context, *ListDriversRequest) (*ListDriversResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListDrivers not implemented")
+}
+func (UnimplementedOutcomeServiceServer) UpdateDriver(context.Context, *UpdateDriverRequest) (*Driver, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateDriver not implemented")
+}
+func (UnimplementedOutcomeServiceServer) DeleteDriver(context.Context, *DeleteDriverRequest) (*DeleteDriverResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteDriver not implemented")
 }
 func (UnimplementedOutcomeServiceServer) mustEmbedUnimplementedOutcomeServiceServer() {}
 func (UnimplementedOutcomeServiceServer) testEmbeddedByValue()                        {}
@@ -240,6 +320,96 @@ func _OutcomeService_DeleteOutcome_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OutcomeService_CreateDriver_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateDriverRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OutcomeServiceServer).CreateDriver(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OutcomeService_CreateDriver_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OutcomeServiceServer).CreateDriver(ctx, req.(*CreateDriverRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OutcomeService_GetDriver_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDriverRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OutcomeServiceServer).GetDriver(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OutcomeService_GetDriver_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OutcomeServiceServer).GetDriver(ctx, req.(*GetDriverRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OutcomeService_ListDrivers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListDriversRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OutcomeServiceServer).ListDrivers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OutcomeService_ListDrivers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OutcomeServiceServer).ListDrivers(ctx, req.(*ListDriversRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OutcomeService_UpdateDriver_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateDriverRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OutcomeServiceServer).UpdateDriver(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OutcomeService_UpdateDriver_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OutcomeServiceServer).UpdateDriver(ctx, req.(*UpdateDriverRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OutcomeService_DeleteDriver_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteDriverRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OutcomeServiceServer).DeleteDriver(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OutcomeService_DeleteDriver_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OutcomeServiceServer).DeleteDriver(ctx, req.(*DeleteDriverRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // OutcomeService_ServiceDesc is the grpc.ServiceDesc for OutcomeService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -266,6 +436,26 @@ var OutcomeService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteOutcome",
 			Handler:    _OutcomeService_DeleteOutcome_Handler,
+		},
+		{
+			MethodName: "CreateDriver",
+			Handler:    _OutcomeService_CreateDriver_Handler,
+		},
+		{
+			MethodName: "GetDriver",
+			Handler:    _OutcomeService_GetDriver_Handler,
+		},
+		{
+			MethodName: "ListDrivers",
+			Handler:    _OutcomeService_ListDrivers_Handler,
+		},
+		{
+			MethodName: "UpdateDriver",
+			Handler:    _OutcomeService_UpdateDriver_Handler,
+		},
+		{
+			MethodName: "DeleteDriver",
+			Handler:    _OutcomeService_DeleteDriver_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

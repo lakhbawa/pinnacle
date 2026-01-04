@@ -109,6 +109,45 @@ export interface DeleteOutcomeResponse {
   success: boolean;
 }
 
+export interface CreateDriverRequest {
+  user_id: string;
+  title: string;
+  outcome_id: string;
+  position?: number | undefined;
+}
+
+export interface GetDriverRequest {
+  id: string;
+}
+
+export interface UpdateDriverRequest {
+  id: string;
+  title?: string | undefined;
+}
+
+export interface ListDriversRequest {
+  user_id: string;
+  page_size: number;
+  page_token: string;
+}
+
+export interface ListDriversResponse {
+  data: Driver[];
+  next_page_token: string;
+  total_count: number;
+  page_size: number;
+  current_page: number;
+  total_pages: number;
+}
+
+export interface DeleteDriverRequest {
+  id: string;
+}
+
+export interface DeleteDriverResponse {
+  success: boolean;
+}
+
 export const OUTCOMES_V1_PACKAGE_NAME = "outcomes.v1";
 
 export interface OutcomeServiceClient {
@@ -121,6 +160,16 @@ export interface OutcomeServiceClient {
   deleteOutcome(request: DeleteOutcomeRequest): Observable<DeleteOutcomeResponse>;
 
   listOutcomes(request: ListOutcomesRequest): Observable<ListOutcomesResponse>;
+
+  createDriver(request: CreateDriverRequest): Observable<Driver>;
+
+  getDriver(request: GetDriverRequest): Observable<Driver>;
+
+  updateDriver(request: UpdateDriverRequest): Observable<Driver>;
+
+  deleteDriver(request: DeleteDriverRequest): Observable<DeleteDriverResponse>;
+
+  listDrivers(request: ListDriversRequest): Observable<ListDriversResponse>;
 }
 
 export interface OutcomeServiceController {
@@ -137,11 +186,36 @@ export interface OutcomeServiceController {
   listOutcomes(
     request: ListOutcomesRequest,
   ): Promise<ListOutcomesResponse> | Observable<ListOutcomesResponse> | ListOutcomesResponse;
+
+  createDriver(request: CreateDriverRequest): Promise<Driver> | Observable<Driver> | Driver;
+
+  getDriver(request: GetDriverRequest): Promise<Driver> | Observable<Driver> | Driver;
+
+  updateDriver(request: UpdateDriverRequest): Promise<Driver> | Observable<Driver> | Driver;
+
+  deleteDriver(
+    request: DeleteDriverRequest,
+  ): Promise<DeleteDriverResponse> | Observable<DeleteDriverResponse> | DeleteDriverResponse;
+
+  listDrivers(
+    request: ListDriversRequest,
+  ): Promise<ListDriversResponse> | Observable<ListDriversResponse> | ListDriversResponse;
 }
 
 export function OutcomeServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createOutcome", "getOutcome", "updateOutcome", "deleteOutcome", "listOutcomes"];
+    const grpcMethods: string[] = [
+      "createOutcome",
+      "getOutcome",
+      "updateOutcome",
+      "deleteOutcome",
+      "listOutcomes",
+      "createDriver",
+      "getDriver",
+      "updateDriver",
+      "deleteDriver",
+      "listDrivers",
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("OutcomeService", method)(constructor.prototype[method], method, descriptor);

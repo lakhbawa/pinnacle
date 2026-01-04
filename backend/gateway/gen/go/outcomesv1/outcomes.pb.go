@@ -910,6 +910,402 @@ func (x *DeleteOutcomeResponse) GetSuccess() bool {
 	return false
 }
 
+type CreateDriverRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Title         string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	OutcomeId     string                 `protobuf:"bytes,3,opt,name=outcome_id,json=outcomeId,proto3" json:"outcome_id,omitempty"`
+	Position      *float32               `protobuf:"fixed32,4,opt,name=position,proto3,oneof" json:"position,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateDriverRequest) Reset() {
+	*x = CreateDriverRequest{}
+	mi := &file_outcomesv1_outcomes_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateDriverRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateDriverRequest) ProtoMessage() {}
+
+func (x *CreateDriverRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_outcomesv1_outcomes_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateDriverRequest.ProtoReflect.Descriptor instead.
+func (*CreateDriverRequest) Descriptor() ([]byte, []int) {
+	return file_outcomesv1_outcomes_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *CreateDriverRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *CreateDriverRequest) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *CreateDriverRequest) GetOutcomeId() string {
+	if x != nil {
+		return x.OutcomeId
+	}
+	return ""
+}
+
+func (x *CreateDriverRequest) GetPosition() float32 {
+	if x != nil && x.Position != nil {
+		return *x.Position
+	}
+	return 0
+}
+
+type GetDriverRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetDriverRequest) Reset() {
+	*x = GetDriverRequest{}
+	mi := &file_outcomesv1_outcomes_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetDriverRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetDriverRequest) ProtoMessage() {}
+
+func (x *GetDriverRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_outcomesv1_outcomes_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetDriverRequest.ProtoReflect.Descriptor instead.
+func (*GetDriverRequest) Descriptor() ([]byte, []int) {
+	return file_outcomesv1_outcomes_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *GetDriverRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type UpdateDriverRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Title         *string                `protobuf:"bytes,2,opt,name=title,proto3,oneof" json:"title,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateDriverRequest) Reset() {
+	*x = UpdateDriverRequest{}
+	mi := &file_outcomesv1_outcomes_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateDriverRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateDriverRequest) ProtoMessage() {}
+
+func (x *UpdateDriverRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_outcomesv1_outcomes_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateDriverRequest.ProtoReflect.Descriptor instead.
+func (*UpdateDriverRequest) Descriptor() ([]byte, []int) {
+	return file_outcomesv1_outcomes_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *UpdateDriverRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *UpdateDriverRequest) GetTitle() string {
+	if x != nil && x.Title != nil {
+		return *x.Title
+	}
+	return ""
+}
+
+type ListDriversRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	PageSize      int32                  `protobuf:"varint,3,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	PageToken     string                 `protobuf:"bytes,4,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListDriversRequest) Reset() {
+	*x = ListDriversRequest{}
+	mi := &file_outcomesv1_outcomes_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListDriversRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListDriversRequest) ProtoMessage() {}
+
+func (x *ListDriversRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_outcomesv1_outcomes_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListDriversRequest.ProtoReflect.Descriptor instead.
+func (*ListDriversRequest) Descriptor() ([]byte, []int) {
+	return file_outcomesv1_outcomes_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *ListDriversRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *ListDriversRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *ListDriversRequest) GetPageToken() string {
+	if x != nil {
+		return x.PageToken
+	}
+	return ""
+}
+
+type ListDriversResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Data          []*Driver              `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty"`
+	NextPageToken string                 `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	TotalCount    int32                  `protobuf:"varint,3,opt,name=total_count,json=totalCount,proto3" json:"total_count,omitempty"`
+	PageSize      int32                  `protobuf:"varint,4,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	CurrentPage   int32                  `protobuf:"varint,5,opt,name=current_page,json=currentPage,proto3" json:"current_page,omitempty"`
+	TotalPages    int32                  `protobuf:"varint,6,opt,name=total_pages,json=totalPages,proto3" json:"total_pages,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListDriversResponse) Reset() {
+	*x = ListDriversResponse{}
+	mi := &file_outcomesv1_outcomes_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListDriversResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListDriversResponse) ProtoMessage() {}
+
+func (x *ListDriversResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_outcomesv1_outcomes_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListDriversResponse.ProtoReflect.Descriptor instead.
+func (*ListDriversResponse) Descriptor() ([]byte, []int) {
+	return file_outcomesv1_outcomes_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *ListDriversResponse) GetData() []*Driver {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+func (x *ListDriversResponse) GetNextPageToken() string {
+	if x != nil {
+		return x.NextPageToken
+	}
+	return ""
+}
+
+func (x *ListDriversResponse) GetTotalCount() int32 {
+	if x != nil {
+		return x.TotalCount
+	}
+	return 0
+}
+
+func (x *ListDriversResponse) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *ListDriversResponse) GetCurrentPage() int32 {
+	if x != nil {
+		return x.CurrentPage
+	}
+	return 0
+}
+
+func (x *ListDriversResponse) GetTotalPages() int32 {
+	if x != nil {
+		return x.TotalPages
+	}
+	return 0
+}
+
+type DeleteDriverRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteDriverRequest) Reset() {
+	*x = DeleteDriverRequest{}
+	mi := &file_outcomesv1_outcomes_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteDriverRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteDriverRequest) ProtoMessage() {}
+
+func (x *DeleteDriverRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_outcomesv1_outcomes_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteDriverRequest.ProtoReflect.Descriptor instead.
+func (*DeleteDriverRequest) Descriptor() ([]byte, []int) {
+	return file_outcomesv1_outcomes_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *DeleteDriverRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type DeleteDriverResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteDriverResponse) Reset() {
+	*x = DeleteDriverResponse{}
+	mi := &file_outcomesv1_outcomes_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteDriverResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteDriverResponse) ProtoMessage() {}
+
+func (x *DeleteDriverResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_outcomesv1_outcomes_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteDriverResponse.ProtoReflect.Descriptor instead.
+func (*DeleteDriverResponse) Descriptor() ([]byte, []int) {
+	return file_outcomesv1_outcomes_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *DeleteDriverResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
 var File_outcomesv1_outcomes_proto protoreflect.FileDescriptor
 
 const file_outcomesv1_outcomes_proto_rawDesc = "" +
@@ -1002,20 +1398,56 @@ const file_outcomesv1_outcomes_proto_rawDesc = "" +
 	"\x14DeleteOutcomeRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"1\n" +
 	"\x15DeleteOutcomeResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\"\x91\x01\n" +
+	"\x13CreateDriverRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x14\n" +
+	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1d\n" +
+	"\n" +
+	"outcome_id\x18\x03 \x01(\tR\toutcomeId\x12\x1f\n" +
+	"\bposition\x18\x04 \x01(\x02H\x00R\bposition\x88\x01\x01B\v\n" +
+	"\t_position\"\"\n" +
+	"\x10GetDriverRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"J\n" +
+	"\x13UpdateDriverRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x19\n" +
+	"\x05title\x18\x02 \x01(\tH\x00R\x05title\x88\x01\x01B\b\n" +
+	"\x06_title\"i\n" +
+	"\x12ListDriversRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1b\n" +
+	"\tpage_size\x18\x03 \x01(\x05R\bpageSize\x12\x1d\n" +
+	"\n" +
+	"page_token\x18\x04 \x01(\tR\tpageToken\"\xe8\x01\n" +
+	"\x13ListDriversResponse\x12'\n" +
+	"\x04data\x18\x01 \x03(\v2\x13.outcomes.v1.DriverR\x04data\x12&\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\x12\x1f\n" +
+	"\vtotal_count\x18\x03 \x01(\x05R\n" +
+	"totalCount\x12\x1b\n" +
+	"\tpage_size\x18\x04 \x01(\x05R\bpageSize\x12!\n" +
+	"\fcurrent_page\x18\x05 \x01(\x05R\vcurrentPage\x12\x1f\n" +
+	"\vtotal_pages\x18\x06 \x01(\x05R\n" +
+	"totalPages\"%\n" +
+	"\x13DeleteDriverRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"0\n" +
+	"\x14DeleteDriverResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess*\xa1\x01\n" +
 	"\rOutcomeStatus\x12\x1e\n" +
 	"\x1aOUTCOME_STATUS_UNSPECIFIED\x10\x00\x12\x19\n" +
 	"\x15OUTCOME_STATUS_ACTIVE\x10\x01\x12\x19\n" +
 	"\x15OUTCOME_STATUS_PARKED\x10\x02\x12\x1c\n" +
 	"\x18OUTCOME_STATUS_COMPLETED\x10\x03\x12\x1c\n" +
-	"\x18OUTCOME_STATUS_ABANDONED\x10\x042\xac\x04\n" +
+	"\x18OUTCOME_STATUS_ABANDONED\x10\x042\xb4\b\n" +
 	"\x0eOutcomeService\x12e\n" +
 	"\rCreateOutcome\x12!.outcomes.v1.CreateOutcomeRequest\x1a\x14.outcomes.v1.Outcome\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/api/v1/outcomes\x12a\n" +
 	"\n" +
 	"GetOutcome\x12\x1e.outcomes.v1.GetOutcomeRequest\x1a\x14.outcomes.v1.Outcome\"\x1d\x82\xd3\xe4\x93\x02\x17\x12\x15/api/v1/outcomes/{id}\x12m\n" +
 	"\fListOutcomes\x12 .outcomes.v1.ListOutcomesRequest\x1a!.outcomes.v1.ListOutcomesResponse\"\x18\x82\xd3\xe4\x93\x02\x12\x12\x10/api/v1/outcomes\x12j\n" +
 	"\rUpdateOutcome\x12!.outcomes.v1.UpdateOutcomeRequest\x1a\x14.outcomes.v1.Outcome\" \x82\xd3\xe4\x93\x02\x1a:\x01*2\x15/api/v1/outcomes/{id}\x12u\n" +
-	"\rDeleteOutcome\x12!.outcomes.v1.DeleteOutcomeRequest\x1a\".outcomes.v1.DeleteOutcomeResponse\"\x1d\x82\xd3\xe4\x93\x02\x17*\x15/api/v1/outcomes/{id}B\x1bZ\x19gateway/gen/go/outcomesv1b\x06proto3"
+	"\rDeleteOutcome\x12!.outcomes.v1.DeleteOutcomeRequest\x1a\".outcomes.v1.DeleteOutcomeResponse\"\x1d\x82\xd3\xe4\x93\x02\x17*\x15/api/v1/outcomes/{id}\x12a\n" +
+	"\fCreateDriver\x12 .outcomes.v1.CreateDriverRequest\x1a\x13.outcomes.v1.Driver\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/v1/drivers\x12]\n" +
+	"\tGetDriver\x12\x1d.outcomes.v1.GetDriverRequest\x1a\x13.outcomes.v1.Driver\"\x1c\x82\xd3\xe4\x93\x02\x16\x12\x14/api/v1/drivers/{id}\x12i\n" +
+	"\vListDrivers\x12\x1f.outcomes.v1.ListDriversRequest\x1a .outcomes.v1.ListDriversResponse\"\x17\x82\xd3\xe4\x93\x02\x11\x12\x0f/api/v1/drivers\x12f\n" +
+	"\fUpdateDriver\x12 .outcomes.v1.UpdateDriverRequest\x1a\x13.outcomes.v1.Driver\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*2\x14/api/v1/drivers/{id}\x12q\n" +
+	"\fDeleteDriver\x12 .outcomes.v1.DeleteDriverRequest\x1a!.outcomes.v1.DeleteDriverResponse\"\x1c\x82\xd3\xe4\x93\x02\x16*\x14/api/v1/drivers/{id}B\x1bZ\x19gateway/gen/go/outcomesv1b\x06proto3"
 
 var (
 	file_outcomesv1_outcomes_proto_rawDescOnce sync.Once
@@ -1030,7 +1462,7 @@ func file_outcomesv1_outcomes_proto_rawDescGZIP() []byte {
 }
 
 var file_outcomesv1_outcomes_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_outcomesv1_outcomes_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_outcomesv1_outcomes_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_outcomesv1_outcomes_proto_goTypes = []any{
 	(OutcomeStatus)(0),            // 0: outcomes.v1.OutcomeStatus
 	(*Outcome)(nil),               // 1: outcomes.v1.Outcome
@@ -1043,46 +1475,64 @@ var file_outcomesv1_outcomes_proto_goTypes = []any{
 	(*ListOutcomesResponse)(nil),  // 8: outcomes.v1.ListOutcomesResponse
 	(*DeleteOutcomeRequest)(nil),  // 9: outcomes.v1.DeleteOutcomeRequest
 	(*DeleteOutcomeResponse)(nil), // 10: outcomes.v1.DeleteOutcomeResponse
-	(*timestamppb.Timestamp)(nil), // 11: google.protobuf.Timestamp
+	(*CreateDriverRequest)(nil),   // 11: outcomes.v1.CreateDriverRequest
+	(*GetDriverRequest)(nil),      // 12: outcomes.v1.GetDriverRequest
+	(*UpdateDriverRequest)(nil),   // 13: outcomes.v1.UpdateDriverRequest
+	(*ListDriversRequest)(nil),    // 14: outcomes.v1.ListDriversRequest
+	(*ListDriversResponse)(nil),   // 15: outcomes.v1.ListDriversResponse
+	(*DeleteDriverRequest)(nil),   // 16: outcomes.v1.DeleteDriverRequest
+	(*DeleteDriverResponse)(nil),  // 17: outcomes.v1.DeleteDriverResponse
+	(*timestamppb.Timestamp)(nil), // 18: google.protobuf.Timestamp
 }
 var file_outcomesv1_outcomes_proto_depIdxs = []int32{
-	11, // 0: outcomes.v1.Outcome.deadline:type_name -> google.protobuf.Timestamp
+	18, // 0: outcomes.v1.Outcome.deadline:type_name -> google.protobuf.Timestamp
 	0,  // 1: outcomes.v1.Outcome.status:type_name -> outcomes.v1.OutcomeStatus
-	11, // 2: outcomes.v1.Outcome.created_at:type_name -> google.protobuf.Timestamp
-	11, // 3: outcomes.v1.Outcome.completed_at:type_name -> google.protobuf.Timestamp
-	11, // 4: outcomes.v1.Outcome.archived_at:type_name -> google.protobuf.Timestamp
+	18, // 2: outcomes.v1.Outcome.created_at:type_name -> google.protobuf.Timestamp
+	18, // 3: outcomes.v1.Outcome.completed_at:type_name -> google.protobuf.Timestamp
+	18, // 4: outcomes.v1.Outcome.archived_at:type_name -> google.protobuf.Timestamp
 	2,  // 5: outcomes.v1.Outcome.drivers:type_name -> outcomes.v1.Driver
 	3,  // 6: outcomes.v1.Outcome.tasks:type_name -> outcomes.v1.Task
-	11, // 7: outcomes.v1.Driver.created_at:type_name -> google.protobuf.Timestamp
+	18, // 7: outcomes.v1.Driver.created_at:type_name -> google.protobuf.Timestamp
 	3,  // 8: outcomes.v1.Driver.tasks:type_name -> outcomes.v1.Task
 	1,  // 9: outcomes.v1.Driver.outcome:type_name -> outcomes.v1.Outcome
-	11, // 10: outcomes.v1.Task.created_at:type_name -> google.protobuf.Timestamp
-	11, // 11: outcomes.v1.Task.updated_at:type_name -> google.protobuf.Timestamp
-	11, // 12: outcomes.v1.Task.scheduled_for:type_name -> google.protobuf.Timestamp
-	11, // 13: outcomes.v1.Task.last_moved_outcome_at:type_name -> google.protobuf.Timestamp
-	11, // 14: outcomes.v1.Task.completed_at:type_name -> google.protobuf.Timestamp
+	18, // 10: outcomes.v1.Task.created_at:type_name -> google.protobuf.Timestamp
+	18, // 11: outcomes.v1.Task.updated_at:type_name -> google.protobuf.Timestamp
+	18, // 12: outcomes.v1.Task.scheduled_for:type_name -> google.protobuf.Timestamp
+	18, // 13: outcomes.v1.Task.last_moved_outcome_at:type_name -> google.protobuf.Timestamp
+	18, // 14: outcomes.v1.Task.completed_at:type_name -> google.protobuf.Timestamp
 	1,  // 15: outcomes.v1.Task.outcome:type_name -> outcomes.v1.Outcome
 	2,  // 16: outcomes.v1.Task.driver:type_name -> outcomes.v1.Driver
-	11, // 17: outcomes.v1.CreateOutcomeRequest.deadline:type_name -> google.protobuf.Timestamp
-	11, // 18: outcomes.v1.UpdateOutcomeRequest.deadline:type_name -> google.protobuf.Timestamp
+	18, // 17: outcomes.v1.CreateOutcomeRequest.deadline:type_name -> google.protobuf.Timestamp
+	18, // 18: outcomes.v1.UpdateOutcomeRequest.deadline:type_name -> google.protobuf.Timestamp
 	0,  // 19: outcomes.v1.UpdateOutcomeRequest.status:type_name -> outcomes.v1.OutcomeStatus
 	0,  // 20: outcomes.v1.ListOutcomesRequest.status:type_name -> outcomes.v1.OutcomeStatus
 	1,  // 21: outcomes.v1.ListOutcomesResponse.data:type_name -> outcomes.v1.Outcome
-	4,  // 22: outcomes.v1.OutcomeService.CreateOutcome:input_type -> outcomes.v1.CreateOutcomeRequest
-	5,  // 23: outcomes.v1.OutcomeService.GetOutcome:input_type -> outcomes.v1.GetOutcomeRequest
-	7,  // 24: outcomes.v1.OutcomeService.ListOutcomes:input_type -> outcomes.v1.ListOutcomesRequest
-	6,  // 25: outcomes.v1.OutcomeService.UpdateOutcome:input_type -> outcomes.v1.UpdateOutcomeRequest
-	9,  // 26: outcomes.v1.OutcomeService.DeleteOutcome:input_type -> outcomes.v1.DeleteOutcomeRequest
-	1,  // 27: outcomes.v1.OutcomeService.CreateOutcome:output_type -> outcomes.v1.Outcome
-	1,  // 28: outcomes.v1.OutcomeService.GetOutcome:output_type -> outcomes.v1.Outcome
-	8,  // 29: outcomes.v1.OutcomeService.ListOutcomes:output_type -> outcomes.v1.ListOutcomesResponse
-	1,  // 30: outcomes.v1.OutcomeService.UpdateOutcome:output_type -> outcomes.v1.Outcome
-	10, // 31: outcomes.v1.OutcomeService.DeleteOutcome:output_type -> outcomes.v1.DeleteOutcomeResponse
-	27, // [27:32] is the sub-list for method output_type
-	22, // [22:27] is the sub-list for method input_type
-	22, // [22:22] is the sub-list for extension type_name
-	22, // [22:22] is the sub-list for extension extendee
-	0,  // [0:22] is the sub-list for field type_name
+	2,  // 22: outcomes.v1.ListDriversResponse.data:type_name -> outcomes.v1.Driver
+	4,  // 23: outcomes.v1.OutcomeService.CreateOutcome:input_type -> outcomes.v1.CreateOutcomeRequest
+	5,  // 24: outcomes.v1.OutcomeService.GetOutcome:input_type -> outcomes.v1.GetOutcomeRequest
+	7,  // 25: outcomes.v1.OutcomeService.ListOutcomes:input_type -> outcomes.v1.ListOutcomesRequest
+	6,  // 26: outcomes.v1.OutcomeService.UpdateOutcome:input_type -> outcomes.v1.UpdateOutcomeRequest
+	9,  // 27: outcomes.v1.OutcomeService.DeleteOutcome:input_type -> outcomes.v1.DeleteOutcomeRequest
+	11, // 28: outcomes.v1.OutcomeService.CreateDriver:input_type -> outcomes.v1.CreateDriverRequest
+	12, // 29: outcomes.v1.OutcomeService.GetDriver:input_type -> outcomes.v1.GetDriverRequest
+	14, // 30: outcomes.v1.OutcomeService.ListDrivers:input_type -> outcomes.v1.ListDriversRequest
+	13, // 31: outcomes.v1.OutcomeService.UpdateDriver:input_type -> outcomes.v1.UpdateDriverRequest
+	16, // 32: outcomes.v1.OutcomeService.DeleteDriver:input_type -> outcomes.v1.DeleteDriverRequest
+	1,  // 33: outcomes.v1.OutcomeService.CreateOutcome:output_type -> outcomes.v1.Outcome
+	1,  // 34: outcomes.v1.OutcomeService.GetOutcome:output_type -> outcomes.v1.Outcome
+	8,  // 35: outcomes.v1.OutcomeService.ListOutcomes:output_type -> outcomes.v1.ListOutcomesResponse
+	1,  // 36: outcomes.v1.OutcomeService.UpdateOutcome:output_type -> outcomes.v1.Outcome
+	10, // 37: outcomes.v1.OutcomeService.DeleteOutcome:output_type -> outcomes.v1.DeleteOutcomeResponse
+	2,  // 38: outcomes.v1.OutcomeService.CreateDriver:output_type -> outcomes.v1.Driver
+	2,  // 39: outcomes.v1.OutcomeService.GetDriver:output_type -> outcomes.v1.Driver
+	15, // 40: outcomes.v1.OutcomeService.ListDrivers:output_type -> outcomes.v1.ListDriversResponse
+	2,  // 41: outcomes.v1.OutcomeService.UpdateDriver:output_type -> outcomes.v1.Driver
+	17, // 42: outcomes.v1.OutcomeService.DeleteDriver:output_type -> outcomes.v1.DeleteDriverResponse
+	33, // [33:43] is the sub-list for method output_type
+	23, // [23:33] is the sub-list for method input_type
+	23, // [23:23] is the sub-list for extension type_name
+	23, // [23:23] is the sub-list for extension extendee
+	0,  // [0:23] is the sub-list for field type_name
 }
 
 func init() { file_outcomesv1_outcomes_proto_init() }
@@ -1092,13 +1542,15 @@ func file_outcomesv1_outcomes_proto_init() {
 	}
 	file_outcomesv1_outcomes_proto_msgTypes[5].OneofWrappers = []any{}
 	file_outcomesv1_outcomes_proto_msgTypes[6].OneofWrappers = []any{}
+	file_outcomesv1_outcomes_proto_msgTypes[10].OneofWrappers = []any{}
+	file_outcomesv1_outcomes_proto_msgTypes[12].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_outcomesv1_outcomes_proto_rawDesc), len(file_outcomesv1_outcomes_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   10,
+			NumMessages:   17,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

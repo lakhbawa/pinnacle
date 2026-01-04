@@ -104,6 +104,49 @@ message DeleteOutcomeResponse {
   bool success = 1;
 }
 
+// drivers
+
+
+message CreateDriverRequest {
+  string user_id = 1;
+  string title = 2;
+  string outcome_id = 3;
+  optional float position = 4;
+}
+
+message GetDriverRequest {
+  string id = 1;
+}
+
+message UpdateDriverRequest {
+  string id = 1;
+  optional string title = 2;
+
+}
+
+message ListDriversRequest {
+  string user_id = 1;
+  int32 page_size = 3;
+  string page_token = 4;
+}
+
+message ListDriversResponse {
+  repeated Driver data = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+  int32 page_size = 4;
+  int32 current_page = 5;
+  int32 total_pages = 6;
+}
+
+message DeleteDriverRequest {
+  string id = 1;
+}
+
+message DeleteDriverResponse {
+  bool success = 1;
+}
+
 service OutcomeService {
   rpc CreateOutcome(CreateOutcomeRequest) returns (Outcome) {
     option (google.api.http) = {
@@ -134,6 +177,39 @@ service OutcomeService {
   rpc DeleteOutcome(DeleteOutcomeRequest) returns (DeleteOutcomeResponse) {
     option (google.api.http) = {
       delete: "/api/v1/outcomes/{id}"
+    };
+  }
+
+
+  rpc CreateDriver(CreateDriverRequest) returns (Driver) {
+    option (google.api.http) = {
+      post: "/api/v1/drivers"
+      body: "*"
+    };
+  }
+
+  rpc GetDriver(GetDriverRequest) returns (Driver) {
+    option (google.api.http) = {
+      get: "/api/v1/drivers/{id}"
+    };
+  }
+
+  rpc ListDrivers(ListDriversRequest) returns (ListDriversResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/drivers"
+    };
+  }
+
+  rpc UpdateDriver(UpdateDriverRequest) returns (Driver) {
+    option (google.api.http) = {
+      patch: "/api/v1/drivers/{id}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteDriver(DeleteDriverRequest) returns (DeleteDriverResponse) {
+    option (google.api.http) = {
+      delete: "/api/v1/drivers/{id}"
     };
   }
 }
