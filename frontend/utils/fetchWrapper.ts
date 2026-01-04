@@ -11,7 +11,7 @@ interface FetchWrapperConfig {
   responseInterceptors?: ResponseInterceptor[];
 }
 
-class FetchWrapper {
+export class FetchWrapper {
   private baseURL: string;
   private defaultHeaders: HeadersInit;
   private timeout: number;
@@ -22,16 +22,15 @@ class FetchWrapper {
     this.baseURL = config.baseURL || '';
     this.defaultHeaders = config.headers || {};
     this.timeout = config.timeout || 30000;
-    this.requestInterceptors = config.requestInterceptors || [];
-    this.responseInterceptors = config.responseInterceptors || [];
+    this.requestInterceptors = [...(config.requestInterceptors || [])];
+    this.responseInterceptors = [...(config.responseInterceptors || [])];
   }
 
-  // Add interceptors
-  addRequestInterceptor(interceptor: RequestInterceptor) {
+  public addRequestInterceptor(interceptor: RequestInterceptor): void {
     this.requestInterceptors.push(interceptor);
   }
 
-  addResponseInterceptor(interceptor: ResponseInterceptor) {
+  public addResponseInterceptor(interceptor: ResponseInterceptor): void {
     this.responseInterceptors.push(interceptor);
   }
 
@@ -80,13 +79,9 @@ class FetchWrapper {
     }
   }
 
-  async request<T = any>(
-    endpoint: string,
-    config: RequestInit = {}
-  ): Promise<T> {
+  async request<T = unknown>(endpoint: string, config: RequestInit = {}): Promise<T> {
     const url = this.buildURL(endpoint);
 
-    // Merge headers
     const headers = {
       ...this.defaultHeaders,
       ...config.headers,
@@ -97,30 +92,22 @@ class FetchWrapper {
       headers,
     };
 
-    // Execute request interceptors
     requestConfig = await this.executeRequestInterceptors(requestConfig);
 
     try {
       let response = await this.fetchWithTimeout(url, requestConfig);
-
-      // Execute response interceptors
       response = await this.executeResponseInterceptors(response);
 
-      // Handle non-OK responses
       if (!response.ok) {
         const errorBody = await response.text();
-        throw new Error(
-          `HTTP ${response.status}: ${response.statusText}\n${errorBody}`
-        );
+        throw new Error(`HTTP ${response.status}: ${response.statusText}\n${errorBody}`);
       }
 
-      // Parse JSON response
       const contentType = response.headers.get('content-type');
       if (contentType && contentType.includes('application/json')) {
         return await response.json();
       }
 
-      // Return text for non-JSON responses
       return (await response.text()) as T;
     } catch (error) {
       console.error(`Fetch error for ${url}:`, error);
@@ -128,12 +115,11 @@ class FetchWrapper {
     }
   }
 
-  // Convenience methods
-  get<T = any>(endpoint: string, config?: RequestInit): Promise<T> {
+  get<T = unknown>(endpoint: string, config?: RequestInit): Promise<T> {
     return this.request<T>(endpoint, { ...config, method: 'GET' });
   }
 
-  post<T = any>(endpoint: string, data?: any, config?: RequestInit): Promise<T> {
+  post<T = unknown>(endpoint: string, data?: unknown, config?: RequestInit): Promise<T> {
     return this.request<T>(endpoint, {
       ...config,
       method: 'POST',
@@ -145,7 +131,7 @@ class FetchWrapper {
     });
   }
 
-  put<T = any>(endpoint: string, data?: any, config?: RequestInit): Promise<T> {
+  put<T = unknown>(endpoint: string, data?: unknown, config?: RequestInit): Promise<T> {
     return this.request<T>(endpoint, {
       ...config,
       method: 'PUT',
@@ -157,7 +143,7 @@ class FetchWrapper {
     });
   }
 
-  patch<T = any>(endpoint: string, data?: any, config?: RequestInit): Promise<T> {
+  patch<T = unknown>(endpoint: string, data?: unknown, config?: RequestInit): Promise<T> {
     return this.request<T>(endpoint, {
       ...config,
       method: 'PATCH',
@@ -169,41 +155,106 @@ class FetchWrapper {
     });
   }
 
-  delete<T = any>(endpoint: string, config?: RequestInit): Promise<T> {
+  delete<T = unknown>(endpoint: string, config?: RequestInit): Promise<T> {
     return this.request<T>(endpoint, { ...config, method: 'DELETE' });
   }
 }
 
-// Create default instance
-export const api = new FetchWrapper({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4700/api/v1',
-  headers: {
-    'Content-Type': 'application/json',
-  },
+// ============================================
+// Factory & Registry
+// ============================================
+
+interface APIRegistry {
+  [key: string]: FetchWrapper;
+}
+
+const apiRegistry: APIRegistry = {};
+const sharedRequestInterceptors: RequestInterceptor[] = [];
+const sharedResponseInterceptors: ResponseInterceptor[] = [];
+
+export function addSharedRequestInterceptor(interceptor: RequestInterceptor): void {
+  sharedRequestInterceptors.push(interceptor);
+  Object.values(apiRegistry).forEach((api) => api.addRequestInterceptor(interceptor));
+}
+
+export function addSharedResponseInterceptor(interceptor: ResponseInterceptor): void {
+  sharedResponseInterceptors.push(interceptor);
+  Object.values(apiRegistry).forEach((api) => api.addResponseInterceptor(interceptor));
+}
+
+export function createAPI(name: string, config: FetchWrapperConfig): FetchWrapper {
+  const instance = new FetchWrapper({
+    ...config,
+    requestInterceptors: [...sharedRequestInterceptors, ...(config.requestInterceptors || [])],
+    responseInterceptors: [...sharedResponseInterceptors, ...(config.responseInterceptors || [])],
+  });
+
+  apiRegistry[name] = instance;
+  return instance;
+}
+
+export function getAPI(name: string): FetchWrapper {
+  const api = apiRegistry[name];
+  if (!api) {
+    throw new Error(`API "${name}" not found. Did you forget to create it?`);
+  }
+  return api;
+}
+
+// ============================================
+// Service Instances
+// ============================================
+
+export const authAPI = createAPI('auth', {
+  baseURL: process.env.NEXT_PUBLIC_AUTH_URL || 'http://127.0.0.1:4000/api/v1',
+  headers: { 'Content-Type': 'application/json' },
+  timeout: 10000,
+});
+
+export const outcomeAPI = createAPI('outcome', {
+  baseURL: process.env.NEXT_PUBLIC_OUTCOME_URL || 'http://127.0.0.1:4002/api/v1',
+  headers: { 'Content-Type': 'application/json' },
   timeout: 30000,
 });
 
-// Add default request interceptor for authentication
-api.addRequestInterceptor((config) => {
-  // Get token from localStorage or cookies
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+export const gatewayAPI = createAPI('gateway', {
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:4000/api/v1',
+  headers: { 'Content-Type': 'application/json' },
+  timeout: 30000,
+});
 
+// ============================================
+// Shared Interceptors
+// ============================================
+
+addSharedRequestInterceptor((config) => {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
   if (token) {
     config.headers = {
       ...config.headers,
       Authorization: `Bearer ${token}`,
     };
   }
-
   return config;
 });
 
-// Add default response interceptor for logging
-api.addResponseInterceptor((response) => {
+addSharedResponseInterceptor((response) => {
   if (process.env.NODE_ENV === 'development') {
-    console.log(`Response from ${response.url}: ${response.status}`);
+    console.log(`[${response.status}] ${response.url}`);
   }
   return response;
 });
 
+// ============================================
+// Service-specific Interceptors
+// ============================================
+
+authAPI.addResponseInterceptor(async (response) => {
+  if (response.status === 401) {
+    console.warn('Auth token expired');
+  }
+  return response;
+});
+
+export const api = gatewayAPI;
 export default api;
