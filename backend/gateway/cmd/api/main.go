@@ -17,7 +17,7 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 
 	boardspb "gateway/gen/go/boardsservice"
-	outcomespb "gateway/gen/go/outcomesv1"
+	outcomesservicepb "gateway/gen/go/outcomes_service/v1"
 )
 
 type APIResponse struct {
@@ -241,7 +241,7 @@ func main() {
 
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 
-	err := outcomespb.RegisterOutcomeServiceHandlerFromEndpoint(
+	err := outcomesservicepb.RegisterOutcomesServiceHandlerFromEndpoint(
 		ctx,
 		grpcMux,
 		"host.docker.internal:4440",
@@ -249,6 +249,16 @@ func main() {
 	)
 	if err != nil {
 		log.Fatalf("Failed to register outcomes gateway: %v", err)
+	}
+
+	err = outcomesservicepb.RegisterDriversServiceHandlerFromEndpoint(
+		ctx,
+		grpcMux,
+		"host.docker.internal:4440",
+		opts,
+	)
+	if err != nil {
+		log.Fatalf("Failed to register drivers gateway: %v", err)
 	}
 
 	err = boardspb.RegisterBoardsServiceHandlerFromEndpoint(

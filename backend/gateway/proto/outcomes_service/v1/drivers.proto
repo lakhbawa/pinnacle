@@ -1,0 +1,80 @@
+syntax = "proto3";
+package outcomes_service.v1;
+
+option go_package = "gateway/gen/go/outcomes_service/v1";
+
+import "google/api/annotations.proto";
+import "outcomes_service/v1/models.proto";
+
+service DriversService {
+  rpc CreateDriver(CreateDriverRequest) returns (Driver) {
+    option (google.api.http) = {
+      post: "/api/v1/outcomes/{outcome_id}/drivers"
+      body: "*"
+    };
+  }
+
+  rpc GetDriver(GetDriverRequest) returns (Driver) {
+    option (google.api.http) = {
+      get: "/api/v1/drivers/{id}"
+    };
+  }
+
+  rpc ListDrivers(ListDriversRequest) returns (ListDriversResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/outcomes/{outcome_id}/drivers"
+    };
+  }
+
+  rpc UpdateDriver(UpdateDriverRequest) returns (Driver) {
+    option (google.api.http) = {
+      patch: "/api/v1/drivers/{id}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteDriver(DeleteDriverRequest) returns (DeleteDriverResponse) {
+    option (google.api.http) = {
+      delete: "/api/v1/drivers/{id}"
+    };
+  }
+}
+
+message CreateDriverRequest {
+  string outcome_id = 1;
+  string title = 2;
+  float position = 3;
+}
+
+message GetDriverRequest {
+  string id = 1;
+}
+
+message UpdateDriverRequest {
+  string id = 1;
+  optional string title = 2;
+  optional float position = 3;
+}
+
+message ListDriversRequest {
+  string outcome_id = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListDriversResponse {
+  repeated Driver data = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+  int32 page_size = 4;
+  int32 current_page = 5;
+  int32 total_pages = 6;
+}
+
+message DeleteDriverRequest {
+  string id = 1;
+}
+
+message DeleteDriverResponse {
+  bool success = 1;
+}

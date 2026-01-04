@@ -1,8 +1,10 @@
-import { outcomes } from '@app/common';
-import { OutcomeStatus } from '../generated/prisma-client';
+import {Driver, Outcome, Task, OutcomeStatus} from "@app/common/types/outcomes_service/v1/models";
+import {OutcomeStatus as PrismaOutcomeStatus} from '../generated/prisma-client';
+import {RpcException} from "@nestjs/microservices";
+import {Status} from "@grpc/grpc-js/build/src/constants";
 
 export class OutcomeMapper {
-  static toProto(outcome: any): outcomes.Outcome {
+  static toProto(outcome: any): Outcome {
     return {
       id: outcome.id,
       user_id: outcome.user_id,
@@ -20,7 +22,7 @@ export class OutcomeMapper {
     };
   }
 
-  static toProtoDriver(driver: any): outcomes.Driver {
+  static toProtoDriver(driver: any): Driver {
     return {
       id: driver.id,
       title: driver.title,
@@ -32,7 +34,7 @@ export class OutcomeMapper {
     };
   }
 
-  static toProtoTask(task: any): outcomes.Task {
+  static toProtoTask(task: any): Task {
     return {
       id: task.id,
       driver_id: task.driver_id,
@@ -65,23 +67,29 @@ export class OutcomeMapper {
     return new Date();
   }
 
-  static toProtoStatus(status: string): outcomes.OutcomeStatus {
-    const map: Record<string, outcomes.OutcomeStatus> = {
-      ACTIVE: outcomes.OutcomeStatus.OUTCOME_STATUS_ACTIVE,
-      PARKED: outcomes.OutcomeStatus.OUTCOME_STATUS_PARKED,
-      COMPLETED: outcomes.OutcomeStatus.OUTCOME_STATUS_COMPLETED,
-      ABANDONED: outcomes.OutcomeStatus.OUTCOME_STATUS_ABANDONED,
-    };
-    return map[status] || outcomes.OutcomeStatus.OUTCOME_STATUS_ACTIVE;
-  }
-
-  static toPrismaStatus(status: outcomes.OutcomeStatus): OutcomeStatus {
-    const map: Record<number, OutcomeStatus> = {
-      [outcomes.OutcomeStatus.OUTCOME_STATUS_ACTIVE]: OutcomeStatus.ACTIVE,
-      [outcomes.OutcomeStatus.OUTCOME_STATUS_PARKED]: OutcomeStatus.PARKED,
-      [outcomes.OutcomeStatus.OUTCOME_STATUS_COMPLETED]: OutcomeStatus.COMPLETED,
-      [outcomes.OutcomeStatus.OUTCOME_STATUS_ABANDONED]: OutcomeStatus.ABANDONED,
+  static toProtoStatus(status: string): OutcomeStatus {
+    const map: Record<string, OutcomeStatus> = {
+      ACTIVE: OutcomeStatus.ACTIVE,
+      PARKED: OutcomeStatus.PARKED,
+      COMPLETED: OutcomeStatus.COMPLETED,
+      ABANDONED: OutcomeStatus.ABANDONED,
     };
     return map[status] || OutcomeStatus.ACTIVE;
   }
+
+  static toPrismaStatus(status: OutcomeStatus): PrismaOutcomeStatus {
+  if (status === OutcomeStatus.UNSPECIFIED) {
+    throw new RpcException({
+      code: Status.INVALID_ARGUMENT,
+      message: 'Outcome status must be specified',
+    });
+  }
+
+  return {
+    [OutcomeStatus.ACTIVE]: PrismaOutcomeStatus.ACTIVE,
+    [OutcomeStatus.PARKED]: PrismaOutcomeStatus.PARKED,
+    [OutcomeStatus.COMPLETED]: PrismaOutcomeStatus.COMPLETED,
+    [OutcomeStatus.ABANDONED]: PrismaOutcomeStatus.ABANDONED,
+  }[status];
+}
 }

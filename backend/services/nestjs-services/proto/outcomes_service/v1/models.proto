@@ -1,0 +1,58 @@
+syntax = "proto3";
+package outcomes_service.v1;
+
+option go_package = "gateway/gen/go/outcomes_service/v1";
+
+
+import "google/protobuf/timestamp.proto";
+
+
+enum OutcomeStatus {
+  UNSPECIFIED = 0;
+  ACTIVE = 1;
+  PARKED = 2;
+  COMPLETED = 3;
+  ABANDONED = 4;
+}
+
+message Outcome {
+  string id = 1;
+  string user_id = 2;
+  string title = 3;
+  string why_it_matters = 4;
+  double success_metric_value = 5;
+  string success_metric_unit = 6;
+  google.protobuf.Timestamp deadline = 7;
+  OutcomeStatus status = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp completed_at = 10;
+  google.protobuf.Timestamp archived_at = 11;
+  repeated Driver drivers = 12;
+  repeated Task tasks = 13;
+}
+
+message Driver {
+  string id = 1;
+  string title = 2;
+  string outcome_id = 3;
+  float position = 4;
+  google.protobuf.Timestamp created_at = 5;
+  repeated Task tasks = 6;
+  Outcome outcome = 7;
+}
+
+message Task {
+  string id = 1;
+  string driver_id = 2;
+  string outcome_id = 3;
+  string user_id = 4;
+  string title = 5;
+  bool is_completed = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+  google.protobuf.Timestamp scheduled_for = 9;
+  google.protobuf.Timestamp last_moved_outcome_at = 10;
+  google.protobuf.Timestamp completed_at = 11;
+  Outcome outcome = 12;
+  Driver driver = 13;
+}

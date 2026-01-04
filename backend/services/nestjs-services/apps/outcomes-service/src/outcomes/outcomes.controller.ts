@@ -1,18 +1,24 @@
 import { Controller } from '@nestjs/common';
-import { OutcomesService } from './outcomes.service';
-import { outcomes } from '@app/common';
-import { Prisma } from '../generated/prisma-client';
+import {Prisma} from '../generated/prisma-client';
 import { OutcomeMapper } from '../mappers/outcome.mapper';
 import { createOutcomeSchema } from '../validators/outcome.schema';
 import { RpcException } from '@nestjs/microservices';
 import { Status } from '@grpc/grpc-js/build/src/constants';
+import {
+    CreateOutcomeRequest,
+    DeleteOutcomeRequest, DeleteOutcomeResponse, GetOutcomeRequest, ListOutcomesRequest, ListOutcomesResponse,
+    OutcomesServiceController,
+    OutcomesServiceControllerMethods, UpdateOutcomeRequest
+} from "@app/common/types/outcomes_service/v1/outcomes";
+import {OutcomesService} from "./outcomes.service";
+import {Outcome} from "@app/common/types/outcomes_service/v1/models";
 
 @Controller()
-@outcomes.OutcomeServiceControllerMethods()
-export class OutcomesController implements outcomes.OutcomeServiceController {
+@OutcomesServiceControllerMethods()
+export class OutcomesController implements OutcomesServiceController {
   constructor(private readonly outcomesService: OutcomesService) {}
 
-  async createOutcome(request: outcomes.CreateOutcomeRequest): Promise<outcomes.Outcome> {
+  async createOutcome(request: CreateOutcomeRequest): Promise<Outcome> {
     console.log('Received request:', JSON.stringify(request, null, 2));
     const result = createOutcomeSchema.safeParse(request);
 
@@ -47,7 +53,7 @@ export class OutcomesController implements outcomes.OutcomeServiceController {
     return OutcomeMapper.toProto(outcome);
   }
 
-  async listOutcomes(request: outcomes.ListOutcomesRequest): Promise<outcomes.ListOutcomesResponse> {
+  async listOutcomes(request: ListOutcomesRequest): Promise<ListOutcomesResponse> {
     const where: Prisma.OutcomeWhereInput = { user_id: request.user_id };
     if (request.status) {
       where.status = OutcomeMapper.toPrismaStatus(request.status);
@@ -84,7 +90,7 @@ export class OutcomesController implements outcomes.OutcomeServiceController {
     };
   }
 
-  async getOutcome(request: outcomes.GetOutcomeRequest): Promise<outcomes.Outcome> {
+  async getOutcome(request: GetOutcomeRequest): Promise<Outcome> {
     const outcome = await this.outcomesService.findOne(
       { id: request.id },
       { drivers: { include: { tasks: true } }, tasks: true }
@@ -98,7 +104,7 @@ export class OutcomesController implements outcomes.OutcomeServiceController {
     return OutcomeMapper.toProto(outcome);
   }
 
-  async updateOutcome(request: outcomes.UpdateOutcomeRequest): Promise<outcomes.Outcome> {
+  async updateOutcome(request: UpdateOutcomeRequest): Promise<Outcome> {
     const data: Prisma.OutcomeUpdateInput = {};
     if (request.title) data.title = request.title;
     if (request.why_it_matters) data.why_it_matters = request.why_it_matters;
@@ -111,7 +117,7 @@ export class OutcomesController implements outcomes.OutcomeServiceController {
     return OutcomeMapper.toProto(outcome);
   }
 
-  async deleteOutcome(request: outcomes.DeleteOutcomeRequest): Promise<outcomes.DeleteOutcomeResponse> {
+  async deleteOutcome(request: DeleteOutcomeRequest): Promise<DeleteOutcomeResponse> {
     await this.outcomesService.remove({ id: request.id });
     return { success: true };
   }
