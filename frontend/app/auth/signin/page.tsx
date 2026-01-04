@@ -59,7 +59,6 @@ export default function SignInPage() {
                                 Email address
                             </label>
                             <input
-                                id="email"
                                 name="email"
                                 type="email"
                                 required
@@ -73,7 +72,6 @@ export default function SignInPage() {
                                 Password
                             </label>
                             <input
-                                id="password"
                                 name="password"
                                 type="password"
                                 required

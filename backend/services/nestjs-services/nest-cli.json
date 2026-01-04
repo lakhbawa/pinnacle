@@ -49,8 +49,8 @@
     "monolith": {
       "type": "application",
       "root": "apps/monolith",
-      "entryFile": "main",
-      "sourceRoot": "apps/monolith/src",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/monolith/tsconfig.app.json"
       }

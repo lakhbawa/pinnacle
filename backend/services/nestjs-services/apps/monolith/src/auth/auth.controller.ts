@@ -4,7 +4,7 @@ import { SignUpDto } from './dto/signup.dto';
 import { SignInDto } from './dto/signin.dto';
 import {RefreshTokenDto} from "./dto/refreshtoken.dto";
 
-@Controller('api/auth')
+@Controller('api/v1/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 

@@ -1,8 +1,9 @@
 import NextAuth from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
-import fetchWrapper from "@/utils/fetchWrapper";
+import {authAPI} from "@/utils/fetchWrapper";
 import {JWT} from "next-auth/jwt";
+import {AuthResponse} from "@/app/types/outcomeTypes";
 
 export const authOptions = {
     providers: [
@@ -20,15 +21,14 @@ export const authOptions = {
                 if (!credentials || !credentials.email || !credentials.password) {
                     throw new Error("Invalid Credentials");
                 }
-                try {
-                    console.log("Attempting signin with:", credentials.email);
 
-                    const res = await fetchWrapper.post("/auth/signin", {
+                try {
+
+                    const res = await authAPI.post<AuthResponse>("/auth/signin", {
                         email: credentials.email,
                         password: credentials.password,
                     });
 
-                    console.log("Backend response:", res);
 
                     const user = res.user;
 
@@ -43,13 +43,13 @@ export const authOptions = {
                         };
                     }
 
-                    console.log("Authentication failed: no user or token");
                     return null;
                 } catch (e: any) {
-                    console.error("Authorization error:", e);
-                    console.error("Error response:", e.response?.data);
-                    // Return a more specific error message
-                    throw new Error(e.response?.data?.message || e.message || "Authentication Error");
+
+
+                    // NextAuth swallows custom errors - this is a known issue
+                    // Throwing here just results in "credentials" error
+                    throw new Error(e.message || "Authentication failed");
                 }
             },
         })
