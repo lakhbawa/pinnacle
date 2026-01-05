@@ -21,13 +21,16 @@
 
     "proto:generate:outcome": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./libs/common/src/types --ts_proto_opt=nestJs=true --ts_proto_opt=snakeToCamel=false -I./proto -I./node_modules ./proto/outcomes_service/v1/*.proto",
     "proto:generate:user": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./libs/common/src/types --ts_proto_opt=nestJs=true --ts_proto_opt=snakeToCamel=false -I./proto -I./node_modules ./proto/users_service/v1/*.proto",
-    "proto:generate:all": "npm run proto:generate:outcome && npm run proto:generate:user",
+    "proto:generate:auth": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./libs/common/src/types --ts_proto_opt=nestJs=true --ts_proto_opt=snakeToCamel=false -I./proto -I./node_modules ./proto/auth_service/v1/*.proto",
+
+    "proto:generate:all": "npm run proto:generate:outcome && npm run proto:generate:user && npm run proto:generate:auth",
     "prisma:generate:monolith": "prisma generate --schema=apps/monolith/prisma/schema.prisma",
 
     "prisma:generate:outcomes": "prisma generate --schema=apps/outcomes-service/prisma/schema.prisma",
     "prisma:generate:users": "prisma generate --schema=apps/users-service/prisma/schema.prisma",
+    "prisma:generate:auth": "prisma generate --schema=apps/auth-service/prisma/schema.prisma",
 
-    "prisma:generate:all": "npm run prisma:generate:monolith && npm run prisma:generate:outcomes && npm run prisma:generate:users"
+    "prisma:generate:all": "npm run prisma:generate:monolith && npm run prisma:generate:outcomes && npm run prisma:generate:users && npm run prisma:generate:auth"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.14.3",

@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package auth_service.v1;
+
+option go_package = "gateway/gen/go/auth_service/v1";
+
+import "auth_service/v1/models.proto";
+
+message CreateAccountRequest {
+  string user_id = 1;
+  string email = 2;
+  string password = 3;
+}
+
+message GetAccountRequest {
+  string user_id = 1;
+}
+
+message UpdateAccountRequest {
+  string user_id = 1;
+  optional string email = 2;
+  optional string password = 3;
+  optional bool is_verified = 4;
+  optional bool is_blocked = 5;
+}
+
+message ListAccountsRequest {
+  string user_id = 1;
+  int32 page_size = 3;
+  string page_token = 4;
+}
+
+message ListAccountsResponse {
+  repeated Account data = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+  int32 page_size = 4;
+  int32 current_page = 5;
+  int32 total_pages = 6;
+}
+
+message DeleteAccountRequest {
+  string user_id = 1;
+}
+
+message DeleteAccountResponse {
+  bool success = 1;
+}
+
+service AccountsService {
+
+  rpc CreateAccount(CreateAccountRequest) returns (Account);
+
+  rpc GetAccount(GetAccountRequest) returns (Account);
+
+  rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse);
+
+  rpc UpdateAccount(UpdateAccountRequest) returns (Account);
+
+  rpc DeleteAccount(DeleteAccountRequest) returns (DeleteAccountResponse);
+}

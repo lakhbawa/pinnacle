@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package auth_service.v1;
+
+option go_package = "gateway/gen/go/auth_service/v1";
+import "auth_service/v1/models.proto";
+
+message SignInRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message SignUpRequest {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+  string password = 4;
+  optional string company = 5;
+
+}
+service AuthService {
+
+  rpc SignIn(SignInRequest) returns (AuthenticatedResponse);
+
+  rpc SignUp(SignUpRequest) returns (AuthenticatedResponse);
+
+}

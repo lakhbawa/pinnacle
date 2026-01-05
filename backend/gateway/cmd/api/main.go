@@ -16,6 +16,7 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/encoding/protojson"
 
+	authservicepb "gateway/gen/go/auth_service/v1"
 	boardspb "gateway/gen/go/boardsservice"
 	outcomesservicepb "gateway/gen/go/outcomes_service/v1"
 	usersservicepb "gateway/gen/go/users_service/v1"
@@ -262,7 +263,7 @@ func main() {
 		log.Fatalf("Failed to register drivers gateway: %v", err)
 	}
 
-    err = outcomesservicepb.RegisterActionsServiceHandlerFromEndpoint(
+	err = outcomesservicepb.RegisterActionsServiceHandlerFromEndpoint(
 		ctx,
 		grpcMux,
 		"host.docker.internal:4440",
@@ -272,7 +273,7 @@ func main() {
 		log.Fatalf("Failed to register actions gateway: %v", err)
 	}
 
-    err = usersservicepb.RegisterUsersServiceHandlerFromEndpoint(
+	err = usersservicepb.RegisterUsersServiceHandlerFromEndpoint(
 		ctx,
 		grpcMux,
 		"host.docker.internal:4450",
@@ -280,6 +281,26 @@ func main() {
 	)
 	if err != nil {
 		log.Fatalf("Failed to register users gateway: %v", err)
+	}
+
+	err = authservicepb.RegisterAccountsServiceHandlerFromEndpoint(
+		ctx,
+		grpcMux,
+		"host.docker.internal:4460",
+		opts,
+	)
+	if err != nil {
+		log.Fatalf("Failed to register auth gateway accounts service: %v", err)
+	}
+
+	err = authservicepb.RegisterAuthServiceHandlerFromEndpoint(
+		ctx,
+		grpcMux,
+		"host.docker.internal:4460",
+		opts,
+	)
+	if err != nil {
+		log.Fatalf("Failed to register auth gateway - authservice: %v", err)
 	}
 
 	err = boardspb.RegisterBoardsServiceHandlerFromEndpoint(

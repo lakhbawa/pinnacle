@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package users_service.v1;
 
-option go_package = "gateway/gen/go/users_service/v1/drivers";
+option go_package = "gateway/gen/go/users_service/v1";
 
 import "users_service/v1/models.proto";
 

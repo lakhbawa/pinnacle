@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package auth_service.v1;
+
+option go_package = "gateway/gen/go/auth_service/v1";
+import "auth_service/v1/models.proto";
+import "google/api/annotations.proto";
+message SignInRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message SignUpRequest {
+  string name = 1;
+  string email = 2;
+  string password = 3;
+  optional string company = 4;
+
+}
+service AuthService {
+
+  rpc SignIn(SignInRequest) returns (AuthenticatedResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/auth/signin"
+    };
+  };
+
+  rpc SignUp(SignUpRequest) returns (AuthenticatedResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/auth/signup"
+    };
+  };
+
+}

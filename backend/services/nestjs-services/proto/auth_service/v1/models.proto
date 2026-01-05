@@ -1,0 +1,29 @@
+syntax = "proto3";
+package auth_service.v1;
+
+option go_package = "gateway/gen/go/auth_service/v1";
+
+
+import "google/protobuf/timestamp.proto";
+
+message Account {
+  string user_id = 1;
+  string email = 2;
+  string password = 3;
+  bool is_verified = 4;
+  bool is_blocked = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message User {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+  optional string company = 4;
+}
+
+message AuthenticatedResponse {
+  User user = 1;
+  string token = 2;
+}

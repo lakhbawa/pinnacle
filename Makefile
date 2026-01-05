@@ -15,6 +15,11 @@ start-user:
 	cd backend/services/nestjs-services && \
 	npm run start:dev users-service
 
+start-auth:
+	docker compose up -d --remove-orphans
+	cd backend/services/nestjs-services && \
+	npm run start:dev auth-service
+
 start-monolith:
 	docker compose up -d --remove-orphans
 	cd backend/services/nestjs-services && \
