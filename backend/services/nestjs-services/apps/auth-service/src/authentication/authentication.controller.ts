@@ -16,10 +16,12 @@ export class AuthenticationController implements AuthServiceController {
 
 
     async signIn(request: SignInRequest): Promise<AuthenticatedResponse> {
+        console.log('Received request:', JSON.stringify(request, null, 2));
         return await this.authenticationService.signIn(request);
     }
 
     async signUp(request: SignUpRequest): Promise<AuthenticatedResponse> {
+
         console.log('Received request:', JSON.stringify(request, null, 2));
         return await this.authenticationService.signUp(request);
 
