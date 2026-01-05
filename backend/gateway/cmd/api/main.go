@@ -268,7 +268,7 @@ func main() {
 		opts,
 	)
 	if err != nil {
-		log.Fatalf("Failed to register drivers gateway: %v", err)
+		log.Fatalf("Failed to register actions gateway: %v", err)
 	}
 
 	err = boardspb.RegisterBoardsServiceHandlerFromEndpoint(

@@ -2,7 +2,7 @@ syntax = "proto3";
 package outcomes_service.v1;
 
 option go_package = "gateway/gen/go/outcomes_service/v1";
-
+import "google/protobuf/timestamp.proto";
 import "google/api/annotations.proto";
 import "outcomes_service/v1/models.proto";
 
@@ -58,11 +58,11 @@ message UpdateActionRequest {
   string id = 1;
   optional string title = 2;
   optional float position = 3;
-  optional float outcome_id = 4;
-  optional float driver_id = 5;
-  optional float user_id = 6;
-  optional float completed_at = 7;
-  optional float scheduled_for = 8;
+  optional string outcome_id = 4;
+  optional string driver_id = 5;
+  optional string user_id = 6;
+  optional google.protobuf.Timestamp completed_at = 7;
+  optional google.protobuf.Timestamp scheduled_for = 8;
 }
 
 message ListActionsRequest {

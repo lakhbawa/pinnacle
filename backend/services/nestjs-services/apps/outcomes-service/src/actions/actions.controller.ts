@@ -1,5 +1,6 @@
 import {Controller} from '@nestjs/common';
 import {ActionsService} from './actions.service';
+import {Prisma} from '../generated/prisma-client';
 import {
     ActionsServiceController,
     ActionsServiceControllerMethods,
@@ -18,6 +19,7 @@ import {RpcException} from "@nestjs/microservices";
 import {Status} from "@grpc/grpc-js/build/src/constants";
 import {createActionSchema} from "../validators/outcomes-service.schema";
 import {ActionMapper} from "../mappers/action.mapper";
+import {getPagination, getPaginationMeta} from "@app/common/helpers/pagination";
 
 @Controller()
 @ActionsServiceControllerMethods()
@@ -57,20 +59,60 @@ export class ActionsController implements ActionsServiceController {
         return ActionMapper.toProtoAction(action);
     }
 
-    getAction(request: GetActionRequest): Promise<Action> {
-        throw new Error('Method not implemented.');
+    async getAction(request: GetActionRequest): Promise<Action> {
+         const action = await this.actionsService.findOne(
+            {id: request.id},
+            {driver: true, outcome: true}
+        );
+        if (!action) {
+            throw new RpcException({
+                code: Status.NOT_FOUND,
+                message: 'Action not found',
+            });
+        }
+        return ActionMapper.toProtoAction(action);
     }
 
-    listActions(request: ListActionsRequest): Promise<ListActionsResponse> {
-        throw new Error('Method not implemented.');
+    async listActions(request: ListActionsRequest): Promise<ListActionsResponse> {
+        const where: Prisma.ActionWhereInput = {};
+
+        const {pageSize, currentPage, skip} = getPagination(request);
+
+        const [totalCount, actions] = await Promise.all([
+            this.actionsService.count({where}),
+            this.actionsService.findAll({
+                where,
+                skip,
+                take: pageSize,
+                include: {driver: true, outcome: true},
+                orderBy: {created_at: 'desc'},
+            }),
+        ]);
+
+        const meta = getPaginationMeta(totalCount, pageSize, currentPage);
+
+        return {
+            data: actions.map((o) => ActionMapper.toProtoAction(o)),
+            ...meta,
+        };
     }
 
-    updateAction(request: UpdateActionRequest): Promise<Action> {
-        throw new Error('Method not implemented.');
+    async updateAction(request: UpdateActionRequest): Promise<Action> {
+                console.log('Received request:', JSON.stringify(request, null, 2));
+        const data: Prisma.ActionUpdateInput = {};
+        if (request.title) data.title = request.title;
+         if (request.scheduled_for) data.scheduled_for = ActionMapper.toDate(request.scheduled_for);
+         if (request.completed_at) data.completed_at = ActionMapper.toDate(request.completed_at);
+         // if (request.driver_id) data.driver_id = request.driver_id;
+         // if (request.outcome_id) data.outcome_id = request.outcome_id;
+
+        const action = await this.actionsService.update({where: {id: request.id}, data});
+        return ActionMapper.toProtoAction(action);
     }
 
-    deleteAction(request: DeleteActionRequest): Promise<DeleteActionResponse> {
-        throw new Error('Method not implemented.');
+    async deleteAction(request: DeleteActionRequest): Promise<DeleteActionResponse> {
+         await this.actionsService.remove({id: request.id});
+        return {success: true};
     }
 
 }

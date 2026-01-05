@@ -7,6 +7,7 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
+import { Timestamp } from "../../google/protobuf/timestamp";
 import { Action } from "./models";
 
 export const protobufPackage = "outcomes_service.v1";
@@ -28,11 +29,11 @@ export interface UpdateActionRequest {
   id: string;
   title?: string | undefined;
   position?: number | undefined;
-  outcome_id?: number | undefined;
-  driver_id?: number | undefined;
-  user_id?: number | undefined;
-  completed_at?: number | undefined;
-  scheduled_for?: number | undefined;
+  outcome_id?: string | undefined;
+  driver_id?: string | undefined;
+  user_id?: string | undefined;
+  completed_at?: Timestamp | undefined;
+  scheduled_for?: Timestamp | undefined;
 }
 
 export interface ListActionsRequest {

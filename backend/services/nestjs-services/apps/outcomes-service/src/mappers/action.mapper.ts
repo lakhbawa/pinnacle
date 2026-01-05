@@ -38,4 +38,11 @@ export class ActionMapper {
             nanos: (date.getTime() % 1000) * 1000000,
         };
     }
+
+      static toDate(timestamp: any): Date {
+    if (!timestamp) return new Date();
+    if (typeof timestamp === 'string') return new Date(timestamp);
+    if (timestamp.seconds !== undefined) return new Date(timestamp.seconds * 1000);
+    return new Date();
+  }
 }

@@ -10,6 +10,7 @@ import (
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -155,11 +156,11 @@ type UpdateActionRequest struct {
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Title         *string                `protobuf:"bytes,2,opt,name=title,proto3,oneof" json:"title,omitempty"`
 	Position      *float32               `protobuf:"fixed32,3,opt,name=position,proto3,oneof" json:"position,omitempty"`
-	OutcomeId     *float32               `protobuf:"fixed32,4,opt,name=outcome_id,json=outcomeId,proto3,oneof" json:"outcome_id,omitempty"`
-	DriverId      *float32               `protobuf:"fixed32,5,opt,name=driver_id,json=driverId,proto3,oneof" json:"driver_id,omitempty"`
-	UserId        *float32               `protobuf:"fixed32,6,opt,name=user_id,json=userId,proto3,oneof" json:"user_id,omitempty"`
-	CompletedAt   *float32               `protobuf:"fixed32,7,opt,name=completed_at,json=completedAt,proto3,oneof" json:"completed_at,omitempty"`
-	ScheduledFor  *float32               `protobuf:"fixed32,8,opt,name=scheduled_for,json=scheduledFor,proto3,oneof" json:"scheduled_for,omitempty"`
+	OutcomeId     *string                `protobuf:"bytes,4,opt,name=outcome_id,json=outcomeId,proto3,oneof" json:"outcome_id,omitempty"`
+	DriverId      *string                `protobuf:"bytes,5,opt,name=driver_id,json=driverId,proto3,oneof" json:"driver_id,omitempty"`
+	UserId        *string                `protobuf:"bytes,6,opt,name=user_id,json=userId,proto3,oneof" json:"user_id,omitempty"`
+	CompletedAt   *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=completed_at,json=completedAt,proto3,oneof" json:"completed_at,omitempty"`
+	ScheduledFor  *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=scheduled_for,json=scheduledFor,proto3,oneof" json:"scheduled_for,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -215,39 +216,39 @@ func (x *UpdateActionRequest) GetPosition() float32 {
 	return 0
 }
 
-func (x *UpdateActionRequest) GetOutcomeId() float32 {
+func (x *UpdateActionRequest) GetOutcomeId() string {
 	if x != nil && x.OutcomeId != nil {
 		return *x.OutcomeId
 	}
-	return 0
+	return ""
 }
 
-func (x *UpdateActionRequest) GetDriverId() float32 {
+func (x *UpdateActionRequest) GetDriverId() string {
 	if x != nil && x.DriverId != nil {
 		return *x.DriverId
 	}
-	return 0
+	return ""
 }
 
-func (x *UpdateActionRequest) GetUserId() float32 {
+func (x *UpdateActionRequest) GetUserId() string {
 	if x != nil && x.UserId != nil {
 		return *x.UserId
 	}
-	return 0
+	return ""
 }
 
-func (x *UpdateActionRequest) GetCompletedAt() float32 {
-	if x != nil && x.CompletedAt != nil {
-		return *x.CompletedAt
+func (x *UpdateActionRequest) GetCompletedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CompletedAt
 	}
-	return 0
+	return nil
 }
 
-func (x *UpdateActionRequest) GetScheduledFor() float32 {
-	if x != nil && x.ScheduledFor != nil {
-		return *x.ScheduledFor
+func (x *UpdateActionRequest) GetScheduledFor() *timestamppb.Timestamp {
+	if x != nil {
+		return x.ScheduledFor
 	}
-	return 0
+	return nil
 }
 
 type ListActionsRequest struct {
@@ -486,7 +487,7 @@ var File_outcomes_service_v1_actions_proto protoreflect.FileDescriptor
 
 const file_outcomes_service_v1_actions_proto_rawDesc = "" +
 	"\n" +
-	"!outcomes_service/v1/actions.proto\x12\x13outcomes_service.v1\x1a\x1cgoogle/api/annotations.proto\x1a outcomes_service/v1/models.proto\"\xea\x01\n" +
+	"!outcomes_service/v1/actions.proto\x12\x13outcomes_service.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1cgoogle/api/annotations.proto\x1a outcomes_service/v1/models.proto\"\xea\x01\n" +
 	"\x13CreateActionRequest\x12\x14\n" +
 	"\x05title\x18\x01 \x01(\tR\x05title\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x1d\n" +
@@ -498,17 +499,17 @@ const file_outcomes_service_v1_actions_proto_rawDesc = "" +
 	"\x0e_scheduled_forB\v\n" +
 	"\t_position\"\"\n" +
 	"\x10GetActionRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\xfa\x02\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\xb2\x03\n" +
 	"\x13UpdateActionRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x19\n" +
 	"\x05title\x18\x02 \x01(\tH\x00R\x05title\x88\x01\x01\x12\x1f\n" +
 	"\bposition\x18\x03 \x01(\x02H\x01R\bposition\x88\x01\x01\x12\"\n" +
 	"\n" +
-	"outcome_id\x18\x04 \x01(\x02H\x02R\toutcomeId\x88\x01\x01\x12 \n" +
-	"\tdriver_id\x18\x05 \x01(\x02H\x03R\bdriverId\x88\x01\x01\x12\x1c\n" +
-	"\auser_id\x18\x06 \x01(\x02H\x04R\x06userId\x88\x01\x01\x12&\n" +
-	"\fcompleted_at\x18\a \x01(\x02H\x05R\vcompletedAt\x88\x01\x01\x12(\n" +
-	"\rscheduled_for\x18\b \x01(\x02H\x06R\fscheduledFor\x88\x01\x01B\b\n" +
+	"outcome_id\x18\x04 \x01(\tH\x02R\toutcomeId\x88\x01\x01\x12 \n" +
+	"\tdriver_id\x18\x05 \x01(\tH\x03R\bdriverId\x88\x01\x01\x12\x1c\n" +
+	"\auser_id\x18\x06 \x01(\tH\x04R\x06userId\x88\x01\x01\x12B\n" +
+	"\fcompleted_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampH\x05R\vcompletedAt\x88\x01\x01\x12D\n" +
+	"\rscheduled_for\x18\b \x01(\v2\x1a.google.protobuf.TimestampH\x06R\fscheduledFor\x88\x01\x01B\b\n" +
 	"\x06_titleB\v\n" +
 	"\t_positionB\r\n" +
 	"\v_outcome_idB\f\n" +
@@ -558,32 +559,35 @@ func file_outcomes_service_v1_actions_proto_rawDescGZIP() []byte {
 
 var file_outcomes_service_v1_actions_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_outcomes_service_v1_actions_proto_goTypes = []any{
-	(*CreateActionRequest)(nil),  // 0: outcomes_service.v1.CreateActionRequest
-	(*GetActionRequest)(nil),     // 1: outcomes_service.v1.GetActionRequest
-	(*UpdateActionRequest)(nil),  // 2: outcomes_service.v1.UpdateActionRequest
-	(*ListActionsRequest)(nil),   // 3: outcomes_service.v1.ListActionsRequest
-	(*ListActionsResponse)(nil),  // 4: outcomes_service.v1.ListActionsResponse
-	(*DeleteActionRequest)(nil),  // 5: outcomes_service.v1.DeleteActionRequest
-	(*DeleteActionResponse)(nil), // 6: outcomes_service.v1.DeleteActionResponse
-	(*Action)(nil),               // 7: outcomes_service.v1.Action
+	(*CreateActionRequest)(nil),   // 0: outcomes_service.v1.CreateActionRequest
+	(*GetActionRequest)(nil),      // 1: outcomes_service.v1.GetActionRequest
+	(*UpdateActionRequest)(nil),   // 2: outcomes_service.v1.UpdateActionRequest
+	(*ListActionsRequest)(nil),    // 3: outcomes_service.v1.ListActionsRequest
+	(*ListActionsResponse)(nil),   // 4: outcomes_service.v1.ListActionsResponse
+	(*DeleteActionRequest)(nil),   // 5: outcomes_service.v1.DeleteActionRequest
+	(*DeleteActionResponse)(nil),  // 6: outcomes_service.v1.DeleteActionResponse
+	(*timestamppb.Timestamp)(nil), // 7: google.protobuf.Timestamp
+	(*Action)(nil),                // 8: outcomes_service.v1.Action
 }
 var file_outcomes_service_v1_actions_proto_depIdxs = []int32{
-	7, // 0: outcomes_service.v1.ListActionsResponse.data:type_name -> outcomes_service.v1.Action
-	0, // 1: outcomes_service.v1.ActionsService.CreateAction:input_type -> outcomes_service.v1.CreateActionRequest
-	1, // 2: outcomes_service.v1.ActionsService.GetAction:input_type -> outcomes_service.v1.GetActionRequest
-	3, // 3: outcomes_service.v1.ActionsService.ListActions:input_type -> outcomes_service.v1.ListActionsRequest
-	2, // 4: outcomes_service.v1.ActionsService.UpdateAction:input_type -> outcomes_service.v1.UpdateActionRequest
-	5, // 5: outcomes_service.v1.ActionsService.DeleteAction:input_type -> outcomes_service.v1.DeleteActionRequest
-	7, // 6: outcomes_service.v1.ActionsService.CreateAction:output_type -> outcomes_service.v1.Action
-	7, // 7: outcomes_service.v1.ActionsService.GetAction:output_type -> outcomes_service.v1.Action
-	4, // 8: outcomes_service.v1.ActionsService.ListActions:output_type -> outcomes_service.v1.ListActionsResponse
-	7, // 9: outcomes_service.v1.ActionsService.UpdateAction:output_type -> outcomes_service.v1.Action
-	6, // 10: outcomes_service.v1.ActionsService.DeleteAction:output_type -> outcomes_service.v1.DeleteActionResponse
-	6, // [6:11] is the sub-list for method output_type
-	1, // [1:6] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	7, // 0: outcomes_service.v1.UpdateActionRequest.completed_at:type_name -> google.protobuf.Timestamp
+	7, // 1: outcomes_service.v1.UpdateActionRequest.scheduled_for:type_name -> google.protobuf.Timestamp
+	8, // 2: outcomes_service.v1.ListActionsResponse.data:type_name -> outcomes_service.v1.Action
+	0, // 3: outcomes_service.v1.ActionsService.CreateAction:input_type -> outcomes_service.v1.CreateActionRequest
+	1, // 4: outcomes_service.v1.ActionsService.GetAction:input_type -> outcomes_service.v1.GetActionRequest
+	3, // 5: outcomes_service.v1.ActionsService.ListActions:input_type -> outcomes_service.v1.ListActionsRequest
+	2, // 6: outcomes_service.v1.ActionsService.UpdateAction:input_type -> outcomes_service.v1.UpdateActionRequest
+	5, // 7: outcomes_service.v1.ActionsService.DeleteAction:input_type -> outcomes_service.v1.DeleteActionRequest
+	8, // 8: outcomes_service.v1.ActionsService.CreateAction:output_type -> outcomes_service.v1.Action
+	8, // 9: outcomes_service.v1.ActionsService.GetAction:output_type -> outcomes_service.v1.Action
+	4, // 10: outcomes_service.v1.ActionsService.ListActions:output_type -> outcomes_service.v1.ListActionsResponse
+	8, // 11: outcomes_service.v1.ActionsService.UpdateAction:output_type -> outcomes_service.v1.Action
+	6, // 12: outcomes_service.v1.ActionsService.DeleteAction:output_type -> outcomes_service.v1.DeleteActionResponse
+	8, // [8:13] is the sub-list for method output_type
+	3, // [3:8] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_outcomes_service_v1_actions_proto_init() }
