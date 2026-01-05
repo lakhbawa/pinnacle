@@ -31,6 +31,7 @@ export interface ListDriversRequest {
   user_id: string;
   page_size: number;
   page_token: string;
+  outcome_id: string;
 }
 
 export interface ListDriversResponse {

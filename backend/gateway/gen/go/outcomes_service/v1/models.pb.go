@@ -220,11 +220,12 @@ func (x *Outcome) GetActions() []*Action {
 type Driver struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	OutcomeId     string                 `protobuf:"bytes,2,opt,name=outcome_id,json=outcomeId,proto3" json:"outcome_id,omitempty"`
-	Title         string                 `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
+	Title         string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	OutcomeId     string                 `protobuf:"bytes,3,opt,name=outcome_id,json=outcomeId,proto3" json:"outcome_id,omitempty"`
 	Position      float32                `protobuf:"fixed32,4,opt,name=position,proto3" json:"position,omitempty"`
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	Actions       []*Action              `protobuf:"bytes,6,rep,name=actions,proto3" json:"actions,omitempty"`
+	Outcome       *Outcome               `protobuf:"bytes,7,opt,name=outcome,proto3" json:"outcome,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -266,16 +267,16 @@ func (x *Driver) GetId() string {
 	return ""
 }
 
-func (x *Driver) GetOutcomeId() string {
+func (x *Driver) GetTitle() string {
 	if x != nil {
-		return x.OutcomeId
+		return x.Title
 	}
 	return ""
 }
 
-func (x *Driver) GetTitle() string {
+func (x *Driver) GetOutcomeId() string {
 	if x != nil {
-		return x.Title
+		return x.OutcomeId
 	}
 	return ""
 }
@@ -297,6 +298,13 @@ func (x *Driver) GetCreatedAt() *timestamppb.Timestamp {
 func (x *Driver) GetActions() []*Action {
 	if x != nil {
 		return x.Actions
+	}
+	return nil
+}
+
+func (x *Driver) GetOutcome() *Outcome {
+	if x != nil {
+		return x.Outcome
 	}
 	return nil
 }
@@ -438,16 +446,17 @@ const file_outcomes_service_v1_models_proto_rawDesc = "" +
 	"\varchived_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\n" +
 	"archivedAt\x125\n" +
 	"\adrivers\x18\f \x03(\v2\x1b.outcomes_service.v1.DriverR\adrivers\x125\n" +
-	"\aactions\x18\r \x03(\v2\x1b.outcomes_service.v1.ActionR\aactions\"\xdb\x01\n" +
+	"\aactions\x18\r \x03(\v2\x1b.outcomes_service.v1.ActionR\aactions\"\x93\x02\n" +
 	"\x06Driver\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
+	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1d\n" +
 	"\n" +
-	"outcome_id\x18\x02 \x01(\tR\toutcomeId\x12\x14\n" +
-	"\x05title\x18\x03 \x01(\tR\x05title\x12\x1a\n" +
+	"outcome_id\x18\x03 \x01(\tR\toutcomeId\x12\x1a\n" +
 	"\bposition\x18\x04 \x01(\x02R\bposition\x129\n" +
 	"\n" +
 	"created_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x125\n" +
-	"\aactions\x18\x06 \x03(\v2\x1b.outcomes_service.v1.ActionR\aactions\"\xc8\x03\n" +
+	"\aactions\x18\x06 \x03(\v2\x1b.outcomes_service.v1.ActionR\aactions\x126\n" +
+	"\aoutcome\x18\a \x01(\v2\x1c.outcomes_service.v1.OutcomeR\aoutcome\"\xc8\x03\n" +
 	"\x06Action\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
 	"\tdriver_id\x18\x02 \x01(\tR\bdriverId\x12\x1d\n" +
@@ -501,16 +510,17 @@ var file_outcomes_service_v1_models_proto_depIdxs = []int32{
 	3,  // 6: outcomes_service.v1.Outcome.actions:type_name -> outcomes_service.v1.Action
 	4,  // 7: outcomes_service.v1.Driver.created_at:type_name -> google.protobuf.Timestamp
 	3,  // 8: outcomes_service.v1.Driver.actions:type_name -> outcomes_service.v1.Action
-	4,  // 9: outcomes_service.v1.Action.created_at:type_name -> google.protobuf.Timestamp
-	4,  // 10: outcomes_service.v1.Action.updated_at:type_name -> google.protobuf.Timestamp
-	4,  // 11: outcomes_service.v1.Action.scheduled_for:type_name -> google.protobuf.Timestamp
-	4,  // 12: outcomes_service.v1.Action.last_moved_outcome_at:type_name -> google.protobuf.Timestamp
-	4,  // 13: outcomes_service.v1.Action.completed_at:type_name -> google.protobuf.Timestamp
-	14, // [14:14] is the sub-list for method output_type
-	14, // [14:14] is the sub-list for method input_type
-	14, // [14:14] is the sub-list for extension type_name
-	14, // [14:14] is the sub-list for extension extendee
-	0,  // [0:14] is the sub-list for field type_name
+	1,  // 9: outcomes_service.v1.Driver.outcome:type_name -> outcomes_service.v1.Outcome
+	4,  // 10: outcomes_service.v1.Action.created_at:type_name -> google.protobuf.Timestamp
+	4,  // 11: outcomes_service.v1.Action.updated_at:type_name -> google.protobuf.Timestamp
+	4,  // 12: outcomes_service.v1.Action.scheduled_for:type_name -> google.protobuf.Timestamp
+	4,  // 13: outcomes_service.v1.Action.last_moved_outcome_at:type_name -> google.protobuf.Timestamp
+	4,  // 14: outcomes_service.v1.Action.completed_at:type_name -> google.protobuf.Timestamp
+	15, // [15:15] is the sub-list for method output_type
+	15, // [15:15] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_outcomes_service_v1_models_proto_init() }

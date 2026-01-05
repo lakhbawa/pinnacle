@@ -4,6 +4,26 @@ export interface Outcome {
     position: string;
     createdAt: string;
     updatedAt: string;
+    drivers: Driver[];
+}
+
+export type Driver = {
+    id: string;
+    title: string;
+    createdAt: string;
+    updatedAt: string;
+    outcome?: Outcome;
+    actions: Action[];
+}
+
+export type Action = {
+    id: string;
+    title: string;
+    user_id: string;
+    outcome_id: string;
+    driver_id: string;
+    outcome: Outcome;
+    driver: Driver;
 }
 
 

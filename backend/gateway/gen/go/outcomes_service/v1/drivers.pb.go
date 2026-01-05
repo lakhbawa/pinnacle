@@ -196,9 +196,10 @@ func (x *UpdateDriverRequest) GetPosition() float32 {
 
 type ListDriversRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	OutcomeId     string                 `protobuf:"bytes,1,opt,name=outcome_id,json=outcomeId,proto3" json:"outcome_id,omitempty"`
-	PageSize      int32                  `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
-	PageToken     string                 `protobuf:"bytes,3,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	PageSize      int32                  `protobuf:"varint,3,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	PageToken     string                 `protobuf:"bytes,4,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	OutcomeId     string                 `protobuf:"bytes,5,opt,name=outcome_id,json=outcomeId,proto3" json:"outcome_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -233,9 +234,9 @@ func (*ListDriversRequest) Descriptor() ([]byte, []int) {
 	return file_outcomes_service_v1_drivers_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *ListDriversRequest) GetOutcomeId() string {
+func (x *ListDriversRequest) GetUserId() string {
 	if x != nil {
-		return x.OutcomeId
+		return x.UserId
 	}
 	return ""
 }
@@ -250,6 +251,13 @@ func (x *ListDriversRequest) GetPageSize() int32 {
 func (x *ListDriversRequest) GetPageToken() string {
 	if x != nil {
 		return x.PageToken
+	}
+	return ""
+}
+
+func (x *ListDriversRequest) GetOutcomeId() string {
+	if x != nil {
+		return x.OutcomeId
 	}
 	return ""
 }
@@ -445,13 +453,14 @@ const file_outcomes_service_v1_drivers_proto_rawDesc = "" +
 	"\x05title\x18\x02 \x01(\tH\x00R\x05title\x88\x01\x01\x12\x1f\n" +
 	"\bposition\x18\x03 \x01(\x02H\x01R\bposition\x88\x01\x01B\b\n" +
 	"\x06_titleB\v\n" +
-	"\t_position\"o\n" +
-	"\x12ListDriversRequest\x12\x1d\n" +
+	"\t_position\"\x88\x01\n" +
+	"\x12ListDriversRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1b\n" +
+	"\tpage_size\x18\x03 \x01(\x05R\bpageSize\x12\x1d\n" +
 	"\n" +
-	"outcome_id\x18\x01 \x01(\tR\toutcomeId\x12\x1b\n" +
-	"\tpage_size\x18\x02 \x01(\x05R\bpageSize\x12\x1d\n" +
+	"page_token\x18\x04 \x01(\tR\tpageToken\x12\x1d\n" +
 	"\n" +
-	"page_token\x18\x03 \x01(\tR\tpageToken\"\xf0\x01\n" +
+	"outcome_id\x18\x05 \x01(\tR\toutcomeId\"\xf0\x01\n" +
 	"\x13ListDriversResponse\x12/\n" +
 	"\x04data\x18\x01 \x03(\v2\x1b.outcomes_service.v1.DriverR\x04data\x12&\n" +
 	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\x12\x1f\n" +

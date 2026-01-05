@@ -65,8 +65,14 @@ export class DriversController implements DriversServiceController {
     }
 
     async listDrivers(request: ListDriversRequest): Promise<ListDriversResponse> {
-        const where: Prisma.DriverWhereInput = {user_id: request.user_id};
+        const where: Prisma.DriverWhereInput = {};
 
+        if (request.user_id) {
+            where.user_id = request.user_id;
+        }
+        if (request.outcome_id) {
+            where.outcome_id = request.outcome_id;
+        }
         const {pageSize, currentPage, skip} = getPagination(request);
 
         const [totalCount, outcomes] = await Promise.all([

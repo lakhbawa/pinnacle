@@ -2,13 +2,13 @@
 import {use, useEffect, useState} from "react";
 import {outcomeAPI} from "@/utils/fetchWrapper";
 import Link from "next/link";
-import {Outcome} from "@/app/types/outcomeTypes";
+import {Action} from "@/app/types/outcomeTypes";
 
 
-export default function ViewOutcomePage({params}: { params: Promise<{ id: string, username:string }> }) {
+export default function ViewActionPage({params}: { params: Promise<{ outcome_id: string, driver_id: string,action_id: string, username:string }> }) {
 
-    const [projectData, setOutcomeData] = useState<Outcome | null>(null);
-    const {id, username} = use(params);
+    const [actionData, setActionData] = useState<Action | null>(null);
+    const {outcome_id, driver_id,action_id, username} = use(params);
 
     // const username = 'lakhbawa'
     const [loading, setLoading] = useState(true)
@@ -18,26 +18,26 @@ export default function ViewOutcomePage({params}: { params: Promise<{ id: string
         async function fetchData() {
             try {
                 setLoading(true)
-                const data = await outcomeAPI.get(`/outcomes/${id}?include[]=lists&include[]=lists.issues`);
-                setOutcomeData(data.data)
+                const data = await outcomeAPI.get(`/actions/${action_id}`);
+                setActionData(data.data)
             } catch (err) {
-                setError(err instanceof Error ? err.message : 'Failed to load project')
+                setError(err instanceof Error ? err.message : 'Failed to load driver')
             } finally {
                 setLoading(false)
             }
         }
 
-        if (id) {
+        if (action_id) {
             fetchData()
         }
-    }, [id])
+    }, [action_id])
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
                     <div
                         className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-2"></div>
-                    <p className="text-slate-600">Loading project...</p>
+                    <p className="text-slate-600">Loading driver...</p>
                 </div>
             </div>
         )
@@ -60,16 +60,16 @@ export default function ViewOutcomePage({params}: { params: Promise<{ id: string
         )
     }
 
-    if (!projectData) {
+    if (!actionData) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
                 <div className="bg-slate-100 border border-slate-200 rounded-lg p-8 max-w-md text-center shadow-sm">
-                    <p className="text-slate-600 font-medium">No project found</p>
+                    <p className="text-slate-600 font-medium">No driver found</p>
                     <Link
                         href="/outcomes"
                         className="mt-4 inline-block px-4 py-2 bg-slate-200 text-slate-700 rounded-md hover:bg-slate-300 transition-colors"
                     >
-                        Back to Outcomes
+                        Back to Actions
                     </Link>
                 </div>
             </div>
@@ -77,10 +77,15 @@ export default function ViewOutcomePage({params}: { params: Promise<{ id: string
     }
     return (
         <>
-            { JSON.stringify(projectData)}
-            <h1>Outcome Details</h1>
+            { JSON.stringify(actionData)}
+            <h1>Action Details</h1>
 
-            Title : { projectData.title}
+            Title : { actionData.title}
+
+
+            <div>
+
+            </div>
         </>
     )
 
