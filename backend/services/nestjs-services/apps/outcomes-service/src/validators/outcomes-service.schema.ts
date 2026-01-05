@@ -31,6 +31,16 @@ export const createDriverSchema = z.object({
   outcome_id: required(),
 })
 
+export const createActionSchema = z.object({
+  user_id: required(),
+  title: required(),
+  outcome_id: required(),
+  driver_id: required(),
+})
+
+
+
+
 export type CreateOutcomeInput = z.infer<typeof createOutcomeSchema>;
 
 export type CreateDriverInput = z.infer<typeof createDriverSchema>;

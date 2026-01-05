@@ -61,7 +61,7 @@ model Action {
   outcome_id             String
   user_id                String
   title                  String
-  is_completed           Boolean   @default(false)
+  position   Float?
   completed_at           DateTime?
   scheduled_for          DateTime?
   last_moved_outcome_at  DateTime?
@@ -72,6 +72,6 @@ model Action {
   outcome Outcome @relation(fields: [outcome_id], references: [id], onDelete: Cascade)
 
   @@index([user_id, scheduled_for])
-  @@index([outcome_id, is_completed])
+  @@index([outcome_id, completed_at])
   @@map("actions")
 }

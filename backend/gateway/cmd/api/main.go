@@ -261,6 +261,16 @@ func main() {
 		log.Fatalf("Failed to register drivers gateway: %v", err)
 	}
 
+    err = outcomesservicepb.RegisterActionsServiceHandlerFromEndpoint(
+		ctx,
+		grpcMux,
+		"host.docker.internal:4440",
+		opts,
+	)
+	if err != nil {
+		log.Fatalf("Failed to register drivers gateway: %v", err)
+	}
+
 	err = boardspb.RegisterBoardsServiceHandlerFromEndpoint(
 		ctx,
 		grpcMux,

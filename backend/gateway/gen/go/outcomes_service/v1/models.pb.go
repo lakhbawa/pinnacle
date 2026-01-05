@@ -308,12 +308,11 @@ type Action struct {
 	OutcomeId          string                 `protobuf:"bytes,3,opt,name=outcome_id,json=outcomeId,proto3" json:"outcome_id,omitempty"`
 	UserId             string                 `protobuf:"bytes,4,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	Title              string                 `protobuf:"bytes,5,opt,name=title,proto3" json:"title,omitempty"`
-	IsCompleted        bool                   `protobuf:"varint,6,opt,name=is_completed,json=isCompleted,proto3" json:"is_completed,omitempty"`
-	CreatedAt          *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdatedAt          *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
-	ScheduledFor       *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=scheduled_for,json=scheduledFor,proto3" json:"scheduled_for,omitempty"`
-	LastMovedOutcomeAt *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=last_moved_outcome_at,json=lastMovedOutcomeAt,proto3" json:"last_moved_outcome_at,omitempty"`
-	CompletedAt        *timestamppb.Timestamp `protobuf:"bytes,11,opt,name=completed_at,json=completedAt,proto3" json:"completed_at,omitempty"`
+	CreatedAt          *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt          *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	ScheduledFor       *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=scheduled_for,json=scheduledFor,proto3" json:"scheduled_for,omitempty"`
+	LastMovedOutcomeAt *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=last_moved_outcome_at,json=lastMovedOutcomeAt,proto3" json:"last_moved_outcome_at,omitempty"`
+	CompletedAt        *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=completed_at,json=completedAt,proto3" json:"completed_at,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -383,13 +382,6 @@ func (x *Action) GetTitle() string {
 	return ""
 }
 
-func (x *Action) GetIsCompleted() bool {
-	if x != nil {
-		return x.IsCompleted
-	}
-	return false
-}
-
 func (x *Action) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.CreatedAt
@@ -455,23 +447,22 @@ const file_outcomes_service_v1_models_proto_rawDesc = "" +
 	"\bposition\x18\x04 \x01(\x02R\bposition\x129\n" +
 	"\n" +
 	"created_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x125\n" +
-	"\aactions\x18\x06 \x03(\v2\x1b.outcomes_service.v1.ActionR\aactions\"\xeb\x03\n" +
+	"\aactions\x18\x06 \x03(\v2\x1b.outcomes_service.v1.ActionR\aactions\"\xc8\x03\n" +
 	"\x06Action\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
 	"\tdriver_id\x18\x02 \x01(\tR\bdriverId\x12\x1d\n" +
 	"\n" +
 	"outcome_id\x18\x03 \x01(\tR\toutcomeId\x12\x17\n" +
 	"\auser_id\x18\x04 \x01(\tR\x06userId\x12\x14\n" +
-	"\x05title\x18\x05 \x01(\tR\x05title\x12!\n" +
-	"\fis_completed\x18\x06 \x01(\bR\visCompleted\x129\n" +
+	"\x05title\x18\x05 \x01(\tR\x05title\x129\n" +
 	"\n" +
-	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"updated_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x12?\n" +
-	"\rscheduled_for\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\fscheduledFor\x12M\n" +
-	"\x15last_moved_outcome_at\x18\n" +
-	" \x01(\v2\x1a.google.protobuf.TimestampR\x12lastMovedOutcomeAt\x12=\n" +
-	"\fcompleted_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\vcompletedAt*\xa1\x01\n" +
+	"updated_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x12?\n" +
+	"\rscheduled_for\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\fscheduledFor\x12M\n" +
+	"\x15last_moved_outcome_at\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\x12lastMovedOutcomeAt\x12=\n" +
+	"\fcompleted_at\x18\n" +
+	" \x01(\v2\x1a.google.protobuf.TimestampR\vcompletedAt*\xa1\x01\n" +
 	"\rOutcomeStatus\x12\x1e\n" +
 	"\x1aOUTCOME_STATUS_UNSPECIFIED\x10\x00\x12\x19\n" +
 	"\x15OUTCOME_STATUS_ACTIVE\x10\x01\x12\x19\n" +

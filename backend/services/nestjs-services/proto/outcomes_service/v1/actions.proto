@@ -1,0 +1,66 @@
+syntax = "proto3";
+package outcomes_service.v1;
+
+option go_package = "gateway/gen/go/outcomes_service/v1";
+
+import "outcomes_service/v1/models.proto";
+
+service ActionsService {
+  rpc CreateAction(CreateActionRequest) returns (Action);
+
+  rpc GetAction(GetActionRequest) returns (Action);
+
+  rpc ListActions(ListActionsRequest) returns (ListActionsResponse);
+
+  rpc UpdateAction(UpdateActionRequest) returns (Action);
+
+  rpc DeleteAction(DeleteActionRequest) returns (DeleteActionResponse);
+}
+
+message CreateActionRequest {
+  string title = 1;
+  string user_id = 2;
+
+  string outcome_id = 3;
+  string driver_id = 4;
+  optional string scheduled_for = 5;
+  optional float position = 6;
+}
+
+message GetActionRequest {
+  string id = 1;
+}
+
+message UpdateActionRequest {
+  string id = 1;
+  optional string title = 2;
+  optional float position = 3;
+  optional float outcome_id = 4;
+  optional float driver_id = 5;
+  optional float user_id = 6;
+  optional float completed_at = 7;
+  optional float scheduled_for = 8;
+}
+
+message ListActionsRequest {
+  string outcome_id = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListActionsResponse {
+  repeated Action data = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+  int32 page_size = 4;
+  int32 current_page = 5;
+  int32 total_pages = 6;
+}
+
+message DeleteActionRequest {
+  string id = 1;
+}
+
+message DeleteActionResponse {
+  bool success = 1;
+}
