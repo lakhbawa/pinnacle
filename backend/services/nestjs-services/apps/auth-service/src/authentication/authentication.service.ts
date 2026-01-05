@@ -70,7 +70,7 @@ export class AuthenticationService {
 
         if (!account) {
             throw new RpcException({
-                code: Status.PERMISSION_DENIED,
+                code: Status.UNAUTHENTICATED,
                 message: "Invalid Email or Password",
             });
         }

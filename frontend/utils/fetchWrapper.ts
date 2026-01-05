@@ -24,6 +24,7 @@ export class APIError extends Error {
   public url: string;
   public isNetworkError: boolean;
   public isTimeout: boolean;
+  public originalMessage: string | null;
 
   constructor(options: {
     status: number;
@@ -33,6 +34,7 @@ export class APIError extends Error {
     isNetworkError?: boolean;
     isTimeout?: boolean;
   }) {
+
     const message = options.isTimeout
       ? `Request timeout`
       : options.isNetworkError
@@ -47,6 +49,7 @@ export class APIError extends Error {
     this.url = options.url || '';
     this.isNetworkError = options.isNetworkError || false;
     this.isTimeout = options.isTimeout || false;
+    this.originalMessage = options.statusText;
 
     // Maintains proper stack trace in V8 environments
     if (Error.captureStackTrace) {
@@ -177,6 +180,9 @@ export class APIError extends Error {
    * Get the first error message (useful for toast notifications)
    */
   getFirstError(): string {
+    if (this.originalMessage) {
+    return this.originalMessage;
+  }
     const errors = this.getValidationErrors();
     if (errors) {
       const firstField = Object.keys(errors)[0];
@@ -437,14 +443,16 @@ export class FetchWrapper {
 
       // Parse body from the clone to ensure we can always read it
       const responseData = await this.parseResponseBody(responseClone);
+      const statusText = responseData?.error?.message ?? response.statusText;
 
       if (!response.ok) {
         let error = new APIError({
           status: response.status,
-          statusText: response.statusText,
+          statusText: statusText,
           data: responseData,
           url,
         });
+
 
         error = await this.executeErrorInterceptors(error);
         throw error;
@@ -612,7 +620,7 @@ export function removeAPI(name: string): boolean {
 // ============================================
 
 export const authAPI = createAPI('auth', {
-  baseURL: process.env.NEXT_PUBLIC_AUTH_URL || 'http://127.0.0.1:4000/api/v1',
+  baseURL: process.env.NEXT_PUBLIC_AUTH_URL || 'http://127.0.0.1:4700/api/v1',
   headers: { 'Content-Type': 'application/json' },
   timeout: 10000,
 });

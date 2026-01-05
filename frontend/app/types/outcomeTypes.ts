@@ -17,8 +17,9 @@ export interface User {
 }
 
 export type AuthResponse = {
-    user: User,
-    "expires": string,
-    "token": string,
-
+    success: boolean,
+    data: {
+        user: User,
+        token: string,
+    }
 }

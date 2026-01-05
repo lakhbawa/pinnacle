@@ -23,32 +23,31 @@ export const authOptions = {
                 }
 
                 try {
-
                     const res = await authAPI.post<AuthResponse>("/auth/signin", {
                         email: credentials.email,
                         password: credentials.password,
                     });
 
+                    const user = res.data.user;
 
-                    const user = res.user;
-
-                    if (user && res.token) {
-                        console.log("User authenticated successfully:", user);
+                    if (user && res.data.token) {
                         return {
                             id: user.id,
                             email: user.email,
                             company: user.company,
                             name: user.name,
-                            accessToken: res.token,
+                            accessToken: res.data.token,
                         };
                     }
 
                     return null;
                 } catch (e: any) {
 
+                    // Use getFirstError() for clean user-facing message
+                    if (e.getFirstError) {
+                        throw new Error(e.getFirstError());
+                    }
 
-                    // NextAuth swallows custom errors - this is a known issue
-                    // Throwing here just results in "credentials" error
                     throw new Error(e.message || "Authentication failed");
                 }
             },
