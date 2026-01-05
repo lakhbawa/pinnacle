@@ -11,12 +11,14 @@ message SignInRequest {
 }
 
 message SignUpRequest {
-  string id = 1;
-  string name = 2;
-  string email = 3;
-  string password = 4;
-  optional string company = 5;
+  string name = 1;
+  string email = 2;
+  string password = 3;
+  optional string company = 4;
+}
 
+message RefreshTokenRequest {
+  string token = 1;
 }
 service AuthService {
 
@@ -24,4 +26,5 @@ service AuthService {
 
   rpc SignUp(SignUpRequest) returns (AuthenticatedResponse);
 
+  rpc RefreshToken(RefreshTokenRequest) returns (AuthenticatedResponse);
 }

@@ -15,19 +15,33 @@ message SignUpRequest {
   string email = 2;
   string password = 3;
   optional string company = 4;
-
 }
+
+message RefreshTokenRequest {
+  string token = 1;
+}
+
+
 service AuthService {
 
   rpc SignIn(SignInRequest) returns (AuthenticatedResponse) {
     option (google.api.http) = {
       post: "/api/v1/auth/signin"
+      body: "*"
     };
   };
 
   rpc SignUp(SignUpRequest) returns (AuthenticatedResponse) {
     option (google.api.http) = {
       post: "/api/v1/auth/signup"
+      body: "*"
+    };
+  };
+
+  rpc RefreshToken(RefreshTokenRequest) returns (AuthenticatedResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/auth/refresh_token"
+      body: "*"
     };
   };
 

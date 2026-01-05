@@ -17,11 +17,14 @@ export interface SignInRequest {
 }
 
 export interface SignUpRequest {
-  id: string;
   name: string;
   email: string;
   password: string;
   company?: string | undefined;
+}
+
+export interface RefreshTokenRequest {
+  token: string;
 }
 
 export const AUTH_SERVICE_V1_PACKAGE_NAME = "auth_service.v1";
@@ -30,6 +33,8 @@ export interface AuthServiceClient {
   signIn(request: SignInRequest): Observable<AuthenticatedResponse>;
 
   signUp(request: SignUpRequest): Observable<AuthenticatedResponse>;
+
+  refreshToken(request: RefreshTokenRequest): Observable<AuthenticatedResponse>;
 }
 
 export interface AuthServiceController {
@@ -40,11 +45,15 @@ export interface AuthServiceController {
   signUp(
     request: SignUpRequest,
   ): Promise<AuthenticatedResponse> | Observable<AuthenticatedResponse> | AuthenticatedResponse;
+
+  refreshToken(
+    request: RefreshTokenRequest,
+  ): Promise<AuthenticatedResponse> | Observable<AuthenticatedResponse> | AuthenticatedResponse;
 }
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["signIn", "signUp"];
+    const grpcMethods: string[] = ["signIn", "signUp", "refreshToken"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("AuthService", method)(constructor.prototype[method], method, descriptor);
