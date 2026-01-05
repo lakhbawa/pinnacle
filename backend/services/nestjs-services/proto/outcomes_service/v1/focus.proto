@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package outcomes_service.v1;
+
+option go_package = "gateway/gen/go/outcomes_service/v1";
+
+import "outcomes_service/v1/models.proto";
+
+
+message ActiveFocusDataRequest {
+  string user_id = 1;
+}
+
+message ActiveFocusDataResponse {
+  repeated Outcome data = 1;
+}
+
+service FocusService {
+  rpc GetActiveFocusData(ActiveFocusDataRequest) returns (ActiveFocusDataResponse);
+
+}

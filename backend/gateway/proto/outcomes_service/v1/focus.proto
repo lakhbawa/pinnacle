@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package outcomes_service.v1;
+
+option go_package = "gateway/gen/go/outcomes_service/v1";
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "outcomes_service/v1/models.proto";
+
+service FocusService {
+  rpc GetActiveFocusData(ActiveFocusDataRequest) returns (ActiveFocusDataResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/focus/{user_id}"
+    };
+  }
+
+}
+
+message ActiveFocusDataRequest {
+  string user_id = 1;
+}
+
+message ActiveFocusDataResponse {
+  repeated Outcome data = 1;
+}
+

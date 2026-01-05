@@ -273,6 +273,17 @@ func main() {
 		log.Fatalf("Failed to register actions gateway: %v", err)
 	}
 
+
+	err = outcomesservicepb.RegisterFocusServiceHandlerFromEndpoint(
+		ctx,
+		grpcMux,
+		"host.docker.internal:4440",
+		opts,
+	)
+	if err != nil {
+		log.Fatalf("Failed to register outcome gateway focus: %v", err)
+	}
+
 	err = usersservicepb.RegisterUsersServiceHandlerFromEndpoint(
 		ctx,
 		grpcMux,

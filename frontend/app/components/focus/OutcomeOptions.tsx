@@ -1,9 +1,13 @@
 import {Outcome} from "@/app/types/outcomeTypes";
 
-export default function OutcomeOptions({outcomes }:{ outcomes: Outcome[] }) {
+export default function OutcomeOptions({outcomes, onSelect }:{ outcomes: Outcome[], onSelect: (id: string) => void }) {
     return (
         <>
-        Outcome Options
+            {outcomes.map((outcome) => (
+                <div key={outcome.id} onClick={() => onSelect(outcome.id)}>
+                    {outcome.title}
+                </div>
+            ))}
         </>
     )
 }
