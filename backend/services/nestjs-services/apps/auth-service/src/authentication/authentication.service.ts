@@ -113,12 +113,30 @@ export class AuthenticationService {
             }
         })
         if (!account) {
-            throw new UnauthorizedException("Invalid token");
+            throw new RpcException({
+                code: Status.PERMISSION_DENIED,
+                message: "Invalid Token",
+            });
         }
+
+        const user = await firstValueFrom(
+            this.userService.getUser({
+                id: account.user_id
+            })
+        );
+
+        if (!user) {
+            throw new RpcException({
+                code: Status.INTERNAL,
+                message: "User not found",
+            });
+        }
+
+
         return {
             user: {
-                id: account.user_id,
-                name: "Test Name",
+                id: user.id,
+                name: user.name,
                 email: account.email
             },
             token: this.jwtService.sign({
