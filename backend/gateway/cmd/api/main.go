@@ -18,6 +18,7 @@ import (
 
 	boardspb "gateway/gen/go/boardsservice"
 	outcomesservicepb "gateway/gen/go/outcomes_service/v1"
+	usersservicepb "gateway/gen/go/users_service/v1"
 )
 
 type APIResponse struct {
@@ -269,6 +270,16 @@ func main() {
 	)
 	if err != nil {
 		log.Fatalf("Failed to register actions gateway: %v", err)
+	}
+
+    err = usersservicepb.RegisterUsersServiceHandlerFromEndpoint(
+		ctx,
+		grpcMux,
+		"host.docker.internal:4450",
+		opts,
+	)
+	if err != nil {
+		log.Fatalf("Failed to register users gateway: %v", err)
 	}
 
 	err = boardspb.RegisterBoardsServiceHandlerFromEndpoint(

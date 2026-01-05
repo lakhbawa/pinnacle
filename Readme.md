@@ -35,6 +35,8 @@ Client Request -> NextJs -> API Gateway (Go + Gin) -> NestJs microservices
     - 4050
   - Outcomes:
     - 4040
+  - Users
+    - 4050
 - NextJS runs on 3000
 
 

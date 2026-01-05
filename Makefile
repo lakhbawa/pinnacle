@@ -10,6 +10,11 @@ start-outcome:
 	cd backend/services/nestjs-services && \
 	npm run start:dev outcomes-service
 
+start-user:
+	docker compose up -d --remove-orphans
+	cd backend/services/nestjs-services && \
+	npm run start:dev users-service
+
 start-monolith:
 	docker compose up -d --remove-orphans
 	cd backend/services/nestjs-services && \

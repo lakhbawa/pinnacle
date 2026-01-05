@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package outcomes_service.v1;
 
-option go_package = "gateway/gen/go/outcomes_service/v1/drivers";
+option go_package = "gateway/gen/go/outcomes_service/v1";
 
 import "outcomes_service/v1/models.proto";
 

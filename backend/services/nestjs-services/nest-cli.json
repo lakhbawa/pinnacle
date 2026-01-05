@@ -58,6 +58,16 @@
         "tsConfigPath": "apps/outcomes-service/tsconfig.app.json"
 
       }
+    },
+    "users-service": {
+      "type": "application",
+      "root": "apps/users-service",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
+      "compilerOptions": {
+        "tsConfigPath": "apps/users-service/tsconfig.app.json"
+
+      }
     }
   }
 }

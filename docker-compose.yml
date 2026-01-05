@@ -61,6 +61,18 @@ services:
     ports:
       - "4442:5432"
     networks: [pinnacle-network]
+  pinnacle-users-service-db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: users
+    volumes:
+      - dbdata_users_service:/var/lib/postgresql/data
+      - ./docker/config/postgres/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "4452:5432"
+    networks: [pinnacle-network]
 
   pinnacle-adminer:
     image: adminer:latest
@@ -89,6 +101,8 @@ volumes:
   dbdata:
     driver: local
   dbdata_outcomes_service:
+    driver: local
+  dbdata_users_service:
     driver: local
   redisdata:
     driver: local
