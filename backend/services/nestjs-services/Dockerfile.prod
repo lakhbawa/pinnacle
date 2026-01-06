@@ -20,7 +20,7 @@ COPY proto/ ./proto/
 ARG SERVICE_NAME
 
 # Generate Prisma client for the specific service
-RUN npx prisma generate --schema=./apps/${SERVICE_NAME}/prisma/schema.prisma
+RUN npx prisma generate --schema=./apps/${SERVICE_NAME}/prisma/schema.prisma --config=./apps/${SERVICE_NAME}/prisma/prisma.config.ts
 
 # Build the specific service
 RUN npm run build ${SERVICE_NAME}
