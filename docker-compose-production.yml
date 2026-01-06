@@ -6,12 +6,13 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.prod
+      args:
+      - NEXT_PUBLIC_API_URL=https://api.pinnacle.lakhveerbawa.com/api/v1
     environment:
       - NEXT_PUBLIC_API_URL=https://api.pinnacle.lakhveerbawa.com
-      - NEXTAUTH_URL="https://pinnacle.lakhveerbawa.com"
       - NEXTAUTH_SECRET="your-secret-here-at-least-32-chars"
       - GITHUB_ID="Ov23lizCGkFF2NrJGP7O"
-      - GITHUB_SECRET="360f1c227368531c8412aa9c91fbd8f75bc44596"
+      - GITHUB_SECRET="TOKENHERE"
     restart: always
     depends_on:
       - pinnacle-gateway
