@@ -1,14 +1,19 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { useSession, signIn, signOut } from 'next-auth/react'
 
-// Icons as components for cleaner code
 const ArrowRightIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <line x1="5" y1="12" x2="19" y2="12" />
     <polyline points="12 5 19 12 12 19" />
+  </svg>
+)
+
+const CheckIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+    <polyline points="20 6 9 17 4 12" />
   </svg>
 )
 
@@ -27,137 +32,172 @@ const CloseIcon = () => (
   </svg>
 )
 
-// Problem list items data
-const problemItems = [
-  "Spent 3 months building features nobody wanted",
-  "Checked off 200 tasks but didn't hit your quarterly goal",
-  "Can't tell if today's work actually moved the needle",
-  "Drowning in Notion pages, Trello boards, and Slack threads"
-]
+const GitHubIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+  </svg>
+)
 
-// Solution cards data
-const solutionCards = [
+const ExternalLinkIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+    <polyline points="15 3 21 3 21 9" />
+    <line x1="10" y1="14" x2="21" y2="3" />
+  </svg>
+)
+
+const features = [
   {
-    number: "01",
-    icon: "🎯",
-    title: "Define measurable outcomes",
-    description: "Not \"launch website\" but \"get 10 paying customers.\" Specific. Measurable. Time-bound. No vague goals allowed."
+    title: "Outcome-Driven Planning",
+    description: "Define measurable outcomes with success metrics and deadlines. Every task connects to what actually matters.",
+    icon: "🎯"
   },
   {
-    number: "02",
-    icon: "🔧",
-    title: "Identify what must be true",
-    description: "Break outcomes into drivers—conditions that must be true. \"Landing page is live.\" \"Payment flow works.\" Clear and binary."
+    title: "Driver Breakdown",
+    description: "Identify the conditions that must be true for success. Break complex goals into clear, binary milestones.",
+    icon: "🔧"
   },
   {
-    number: "03",
-    icon: "⚡",
-    title: "Track if work matters",
-    description: "Every completed task asks: \"Did this move the outcome?\" We flag when you're spinning wheels. No more busy work."
+    title: "Progress Tracking",
+    description: "Visual progress bars and completion stats. See instantly if you're moving the needle or spinning wheels.",
+    icon: "📊"
+  },
+  {
+    title: "Focus Mode",
+    description: "Today's view shows only what matters now. No clutter, no overwhelm, just clarity on next actions.",
+    icon: "⚡"
+  },
+  {
+    title: "Reflection Prompts",
+    description: "After completing tasks, reflect on impact. Build the habit of distinguishing busy work from real progress.",
+    icon: "💭"
+  },
+  {
+    title: "Real-time Updates",
+    description: "WebSocket-powered live updates. Changes sync instantly across sessions without refresh.",
+    icon: "🔄"
   }
 ]
 
-// Not for / For lists
-const notForList = [
-  "You need to assign tasks across a team",
-  "You want a customizable Notion-like workspace",
-  "You need time tracking or billing features",
-  "You want a calendar view with scheduled tasks",
-  "Someone else sets your priorities"
+const techStack = [
+  {
+    category: "API Gateway",
+    items: ["Go", "Gin", "REST"],
+    color: "bg-cyan-50 text-cyan-700 border-cyan-200"
+  },
+  {
+    category: "Microservices",
+    items: ["NestJS", "TypeScript", "gRPC"],
+    color: "bg-red-50 text-red-700 border-red-200"
+  },
+  {
+    category: "Event Streaming",
+    items: ["Apache Kafka", "Redis Streams"],
+    color: "bg-orange-50 text-orange-700 border-orange-200"
+  },
+  {
+    category: "Data Layer",
+    items: ["PostgreSQL", "Redis", "ClickHouse"],
+    color: "bg-blue-50 text-blue-700 border-blue-200"
+  },
+  {
+    category: "Infrastructure",
+    items: ["Docker", "Traefik", "Nginx"],
+    color: "bg-purple-50 text-purple-700 border-purple-200"
+  },
+  {
+    category: "Observability",
+    items: ["Prometheus", "Grafana", "Loki"],
+    color: "bg-green-50 text-green-700 border-green-200"
+  }
 ]
 
-const forList = [
-  "You're a founder building your own thing",
-  "You set your own priorities",
-  "You've tried Notion/Todoist and felt overwhelmed",
-  "You want clarity, not flexibility",
-  "You can't afford to waste time on wrong things"
+const architectureHighlights = [
+  {
+    title: "Event-Driven Architecture",
+    description: "Services communicate through Kafka events, enabling loose coupling, scalability, and reliable message delivery with exactly-once semantics."
+  },
+  {
+    title: "gRPC Internal Communication",
+    description: "High-performance binary protocol for service-to-service calls. Protocol Buffers ensure type safety and efficient serialization."
+  },
+  {
+    title: "CQRS Pattern",
+    description: "Separate read and write models optimized for their specific use cases. ClickHouse handles analytics while PostgreSQL manages transactional data."
+  },
+  {
+    title: "API Gateway Pattern",
+    description: "Go-based gateway handles authentication, rate limiting, and request routing. Single entry point for all external traffic."
+  }
 ]
 
 export default function HomePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isScrolled, setIsScrolled] = useState(false)
   const { data: session } = useSession()
-
-  const username = 'lakhbawa';
-
-  // Handle scroll for nav background
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  const username = 'lakhbawa'
 
   return (
-    <div className="min-h-screen bg-[#0A0A0B] text-white font-sans antialiased overflow-x-hidden">
-      {/* Noise texture overlay */}
-      <div
-        className="fixed inset-0 pointer-events-none z-50 opacity-[0.03]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
-        }}
-      />
-
+    <div className="min-h-screen bg-white text-gray-900">
       {/* Navigation */}
-      <nav
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 border-b border-white/[0.06] ${
-          isScrolled ? 'bg-[#0A0A0B]/95' : 'bg-[#0A0A0B]/80'
-        } backdrop-blur-xl`}
-      >
+      <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-sm border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex justify-between items-center h-16">
-            {/* Logo */}
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-9 h-9 bg-gradient-to-br from-[#FF6B35] to-[#FF8556] rounded-[10px] flex items-center justify-center font-serif text-xl text-white">
+              <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center text-white font-semibold text-sm">
                 S
               </div>
-              <span className="text-xl font-bold tracking-tight">StrategyForge</span>
+              <span className="text-lg font-semibold">StrategyForge</span>
             </Link>
 
-            {/* Desktop Nav Links */}
             <div className="hidden md:flex items-center gap-8">
-              <Link href="#how-it-works" className="text-zinc-400 hover:text-white text-sm font-medium transition-colors">
+              <Link href="#features" className="text-gray-600 hover:text-gray-900 text-sm">
+                Features
+              </Link>
+              <Link href="#how-it-works" className="text-gray-600 hover:text-gray-900 text-sm">
                 How it works
               </Link>
-              <Link href="#pricing" className="text-zinc-400 hover:text-white text-sm font-medium transition-colors">
-                Pricing
+              <Link href="#architecture" className="text-gray-600 hover:text-gray-900 text-sm">
+                Architecture
               </Link>
-              <Link href="/blog" className="text-zinc-400 hover:text-white text-sm font-medium transition-colors">
-                Blog
+              <Link href="#pricing" className="text-gray-600 hover:text-gray-900 text-sm">
+                Pricing
               </Link>
             </div>
 
-            {/* Auth Buttons */}
-            <div className="hidden md:flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-4">
+              <Link
+                href="https://github.com/lakhbawa/pinnacle"
+                target="_blank"
+                className="text-gray-600 hover:text-gray-900 p-2"
+              >
+                <GitHubIcon />
+              </Link>
               {session ? (
                 <>
-                  <span className="text-sm text-zinc-400">Hello, {session.user?.name}</span>
                   <button
                     onClick={() => signOut()}
-                    className="text-zinc-400 hover:text-white px-4 py-2 text-sm font-medium transition-colors"
+                    className="text-gray-600 hover:text-gray-900 text-sm"
                   >
                     Sign out
                   </button>
                   <Link
                     href={`/u/${username}/focus`}
-                    className="bg-[#FF6B35] hover:bg-[#FF8556] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all hover:-translate-y-0.5 shadow-[0_0_20px_rgba(255,107,53,0.15)] hover:shadow-[0_4px_24px_rgba(255,107,53,0.15)]"
+                    className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                   >
-                    Dashboard
+                    Open App
                   </Link>
                 </>
               ) : (
                 <>
                   <button
                     onClick={() => signIn()}
-                    className="text-zinc-400 hover:text-white px-4 py-2 text-sm font-medium transition-colors"
+                    className="text-gray-600 hover:text-gray-900 text-sm"
                   >
                     Sign in
                   </button>
                   <Link
-                    href={"/auth/signup"}
-                    className="bg-[#FF6B35] hover:bg-[#FF8556] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all hover:-translate-y-0.5 shadow-[0_0_20px_rgba(255,107,53,0.15)] hover:shadow-[0_4px_24px_rgba(255,107,53,0.15)]"
+                    href="/auth/signup"
+                    className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                   >
                     Get Started
                   </Link>
@@ -165,57 +205,35 @@ export default function HomePage() {
               )}
             </div>
 
-            {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 text-white"
+              className="md:hidden p-2"
             >
               {isMenuOpen ? <CloseIcon /> : <MenuIcon />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden bg-[#111113] border-t border-white/[0.06]">
+          <div className="md:hidden border-t border-gray-100 bg-white">
             <div className="px-6 py-4 space-y-4">
-              <Link href="#how-it-works" className="block text-zinc-400 hover:text-white text-sm font-medium">
-                How it works
-              </Link>
-              <Link href="#pricing" className="block text-zinc-400 hover:text-white text-sm font-medium">
-                Pricing
-              </Link>
-              <Link href="/blog" className="block text-zinc-400 hover:text-white text-sm font-medium">
-                Blog
-              </Link>
-              <div className="pt-4 border-t border-white/[0.06] space-y-3">
+              <Link href="#features" className="block text-gray-600 text-sm">Features</Link>
+              <Link href="#how-it-works" className="block text-gray-600 text-sm">How it works</Link>
+              <Link href="#architecture" className="block text-gray-600 text-sm">Architecture</Link>
+              <Link href="#pricing" className="block text-gray-600 text-sm">Pricing</Link>
+              <Link href="https://github.com/lakhbawa/pinnacle" className="block text-gray-600 text-sm">GitHub</Link>
+              <div className="pt-4 border-t border-gray-100 space-y-3">
                 {session ? (
                   <>
-                    <button
-                      onClick={() => signOut()}
-                      className="block w-full text-left text-zinc-400 hover:text-white text-sm font-medium"
-                    >
-                      Sign out
-                    </button>
-                    <Link
-                      href="/dashboard"
-                      className="block w-full bg-[#FF6B35] text-white text-center px-4 py-3 rounded-lg text-sm font-semibold"
-                    >
-                      Dashboard
+                    <button onClick={() => signOut()} className="block text-gray-600 text-sm">Sign out</button>
+                    <Link href={`/u/${username}/focus`} className="block w-full bg-gray-900 text-white text-center px-4 py-3 rounded-lg text-sm font-medium">
+                      Open App
                     </Link>
                   </>
                 ) : (
                   <>
-                    <button
-                      onClick={() => signIn()}
-                      className="block w-full text-left text-zinc-400 hover:text-white text-sm font-medium"
-                    >
-                      Sign in
-                    </button>
-                    <button
-                      onClick={() => signIn()}
-                      className="block w-full bg-[#FF6B35] text-white text-center px-4 py-3 rounded-lg text-sm font-semibold"
-                    >
+                    <button onClick={() => signIn()} className="block text-gray-600 text-sm">Sign in</button>
+                    <button onClick={() => signIn()} className="block w-full bg-gray-900 text-white text-center px-4 py-3 rounded-lg text-sm font-medium">
                       Get Started
                     </button>
                   </>
@@ -226,99 +244,193 @@ export default function HomePage() {
         )}
       </nav>
 
-      {/* Hero Section */}
-      <section className="min-h-screen flex flex-col justify-center pt-24 relative overflow-hidden">
-        {/* Gradient orbs */}
-        <div className="absolute -top-52 -right-24 w-[600px] h-[600px] rounded-full bg-[#FF6B35] opacity-[0.15] blur-[120px] pointer-events-none" />
-        <div className="absolute -bottom-52 -left-52 w-[600px] h-[600px] rounded-full bg-indigo-500 opacity-[0.08] blur-[120px] pointer-events-none" />
+      {/* Hero */}
+      <section className="pt-20 pb-16 px-6">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-600 mb-6">
+            <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+            Open source project
+          </div>
 
-        <div className="max-w-6xl mx-auto px-6 relative z-10">
-          <div className="text-center max-w-4xl mx-auto">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#FF6B35]/[0.08] border border-[#FF6B35]/20 rounded-full text-sm font-medium text-[#FF6B35] mb-8 animate-fade-in-up">
-              <span className="w-1.5 h-1.5 bg-[#FF6B35] rounded-full animate-pulse" />
-              For founders who can't afford to work on the wrong thing
-            </div>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold leading-tight tracking-tight mb-6">
+            Stop tracking tasks.<br />
+            Start achieving outcomes.
+          </h1>
 
-            {/* Headline */}
-            <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-normal leading-[1.1] tracking-tight mb-6 animate-fade-in-up animation-delay-100">
-              <span className="block">Stop managing tasks.</span>
-              <span className="block">
-                Start achieving <span className="text-[#FF6B35] italic">outcomes.</span>
+          <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto mb-8 leading-relaxed">
+            A focused project tool for founders who need to know if today's work actually moved the needle. Built with a modern microservices architecture.
+          </p>
+
+          <div className="flex flex-col sm:flex-row justify-center gap-3 mb-8">
+            <button
+              onClick={() => signIn()}
+              className="inline-flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-lg text-sm font-medium transition-colors"
+            >
+              Try the demo
+              <ArrowRightIcon />
+            </button>
+            <Link
+              href="https://github.com/lakhbawa/pinnacle"
+              target="_blank"
+              className="inline-flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-900 px-6 py-3 rounded-lg text-sm font-medium transition-colors"
+            >
+              <GitHubIcon />
+              View on GitHub
+            </Link>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-2">
+            {["Go", "NestJS", "Kafka", "gRPC", "PostgreSQL", "Redis", "Docker"].map((tech) => (
+              <span key={tech} className="px-2 py-1 bg-gray-50 border border-gray-200 rounded text-xs text-gray-600">
+                {tech}
               </span>
-            </h1>
+            ))}
+          </div>
+        </div>
+      </section>
 
-            {/* Subtitle */}
-            <p className="text-lg sm:text-xl text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up animation-delay-200">
-              The only project management tool that tells you when you're being busy without being effective. Define outcomes, track what actually moves the needle.
-            </p>
+      {/* Product Screenshot */}
+      <section className="px-6 pb-20">
+        <div className="max-w-5xl mx-auto">
+          <div className="bg-gray-100 border border-gray-200 rounded-2xl p-2 sm:p-4 shadow-sm">
+            <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+              <div className="border-b border-gray-100 px-4 py-3 flex items-center gap-2">
+                <div className="flex gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-gray-200"></div>
+                  <div className="w-3 h-3 rounded-full bg-gray-200"></div>
+                  <div className="w-3 h-3 rounded-full bg-gray-200"></div>
+                </div>
+                <div className="flex-1 mx-4">
+                  <div className="bg-gray-100 rounded-md px-3 py-1.5 text-xs text-gray-500 max-w-md mx-auto">
+                    strategyforge.app/focus
+                  </div>
+                </div>
+              </div>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in-up animation-delay-300">
-              <button
-                onClick={() => signIn()}
-                className="inline-flex items-center justify-center gap-2 bg-[#FF6B35] hover:bg-[#FF8556] text-white px-8 py-4 rounded-lg text-base font-semibold transition-all hover:-translate-y-0.5 shadow-[0_0_20px_rgba(255,107,53,0.15)] hover:shadow-[0_4px_24px_rgba(255,107,53,0.15)]"
-              >
-                Start free trial
-                <ArrowRightIcon />
-              </button>
-              <Link
-                href="#how-it-works"
-                className="inline-flex items-center justify-center gap-2 bg-[#1F1F23] hover:bg-[#18181B] text-white px-8 py-4 rounded-lg text-base font-semibold transition-all border border-white/[0.06] hover:border-white/[0.12]"
-              >
-                Watch 2-min demo
-              </Link>
-            </div>
+              <div className="p-6">
+                <div className="flex items-baseline justify-between mb-6">
+                  <h2 className="text-2xl font-bold text-gray-900">Today's Focus</h2>
+                  <span className="text-sm text-gray-500">Mon, Jan 6, 2025</span>
+                </div>
 
-            {/* Social Proof */}
-            <div className="mt-20 pt-8 border-t border-white/[0.06] animate-fade-in-up animation-delay-400">
-              <p className="text-xs text-zinc-500 uppercase tracking-widest mb-4">Trusted by founders at</p>
-              <div className="flex justify-center items-center gap-8 sm:gap-12 opacity-50">
-                <span className="text-xs sm:text-sm font-semibold text-zinc-500 tracking-widest">INDIE HACKERS</span>
-                <span className="text-xs sm:text-sm font-semibold text-zinc-500 tracking-widest">Y COMBINATOR</span>
-                <span className="text-xs sm:text-sm font-semibold text-zinc-500 tracking-widest">PRODUCT HUNT</span>
+                <div className="bg-white border border-gray-200 rounded-xl p-5 mb-6">
+                  <div className="flex items-start justify-between mb-3">
+                    <div>
+                      <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">Current Outcome</div>
+                      <div className="text-lg font-semibold">Launch MVP and get 10 paying customers</div>
+                      <p className="text-sm text-gray-500 mt-1">Validate the product-market fit before scaling</p>
+                    </div>
+                    <div className="text-right text-sm">
+                      <span className="text-gray-500">Target:</span>
+                      <span className="ml-1 font-semibold">10 customers</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 pt-3 border-t border-gray-100">
+                    <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="h-full bg-blue-500 rounded-full" style={{width: '30%'}} />
+                    </div>
+                    <span className="text-sm text-gray-600 tabular-nums">3/10</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 border-b border-gray-200 mb-4">
+                  <button className="px-4 py-3 text-sm font-medium text-blue-600 border-b-2 border-blue-600 -mb-px bg-blue-50">
+                    Landing Page <span className="text-blue-400 text-xs">2/5</span>
+                  </button>
+                  <button className="px-4 py-3 text-sm text-gray-500 hover:text-gray-700">
+                    Payment <span className="text-gray-400 text-xs">0/3</span>
+                  </button>
+                  <button className="px-4 py-3 text-sm text-gray-500 hover:text-gray-700">
+                    Traffic <span className="text-gray-400 text-xs">1/4</span>
+                  </button>
+                  <button className="px-3 py-3 text-gray-400 hover:text-blue-600">
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center gap-3 p-4 bg-gray-50 border border-gray-100 rounded-lg">
+                    <div className="w-5 h-5 bg-green-500 rounded flex items-center justify-center flex-shrink-0">
+                      <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <span className="text-sm text-gray-400 line-through">Design landing page mockup</span>
+                  </div>
+                  <div className="flex items-center gap-3 p-4 bg-gray-50 border border-gray-100 rounded-lg">
+                    <div className="w-5 h-5 bg-green-500 rounded flex items-center justify-center flex-shrink-0">
+                      <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <span className="text-sm text-gray-400 line-through">Build with Next.js</span>
+                  </div>
+                  <div className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-gray-300">
+                    <div className="w-5 h-5 border-2 border-gray-300 rounded flex-shrink-0"></div>
+                    <span className="text-sm">Deploy to production server</span>
+                    <span className="text-xs text-gray-400 ml-auto">Jan 7</span>
+                  </div>
+                  <div className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-gray-300">
+                    <div className="w-5 h-5 border-2 border-gray-300 rounded flex-shrink-0"></div>
+                    <span className="text-sm">Set up custom domain</span>
+                  </div>
+                  <button className="w-full flex items-center gap-2 p-3 text-sm text-gray-500 hover:text-blue-600 border border-dashed border-gray-200 hover:border-blue-300 rounded-lg">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    Add action
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Problem Section */}
-      <section className="py-32 relative">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Content */}
-            <div className="max-w-lg">
-              <div className="inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-[#FF6B35] mb-6">
-                <span className="w-6 h-px bg-[#FF6B35]" />
-                The Problem
-              </div>
-              <h2 className="font-serif text-4xl sm:text-5xl font-normal leading-tight mb-6">
-                You're busy every day but not getting closer to your goals.
-              </h2>
-              <p className="text-lg text-zinc-400 leading-relaxed">
-                Most project management tools are glorified to-do lists. They track what you did, not whether it mattered. You end the week with 50 tasks checked off, but did you actually make progress?
-              </p>
+      {/* Problem/Solution */}
+      <section className="py-20 px-6 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="max-w-2xl mb-12">
+            <h2 className="text-2xl sm:text-3xl font-semibold mb-4">
+              Most productivity tools track activity, not progress.
+            </h2>
+            <p className="text-gray-600 leading-relaxed">
+              You check off 50 tasks this week. But did you actually get closer to your goal? Traditional task managers can't answer that question.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-white border border-gray-200 rounded-xl p-6">
+              <div className="text-sm font-medium text-red-600 mb-4">The problem</div>
+              <ul className="space-y-3">
+                {[
+                  "Built features for 3 months that nobody wanted",
+                  "Checked off 200 tasks but missed quarterly goal",
+                  "Can't tell if today's work actually mattered",
+                  "Drowning in Notion pages and Trello boards"
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm text-gray-600">
+                    <span className="text-red-500 mt-0.5">✗</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
 
-            {/* Problem Card */}
-            <div className="bg-[#111113] border border-white/[0.06] rounded-2xl p-8 relative overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 to-amber-500" />
-
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-10 h-10 bg-red-500/10 rounded-xl flex items-center justify-center text-lg">
-                  😰
-                </div>
-                <h3 className="text-lg font-semibold">Sound familiar?</h3>
-              </div>
-
-              <ul className="space-y-0">
-                {problemItems.map((item, index) => (
-                  <li key={index} className="flex items-start gap-4 py-4 border-b border-white/[0.06] last:border-b-0">
-                    <span className="w-5 h-5 bg-red-500/10 rounded-full flex items-center justify-center text-red-500 text-xs flex-shrink-0 mt-0.5">
-                      ✗
-                    </span>
-                    <span className="text-zinc-400">{item}</span>
+            <div className="bg-white border border-gray-200 rounded-xl p-6">
+              <div className="text-sm font-medium text-green-600 mb-4">With StrategyForge</div>
+              <ul className="space-y-3">
+                {[
+                  "Start with measurable outcomes, work backwards",
+                  "Every task connects to a specific goal",
+                  "See immediately when you're spinning wheels",
+                  "One focused view, no clutter"
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm text-gray-600">
+                    <span className="text-green-500 mt-0.5"><CheckIcon /></span>
+                    {item}
                   </li>
                 ))}
               </ul>
@@ -327,322 +439,309 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Solution Section */}
-      <section className="py-32 bg-[#111113] relative">
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-
-        <div className="max-w-6xl mx-auto px-6">
-          {/* Header */}
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-[#FF6B35] mb-6">
-              <span className="w-6 h-px bg-[#FF6B35]" />
-              The Solution
-            </div>
-            <h2 className="font-serif text-4xl sm:text-5xl font-normal leading-tight mb-6">
-              Outcomes before tasks. <br />Clarity over features.
+      {/* Features Grid */}
+      <section id="features" className="py-20 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl sm:text-3xl font-semibold mb-4">
+              Everything you need, nothing you don't
             </h2>
-            <p className="text-lg text-zinc-400">
-              StrategyForge flips project management on its head. Start with what success looks like, then work backwards.
+            <p className="text-gray-600 max-w-lg mx-auto">
+              Opinionated by design. Less flexibility, more focus.
             </p>
           </div>
 
-          {/* Solution Cards */}
-          <div className="grid md:grid-cols-3 gap-6">
-            {solutionCards.map((card, index) => (
-              <div
-                key={index}
-                className="group bg-[#0A0A0B] border border-white/[0.06] rounded-2xl p-8 transition-all duration-300 hover:border-[#FF6B35] hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)] relative overflow-hidden"
-              >
-                <div className="absolute inset-0 bg-gradient-to-b from-[#FF6B35]/[0.08] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                <div className="relative z-10">
-                  <span className="font-mono text-xs text-[#FF6B35] mb-4 block">{card.number}</span>
-                  <div className="w-12 h-12 bg-[#1F1F23] border border-white/[0.06] rounded-xl flex items-center justify-center text-2xl mb-6">
-                    {card.icon}
-                  </div>
-                  <h3 className="text-xl font-semibold mb-3">{card.title}</h3>
-                  <p className="text-zinc-400 leading-relaxed">{card.description}</p>
-                </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {features.map((feature, i) => (
+              <div key={i} className="bg-white border border-gray-200 rounded-xl p-6 hover:border-gray-300 transition-colors">
+                <div className="text-2xl mb-4">{feature.icon}</div>
+                <h3 className="font-semibold mb-2">{feature.title}</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">{feature.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section id="how-it-works" className="py-32">
-        <div className="max-w-6xl mx-auto px-6">
-          {/* Header */}
-          <div className="text-center max-w-xl mx-auto mb-20">
-            <div className="inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-[#FF6B35] mb-6">
-              <span className="w-6 h-px bg-[#FF6B35]" />
-              How It Works
-            </div>
-            <h2 className="font-serif text-4xl sm:text-5xl font-normal leading-tight">
-              Simple by design. Opinionated for results.
+      {/* How It Works */}
+      <section id="how-it-works" className="py-20 px-6 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-2xl sm:text-3xl font-semibold mb-4">
+              Three steps to clarity
             </h2>
           </div>
 
-          {/* Steps */}
-          <div className="space-y-24">
-            {/* Step 1 */}
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
-              <div className="max-w-md">
-                <div className="w-8 h-8 bg-[#FF6B35] rounded-full flex items-center justify-center font-mono text-sm font-semibold mb-6">
-                  1
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                step: "1",
+                title: "Define your outcome",
+                description: "Not \"launch website\" but \"get 10 paying customers by March 1st.\" Specific. Measurable. Time-bound."
+              },
+              {
+                step: "2",
+                title: "Identify drivers",
+                description: "What must be true for this outcome? \"Landing page is live.\" \"Payment works.\" Clear, binary conditions."
+              },
+              {
+                step: "3",
+                title: "Complete actions",
+                description: "Break drivers into tasks. Complete them and reflect: did this actually move the needle?"
+              }
+            ].map((item, i) => (
+              <div key={i} className="text-center">
+                <div className="w-12 h-12 bg-gray-900 text-white rounded-full flex items-center justify-center text-lg font-semibold mx-auto mb-4">
+                  {item.step}
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-semibold mb-4">
-                  Create an outcome with a success metric
-                </h3>
-                <p className="text-zinc-400 text-lg leading-relaxed">
-                  Start with what success looks like. "Get 10 paying customers by March 1st." The metric keeps you honest. The deadline keeps you focused.
-                </p>
+                <h3 className="font-semibold mb-2">{item.title}</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">{item.description}</p>
               </div>
-              <div className="bg-[#111113] border border-white/[0.06] rounded-2xl p-8">
-                <div className="bg-[#18181B] border border-white/[0.06] rounded-xl p-6">
-                  <div className="text-[10px] font-semibold uppercase tracking-wider text-[#FF6B35] mb-1">
-                    Your Outcome
-                  </div>
-                  <div className="text-lg font-semibold mb-4">
-                    Launch MVP and get 10 paying customers
-                  </div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="font-mono text-3xl font-bold text-emerald-500">3</span>
-                    <span className="font-mono text-xl text-zinc-500">/ 10 customers</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Step 2 */}
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
-              <div className="max-w-md lg:order-2">
-                <div className="w-8 h-8 bg-[#FF6B35] rounded-full flex items-center justify-center font-mono text-sm font-semibold mb-6">
-                  2
-                </div>
-                <h3 className="text-2xl sm:text-3xl font-semibold mb-4">
-                  Break it into drivers and tasks
-                </h3>
-                <p className="text-zinc-400 text-lg leading-relaxed">
-                  Drivers are the conditions that must be true. Under each driver, add the tasks that make it happen. Simple, focused, no clutter.
-                </p>
-              </div>
-              <div className="bg-[#111113] border border-white/[0.06] rounded-2xl p-8 lg:order-1">
-                <div className="bg-[#18181B] border border-white/[0.06] rounded-xl p-5">
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="font-semibold">Landing page is live</span>
-                    <span className="font-mono text-xs text-zinc-500">3/5 tasks</span>
-                  </div>
-                  <div className="space-y-2">
-                    {['Design mockup', 'Build with Next.js', 'Deploy to Vercel'].map((task, i) => (
-                      <div key={i} className="flex items-center gap-3 text-sm">
-                        <div className="w-4 h-4 bg-emerald-500 rounded border-0" />
-                        <span className="text-zinc-500 line-through">{task}</span>
-                      </div>
-                    ))}
-                    {['Set up SSL certificate', 'Connect custom domain'].map((task, i) => (
-                      <div key={i} className="flex items-center gap-3 text-sm">
-                        <div className="w-4 h-4 rounded border-2 border-zinc-600" />
-                        <span className="text-zinc-300">{task}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Step 3 */}
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
-              <div className="max-w-md">
-                <div className="w-8 h-8 bg-[#FF6B35] rounded-full flex items-center justify-center font-mono text-sm font-semibold mb-6">
-                  3
-                </div>
-                <h3 className="text-2xl sm:text-3xl font-semibold mb-4">
-                  Reflect on every completion
-                </h3>
-                <p className="text-zinc-400 text-lg leading-relaxed">
-                  After completing a task, you answer one question: "Did this move the outcome?" This simple habit separates real progress from busy work.
-                </p>
-              </div>
-              <div className="bg-[#111113] border border-white/[0.06] rounded-2xl p-8 flex items-center justify-center">
-                <div className="bg-[#18181B] border border-white/[0.06] rounded-xl p-8 text-center max-w-xs">
-                  <div className="w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
-                    ✓
-                  </div>
-                  <div className="text-lg font-semibold mb-1">Task completed!</div>
-                  <div className="text-sm text-zinc-400 mb-6">
-                    Did this get you closer to <strong className="text-white">10 paying customers</strong>?
-                  </div>
-                  <div className="space-y-3">
-                    <button className="w-full bg-emerald-500 text-white py-3 rounded-lg text-sm font-semibold">
-                      Yes, outcome moved
-                    </button>
-                    <button className="w-full bg-[#1F1F23] text-zinc-400 py-3 rounded-lg text-sm font-semibold">
-                      No, just busy work
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Not For Section */}
-      <section className="py-32 bg-[#111113]">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center max-w-xl mx-auto mb-12">
-            <h2 className="font-serif text-3xl sm:text-4xl font-normal mb-4">
-              We're opinionated. On purpose.
+      {/* Architecture Section */}
+      <section id="architecture" className="py-20 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm mb-4">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+              </svg>
+              Engineering
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-semibold mb-4">
+              Built for scale from day one
             </h2>
-            <p className="text-lg text-zinc-400">
-              StrategyForge isn't for everyone. And that's exactly the point.
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              A production-grade microservices architecture demonstrating modern backend patterns. Not a monolith with aspirations—a properly distributed system.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Not For Card */}
-            <div className="bg-[#0A0A0B] border border-white/[0.06] rounded-xl p-6">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <span className="text-red-500">✗</span>
-                Not for you if...
-              </h3>
-              <ul className="space-y-3">
-                {notForList.map((item, index) => (
-                  <li key={index} className="flex items-start gap-3 text-sm text-zinc-400">
-                    <span className="text-red-500 font-semibold">✗</span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
+          {/* Tech Stack Grid */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
+            {techStack.map((stack, i) => (
+              <div key={i} className={`rounded-xl p-4 border ${stack.color}`}>
+                <div className="text-xs font-semibold uppercase tracking-wide mb-2 opacity-75">
+                  {stack.category}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {stack.items.map((item, j) => (
+                    <span key={j} className="text-sm font-medium">{item}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
 
-            {/* For Card */}
-            <div className="bg-[#0A0A0B] border border-white/[0.06] rounded-xl p-6">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <span className="text-emerald-500">✓</span>
-                Perfect for you if...
-              </h3>
-              <ul className="space-y-3">
-                {forList.map((item, index) => (
-                  <li key={index} className="flex items-start gap-3 text-sm text-zinc-400">
-                    <span className="text-emerald-500 font-semibold">✓</span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
+          {/* Architecture Highlights */}
+          <div className="grid md:grid-cols-2 gap-6 mb-12">
+            {architectureHighlights.map((item, i) => (
+              <div key={i} className="bg-gray-50 border border-gray-200 rounded-xl p-6">
+                <h3 className="font-semibold mb-2">{item.title}</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">{item.description}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Links */}
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Link
+              href="https://www.tldraw.com/p/Tz-EJdJEB6hq8Z-nOMSjH?d=v-130.0.2552.1324.page"
+              target="_blank"
+              className="inline-flex items-center justify-center gap-2 bg-white border border-gray-200 hover:border-gray-300 text-gray-900 px-5 py-3 rounded-lg text-sm font-medium transition-colors"
+            >
+              View System Design
+              <ExternalLinkIcon />
+            </Link>
+            <Link
+              href="https://github.com/lakhbawa/pinnacle"
+              target="_blank"
+              className="inline-flex items-center justify-center gap-2 bg-white border border-gray-200 hover:border-gray-300 text-gray-900 px-5 py-3 rounded-lg text-sm font-medium transition-colors"
+            >
+              <GitHubIcon />
+              Explore the Code
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-32 relative">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-[#FF6B35] rounded-full blur-[150px] opacity-10 pointer-events-none" />
-
-        <div className="max-w-6xl mx-auto px-6 relative z-10">
-          <div className="text-center max-w-xl mx-auto">
-            <h2 className="font-serif text-4xl sm:text-5xl font-normal mb-6">
-              Ready to focus on what matters?
+      {/* Services Overview */}
+      <section className="py-20 px-6 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl sm:text-3xl font-semibold mb-4">
+              Service Architecture
             </h2>
-            <p className="text-lg text-zinc-400 mb-10">
-              Start with one outcome. See how it feels to have clarity on what actually moves the needle.
+            <p className="text-gray-600 max-w-lg mx-auto">
+              Each service owns its domain, data, and deployment lifecycle.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <button
-                onClick={() => signIn()}
-                className="inline-flex items-center justify-center gap-2 bg-[#FF6B35] hover:bg-[#FF8556] text-white px-8 py-4 rounded-lg text-base font-semibold transition-all hover:-translate-y-0.5 shadow-[0_0_20px_rgba(255,107,53,0.15)] hover:shadow-[0_4px_24px_rgba(255,107,53,0.15)]"
-              >
-                Start free trial
-                <ArrowRightIcon />
-              </button>
-              <Link
-                href="#how-it-works"
-                className="inline-flex items-center justify-center gap-2 bg-[#1F1F23] hover:bg-[#18181B] text-white px-8 py-4 rounded-lg text-base font-semibold transition-all border border-white/[0.06] hover:border-white/[0.12]"
-              >
-                Watch demo
-              </Link>
-            </div>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { name: "API Gateway", tech: "Go + Gin", desc: "Authentication, routing, rate limiting", color: "border-l-cyan-500" },
+              { name: "User Service", tech: "NestJS", desc: "Registration, profiles, preferences", color: "border-l-blue-500" },
+              { name: "Auth Service", tech: "NestJS", desc: "JWT, OAuth, session management", color: "border-l-purple-500" },
+              { name: "Outcome Service", tech: "NestJS", desc: "Outcomes, drivers, actions CRUD", color: "border-l-green-500" },
+              { name: "Notification Service", tech: "NestJS + WebSocket", desc: "Real-time updates, email, push", color: "border-l-orange-500" },
+              { name: "Analytics Service", tech: "NestJS + ClickHouse", desc: "Progress tracking, insights", color: "border-l-red-500" },
+              { name: "Email Worker", tech: "Node.js + Kafka", desc: "Async email processing", color: "border-l-pink-500" },
+              { name: "Event Bus", tech: "Apache Kafka", desc: "Event streaming backbone", color: "border-l-yellow-500" }
+            ].map((service, i) => (
+              <div key={i} className={`bg-white border border-gray-200 border-l-4 ${service.color} rounded-lg p-4`}>
+                <div className="font-semibold text-sm mb-1">{service.name}</div>
+                <div className="text-xs text-gray-500 mb-2">{service.tech}</div>
+                <div className="text-xs text-gray-600">{service.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Who It's For */}
+      <section className="py-20 px-6">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-2xl sm:text-3xl font-semibold mb-4">
+            Built for solo founders
+          </h2>
+          <p className="text-gray-600 mb-8 leading-relaxed">
+            StrategyForge isn't for teams managing sprints or agencies tracking billable hours. It's for the founder working alone who can't afford to spend a week on the wrong thing.
+          </p>
+
+          <div className="inline-flex flex-wrap justify-center gap-2">
+            {["Indie hackers", "Solo founders", "Bootstrappers", "Side project builders"].map((tag, i) => (
+              <span key={i} className="px-3 py-1 bg-gray-100 border border-gray-200 rounded-full text-sm text-gray-600">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section id="pricing" className="py-20 px-6 bg-gray-50">
+        <div className="max-w-lg mx-auto text-center">
+          <h2 className="text-2xl sm:text-3xl font-semibold mb-4">
+            Simple pricing
+          </h2>
+          <p className="text-gray-600 mb-8">
+            Free while in beta. We'll introduce pricing once we've proven the value.
+          </p>
+
+          <div className="bg-white border border-gray-200 rounded-xl p-8">
+            <div className="text-3xl font-semibold mb-2">$0</div>
+            <div className="text-sm text-gray-500 mb-6">Free during beta</div>
+            <ul className="text-sm text-gray-600 space-y-3 mb-8 text-left">
+              {["Unlimited outcomes", "Unlimited drivers and actions", "Progress tracking", "Real-time updates", "Reflection prompts"].map((feature, i) => (
+                <li key={i} className="flex items-center gap-3">
+                  <span className="text-green-500"><CheckIcon /></span>
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            <button
+              onClick={() => signIn()}
+              className="w-full bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-lg text-sm font-medium transition-colors"
+            >
+              Start free trial
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="py-20 px-6 bg-gray-900 text-white">
+        <div className="max-w-2xl mx-auto text-center">
+          <h2 className="text-2xl sm:text-3xl font-semibold mb-4">
+            Ready to focus on what matters?
+          </h2>
+          <p className="text-gray-400 mb-8">
+            Start with one outcome. See the difference clarity makes.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-3">
+            <button
+              onClick={() => signIn()}
+              className="inline-flex items-center justify-center gap-2 bg-white hover:bg-gray-100 text-gray-900 px-6 py-3 rounded-lg text-sm font-medium transition-colors"
+            >
+              Get started for free
+              <ArrowRightIcon />
+            </button>
+            <Link
+              href="https://github.com/lakhbawa/pinnacle"
+              target="_blank"
+              className="inline-flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-lg text-sm font-medium transition-colors"
+            >
+              <GitHubIcon />
+              Star on GitHub
+            </Link>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/[0.06] py-12">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            {/* Logo */}
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 bg-gradient-to-br from-[#FF6B35] to-[#FF8556] rounded-lg flex items-center justify-center font-serif text-sm text-white">
-                S
+      <footer className="py-12 px-6 border-t border-gray-100">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-7 h-7 bg-gray-900 rounded-lg flex items-center justify-center text-white text-xs font-semibold">
+                  S
+                </div>
+                <span className="font-semibold">StrategyForge</span>
               </div>
-              <span className="font-semibold">StrategyForge</span>
+              <p className="text-sm text-gray-500">
+                Outcome-driven project management for solo founders.
+              </p>
             </div>
 
-            {/* Links */}
-            <div className="flex flex-wrap justify-center gap-6">
-              <Link href="/about" className="text-zinc-500 hover:text-zinc-300 text-sm transition-colors">
-                About
-              </Link>
-              <Link href="/blog" className="text-zinc-500 hover:text-zinc-300 text-sm transition-colors">
-                Blog
-              </Link>
-              <Link href="/pricing" className="text-zinc-500 hover:text-zinc-300 text-sm transition-colors">
-                Pricing
-              </Link>
-              <Link href="/privacy" className="text-zinc-500 hover:text-zinc-300 text-sm transition-colors">
-                Privacy
-              </Link>
-              <Link href="/terms" className="text-zinc-500 hover:text-zinc-300 text-sm transition-colors">
-                Terms
-              </Link>
+            <div>
+              <div className="font-medium text-sm mb-3">Product</div>
+              <ul className="space-y-2 text-sm text-gray-500">
+                <li><Link href="#features" className="hover:text-gray-900">Features</Link></li>
+                <li><Link href="#how-it-works" className="hover:text-gray-900">How it works</Link></li>
+                <li><Link href="#pricing" className="hover:text-gray-900">Pricing</Link></li>
+              </ul>
             </div>
 
-            {/* Copyright */}
-            <p className="text-sm text-zinc-500">
-              © 2025 StrategyForge. All rights reserved.
-            </p>
+            <div>
+              <div className="font-medium text-sm mb-3">Engineering</div>
+              <ul className="space-y-2 text-sm text-gray-500">
+                <li>
+                  <Link href="https://github.com/lakhbawa/pinnacle" target="_blank" className="hover:text-gray-900 inline-flex items-center gap-1">
+                    GitHub <ExternalLinkIcon />
+                  </Link>
+                </li>
+                <li>
+                  <Link href="https://www.tldraw.com/p/Tz-EJdJEB6hq8Z-nOMSjH?d=v-130.0.2552.1324.page" target="_blank" className="hover:text-gray-900 inline-flex items-center gap-1">
+                    System Design <ExternalLinkIcon />
+                  </Link>
+                </li>
+                <li><Link href="#architecture" className="hover:text-gray-900">Architecture</Link></li>
+              </ul>
+            </div>
+
+            <div>
+              <div className="font-medium text-sm mb-3">Legal</div>
+              <ul className="space-y-2 text-sm text-gray-500">
+                <li><Link href="/privacy" className="hover:text-gray-900">Privacy</Link></li>
+                <li><Link href="/terms" className="hover:text-gray-900">Terms</Link></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="pt-8 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p className="text-sm text-gray-500">© 2025 StrategyForge. All rights reserved.</p>
+            <div className="flex items-center gap-4">
+              <Link href="https://github.com/lakhbawa/pinnacle" target="_blank" className="text-gray-400 hover:text-gray-600">
+                <GitHubIcon />
+              </Link>
+            </div>
           </div>
         </div>
       </footer>
-
-      {/* Custom styles for animations */}
-      <style jsx>{`
-        @keyframes fade-in-up {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        .animate-fade-in-up {
-          animation: fade-in-up 0.6s ease forwards;
-        }
-        
-        .animation-delay-100 {
-          animation-delay: 0.1s;
-          opacity: 0;
-        }
-        
-        .animation-delay-200 {
-          animation-delay: 0.2s;
-          opacity: 0;
-        }
-        
-        .animation-delay-300 {
-          animation-delay: 0.3s;
-          opacity: 0;
-        }
-        
-        .animation-delay-400 {
-          animation-delay: 0.4s;
-          opacity: 0;
-        }
-      `}</style>
     </div>
   )
 }
