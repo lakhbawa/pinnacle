@@ -3,6 +3,7 @@ import {use, useEffect, useState} from "react";
 import {outcomeAPI} from "@/utils/fetchWrapper";
 import {useRouter} from "next/navigation";
 import FormErrors from "@/app/components/FormErrors";
+import Link from "next/link";
 
 export default function UpdateOutcome({params}: { params: Promise<{ outcome_id: string }> }) {
     const {outcome_id} = use(params);
@@ -19,7 +20,7 @@ export default function UpdateOutcome({params}: { params: Promise<{ outcome_id: 
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [errors, setErrors] = useState<Record<string, string[]>>({})
-
+  const [isSubmitting, setIsSubmitting] = useState(false)
     const handleChange = (event: any) => {
         const {name, value} = event.target;
         setFormData(prevFormData => ({
@@ -79,100 +80,189 @@ export default function UpdateOutcome({params}: { params: Promise<{ outcome_id: 
         }
     }
 
-        if (loading) return <div className="flex justify-center items-center min-h-[200px]">
-        <div className="text-gray-600">Loading...</div>
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="animate-pulse flex flex-col items-center">
+        <div className="h-8 w-8 mb-4 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
+        <p className="text-gray-600">Loading outcome...</p>
+      </div>
     </div>
+  )
 
-    if (error) return <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
-        Error: {error}
+  if (error) return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="max-w-md w-full px-4">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800">Error</h3>
+              <p className="mt-1 text-sm text-red-700">{error}</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  )
 
-    return (
-        <>
+  return (
+    <div className="min-h-screen bg-gray-50 py-12">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="md:flex md:items-center md:justify-between md:space-x-4 mb-8">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Update Outcome</h1>
+            <p className="mt-2 text-sm text-gray-500">
+              Make changes to your outcome and its success metrics.
+            </p>
+          </div>
+          <Link
+            href="/u/lakhbawa/outcomes"
+            className="mt-4 md:mt-0 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700"
+          >
+            <svg className="mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+            </svg>
+            Back to Outcomes
+          </Link>
+        </div>
 
-            <FormErrors errors={errors}/>
-            <form onSubmit={updateOutcome} className="space-y-6">
+        {/* Form Card */}
+        <div className="bg-white shadow-sm rounded-lg border border-gray-200">
+          <div className="px-4 py-5 sm:p-6">
+            <FormErrors errors={errors} />
 
-                <input type="hidden" name="userId" value={userId}/>
+            <form onSubmit={updateOutcome} className="space-y-8">
+              <input type="hidden" name="userId" value={userId} />
 
-                <div>
+              {/* Title Field */}
+              <div>
+                <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+                  What do you want to achieve?
+                </label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  required
+                  className="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm
+                           focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                  value={formData.title}
+                  onChange={handleChange}
+                />
+              </div>
+
+              {/* Why It Matters */}
+              <div>
+                <label htmlFor="why_it_matters" className="block text-sm font-medium text-gray-700 mb-1">
+                  Why does this outcome matter?
+                </label>
+                <textarea
+                  id="why_it_matters"
+                  name="why_it_matters"
+                  rows={6}
+                  className="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm
+                           focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                  value={formData.why_it_matters}
+                  onChange={handleChange}
+                />
+              </div>
+
+              {/* Success Metrics */}
+              <div>
+                <h3 className="text-sm font-medium text-gray-900 mb-3">Success Metrics</h3>
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="success_metric_value" className="block text-sm font-medium text-gray-700 mb-1">
+                      Target Value
+                    </label>
                     <input
-                        type="text"
-                        id="title"
-                        name="title"
-                        placeholder="Outcome Title"
-                        required
-                        className="border-2 border-gray-300 rounded-lg"
-                        value={formData.title}
-                        onChange={handleChange}
+                      type="number"
+                      id="success_metric_value"
+                      name="success_metric_value"
+                      required
+                      className="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm
+                               focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                      value={formData.success_metric_value}
+                      onChange={handleChange}
                     />
+                  </div>
+                  <div>
+                    <label htmlFor="success_metric_unit" className="block text-sm font-medium text-gray-700 mb-1">
+                      Unit of Measurement
+                    </label>
+                    <input
+                      type="text"
+                      id="success_metric_unit"
+                      name="success_metric_unit"
+                      required
+                      className="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm
+                               focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                      value={formData.success_metric_unit}
+                      onChange={handleChange}
+                    />
+                  </div>
                 </div>
-                <div>
-                <textarea className="border-2 border-gray-300 rounded-lg" name="why_it_matters" id="why_it_matters"
-                          placeholder="Why It matters" cols="30" rows="10" value={formData.why_it_matters}
-                          onChange={handleChange}></textarea>
-                </div>
+              </div>
 
-                <div>
+              {/* Deadline */}
+              <div>
+                <label htmlFor="deadline" className="block text-sm font-medium text-gray-700 mb-1">
+                  When do you want to achieve this by?
+                </label>
+                <input
+                  type="datetime-local"
+                  id="deadline"
+                  name="deadline"
+                  required
+                  className="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm
+                           focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                  value={formData.deadline}
+                  onChange={handleChange}
+                />
+              </div>
 
-                    <div>
-                        <input
-                            type="text"
-                            id="success_metric_unit"
-                            name="success_metric_unit"
-                            placeholder="Success Metric Unit"
-                            required
-                            className="border-2 border-gray-300 rounded-lg"
-                            value={formData.success_metric_unit}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div>
-                        <input
-                            type="number"
-                            id="success_metric_value"
-                            name="success_metric_value"
-                            placeholder="Success Metric Value"
-                            required
-                            className="border-2 border-gray-300 rounded-lg"
-                            value={formData.success_metric_value}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-
-                    <div>
-                        <input
-                            type="datetime-local"
-                            id="deadline"
-                            name="deadline"
-                            placeholder="Deadline"
-                            required
-                            className="border-2 border-gray-300 rounded-lg"
-                            value={formData.deadline}
-                            onChange={handleChange}
-
-                        />
-                    </div>
-
-                    <button
-                        type="submit"
-                        className="border-2 border-gray-300 rounded-lg bg-black text-white p-3"
-                    >
-                        Update Outcome
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => window.history.back()}
-                        className=""
-                    >
-                        Cancel
-                    </button>
-                </div>
-
-
+              {/* Form Actions */}
+              <div className="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
+                <button
+                  type="button"
+                  onClick={() => router.back()}
+                  className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium
+                           text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2
+                           focus:ring-offset-2 focus:ring-primary-500"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm
+                           text-sm font-medium text-white bg-primary-600 hover:bg-primary-700
+                           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500
+                           disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                        <path className="opacity-75" fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                      </svg>
+                      Updating...
+                    </>
+                  ) : (
+                    'Update Outcome'
+                  )}
+                </button>
+              </div>
             </form>
-        </>
-    )
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }

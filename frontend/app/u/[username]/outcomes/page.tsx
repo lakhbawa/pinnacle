@@ -31,24 +31,25 @@ export default function Outcomes() {
   const [outcomes, setOutcomes] = useState<Outcome[]>([]);
   const [meta, setMeta] = useState<Meta | null>(null);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const username = 'lakhbawa'
 
   useEffect(() => {
     outcomeAPI.get<ListOutcomesResponse>('/outcomes', {
-      params: { user_id: 'user-123', page_size: 20 }
+      params: {user_id: 'user-123', page_size: 20}
     })
-      .then((response) => {
-        console.log('response', response);
-        setOutcomes(response.data);
-        setMeta(response.meta);
-      })
-      .catch((error) => {
-        console.error('Failed to fetch outcomes:', error);
-      })
-      .finally(() => {
-        setLoading(false);
-      })
+        .then((response) => {
+          console.log('response', response);
+          setOutcomes(response.data);
+          setMeta(response.meta);
+        })
+        .catch((error) => {
+          console.error('Failed to fetch outcomes:', error);
+        })
+        .finally(() => {
+          setLoading(false);
+        })
   }, [])
 
   const deleteOutcome = (id: string) => async () => {
@@ -65,67 +66,146 @@ export default function Outcomes() {
       }
     }
   }
+  const filteredOutcomes = outcomes.filter(outcome =>
+    outcome.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  if (loading) return <div className="p-4">Loading outcomes...</div>
+
+  if (loading) return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-pulse flex flex-col items-center">
+          <div
+              className="h-8 w-8 mb-4 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-gray-600">Loading outcomes...</p>
+        </div>
+      </div>
+  );
 
   return (
-    <>
-      <section className="container mx-auto p-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header Section */}
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Outcomes</h1>
+              {meta && (
+                  <p className="text-sm text-gray-600">
+                    Showing {outcomes.length} of {meta.total} outcomes
+                  </p>
+              )}
+            </div>
+            <Link
+                href={`/u/${username}/outcomes/create`}
+                className="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700
+                     text-white text-sm font-medium rounded-md transition-colors duration-150 ease-in-out"
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"/>
+              </svg>
+              Create Outcome
+            </Link>
+          </div>
 
-        <h1 className="p-4 font-bold bg-primary-600 text-white">Your Outcomes</h1>
+          {/* Search Bar */}
+          <div className="mt-6">
+            <div className="relative">
+              <input
+                  type="text"
+                  placeholder="Search outcomes..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full px-4 py-2 pl-10 pr-4 text-gray-900 placeholder-gray-500 border border-gray-300
+                       rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              />
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        {meta && (
-          <p className="text-sm text-gray-600 p-2">
-            Showing {outcomes.length} of {meta.total} outcomes
-          </p>
-        )}
-
-        <section className="bg-gray-200 p-3">
-          <section className="grid overflow-x-auto gap-3 grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
-            {outcomes.length === 0 ? (
-              <div className="p-4 text-gray-500">No outcomes yet. Create your first one!</div>
-            ) : (
-              outcomes.map((outcome) => (
-                <div
-                  className="px-4 py-5 min-w-[200px] rounded bg-primary-200 border-2 border-primary-300 flex flex-row items-start justify-between"
-                  key={outcome.id}>
-                  <div className="pb-6">
-                    <Link href={`/u/${username}/outcomes/${outcome.id}`}
-                          className="font-semibold text-primary-600">
-                      {outcome.title}
-                    </Link>
-                  </div>
-                  <div className="actions flex gap-3">
-                    <Link href={`/u/${username}/outcomes/${outcome.id}/update`}
-                          className="font-medium bg-blue-500 p-2 shadow-2xl text-white rounded">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                           strokeWidth={1.5} stroke="currentColor" className="size-4">
-                        <path strokeLinecap="round" strokeLinejoin="round"
-                              d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/>
-                      </svg>
-                    </Link>
-                    <button
-                      onClick={deleteOutcome(outcome.id)}
-                      className="font-medium bg-red-500 p-2 shadow-2xl text-white rounded cursor-pointer hover:bg-red-600"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                           strokeWidth={1.5} stroke="currentColor" className="size-4">
-                        <path strokeLinecap="round" strokeLinejoin="round"
-                              d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
-                      </svg>
-                    </button>
-                  </div>
+        {/* Outcomes Grid */}
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredOutcomes.length === 0 ? (
+              <div className="col-span-full">
+                <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                  <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor"
+                       viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                          d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                  </svg>
+                  <h3 className="mt-2 text-sm font-medium text-gray-900">No outcomes found</h3>
+                  <p className="mt-1 text-sm text-gray-500">
+                    {searchQuery ? "Try adjusting your search terms" : "Get started by creating your first outcome"}
+                  </p>
                 </div>
-              ))
-            )}
-          </section>
-        </section>
+              </div>
+          ) : (
+              filteredOutcomes.map((outcome) => (
+                  <div
+                      key={outcome.id}
+                      className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md
+                       transition-shadow duration-200 ease-in-out"
+                  >
+                    <div className="p-6">
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <Link
+                              href={`/u/${username}/outcomes/${outcome.id}`}
+                              className="block text-lg font-semibold text-gray-900 hover:text-primary-600
+                               transition-colors duration-150 ease-in-out mb-2"
+                          >
+                            {outcome.title}
+                          </Link>
+                          {outcome.why_it_matters && (
+                              <p className="text-sm text-gray-600 line-clamp-2 mb-4">
+                                {outcome.why_it_matters}
+                              </p>
+                          )}
+                          {outcome.success_metric_value && (
+                              <div className="flex items-center text-sm text-gray-500">
+                                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                                </svg>
+                                Target: {outcome.success_metric_value} {outcome.success_metric_unit}
+                              </div>
+                          )}
+                        </div>
+                      </div>
 
-        <Link href={`/u/${username}/outcomes/create`}
-              className="font-medium bg-blue-500 p-3 my-3 inline-block shadow-2xl text-white rounded">
-          Create Outcome
-        </Link>
-      </section>
-    </>
-  )
+                      <div className="mt-4 pt-4 border-t border-gray-100 flex justify-end space-x-3">
+                        <Link
+                            href={`/u/${username}/outcomes/${outcome.id}/update`}
+                            className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700
+                             bg-gray-100 hover:bg-gray-200 rounded-md transition-colors duration-150 ease-in-out"
+                        >
+                          <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                          </svg>
+                          Edit
+                        </Link>
+                        <button
+                            onClick={deleteOutcome(outcome.id)}
+                            className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-red-700
+                             bg-red-100 hover:bg-red-200 rounded-md transition-colors duration-150 ease-in-out"
+                        >
+                          <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                          </svg>
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+              ))
+          )}
+        </div>
+      </div>
+  );
 }
