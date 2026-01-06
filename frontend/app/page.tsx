@@ -144,7 +144,7 @@ export default function HomePage() {
           <div className="flex justify-between items-center h-16">
             <Link href="/" className="flex items-center gap-2">
               <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center text-white font-semibold text-sm">
-                S
+                P
               </div>
               <span className="text-lg font-semibold">Pinnacle</span>
             </Link>
