@@ -34,7 +34,7 @@ services:
       - "traefik.http.routers.api-pinnacle-lakhveerbawa-com.service=api-pinnacle-lakhveerbawa-com"
 
       # Service
-      - "traefik.http.services.api-pinnacle-lakhveerbawa-com.loadbalancer.server.port=80"
+      - "traefik.http.services.api-pinnacle-lakhveerbawa-com.loadbalancer.server.port=8080"
 
   # ===================
   # NESTJS MICROSERVICES (Internal gRPC)
