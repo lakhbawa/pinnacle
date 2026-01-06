@@ -36,9 +36,8 @@ RUN go mod download
 # Copy generated proto code from previous stage
 COPY --from=proto-builder /app/gen ./gen
 
-# Copy source code
-COPY cmd/ ./cmd/
-# Add other source directories as needed
+# Copy ALL source code (simpler and less error-prone)
+COPY . .
 
 # Build with optimizations
 RUN CGO_ENABLED=0 GOOS=linux go build \
