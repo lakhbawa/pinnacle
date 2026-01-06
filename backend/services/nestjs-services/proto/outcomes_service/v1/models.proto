@@ -39,6 +39,8 @@ message Driver {
   google.protobuf.Timestamp created_at = 5;
   repeated Action actions = 6;
   Outcome outcome = 7;
+  string description = 8;
+
 }
 
 message Action {
@@ -55,4 +57,6 @@ message Action {
   google.protobuf.Timestamp completed_at = 11;
   Outcome outcome = 12;
   Driver driver = 13;
+  string description = 14;
+
 }

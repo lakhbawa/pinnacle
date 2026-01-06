@@ -324,6 +324,7 @@ type Action struct {
 	CompletedAt        *timestamppb.Timestamp `protobuf:"bytes,11,opt,name=completed_at,json=completedAt,proto3" json:"completed_at,omitempty"`
 	Outcome            *Outcome               `protobuf:"bytes,12,opt,name=outcome,proto3" json:"outcome,omitempty"`
 	Driver             *Driver                `protobuf:"bytes,13,opt,name=driver,proto3" json:"driver,omitempty"`
+	Description        string                 `protobuf:"bytes,14,opt,name=description,proto3" json:"description,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -449,6 +450,13 @@ func (x *Action) GetDriver() *Driver {
 	return nil
 }
 
+func (x *Action) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
 var File_outcomes_service_v1_models_proto protoreflect.FileDescriptor
 
 const file_outcomes_service_v1_models_proto_rawDesc = "" +
@@ -480,7 +488,7 @@ const file_outcomes_service_v1_models_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x125\n" +
 	"\aactions\x18\x06 \x03(\v2\x1b.outcomes_service.v1.ActionR\aactions\x126\n" +
-	"\aoutcome\x18\a \x01(\v2\x1c.outcomes_service.v1.OutcomeR\aoutcome\"\xd8\x04\n" +
+	"\aoutcome\x18\a \x01(\v2\x1c.outcomes_service.v1.OutcomeR\aoutcome\"\xfa\x04\n" +
 	"\x06Action\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
 	"\tdriver_id\x18\x02 \x01(\tR\bdriverId\x12\x1d\n" +
@@ -498,7 +506,8 @@ const file_outcomes_service_v1_models_proto_rawDesc = "" +
 	" \x01(\v2\x1a.google.protobuf.TimestampR\x12lastMovedOutcomeAt\x12=\n" +
 	"\fcompleted_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\vcompletedAt\x126\n" +
 	"\aoutcome\x18\f \x01(\v2\x1c.outcomes_service.v1.OutcomeR\aoutcome\x123\n" +
-	"\x06driver\x18\r \x01(\v2\x1b.outcomes_service.v1.DriverR\x06driver*\xa1\x01\n" +
+	"\x06driver\x18\r \x01(\v2\x1b.outcomes_service.v1.DriverR\x06driver\x12 \n" +
+	"\vdescription\x18\x0e \x01(\tR\vdescription*\xa1\x01\n" +
 	"\rOutcomeStatus\x12\x1e\n" +
 	"\x1aOUTCOME_STATUS_UNSPECIFIED\x10\x00\x12\x19\n" +
 	"\x15OUTCOME_STATUS_ACTIVE\x10\x01\x12\x19\n" +

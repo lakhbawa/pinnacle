@@ -3,6 +3,7 @@ import {useState} from "react";
 import {authAPI} from "@/utils/fetchWrapper";
 import {signIn} from "next-auth/react";
 import {useRouter} from "next/navigation";
+import {AuthResponse} from "@/app/types/outcomeTypes";
 
 export default function SignUpPage() {
     const router = useRouter();
@@ -24,11 +25,11 @@ export default function SignUpPage() {
         setLoading(true);
 
         try {
-            const res = await authAPI.post("/auth/signup", formData);
+            const res = await authAPI.post<AuthResponse>("/auth/signup", formData);
 
             // Check if signup was successful - adjust based on your API response structure
             if (!res.success) {
-                setError(res.message || "Signup failed");
+                setError("Signup failed");
                 return;
             }
 

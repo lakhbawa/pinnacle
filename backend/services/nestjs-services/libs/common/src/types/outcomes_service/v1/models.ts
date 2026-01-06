@@ -42,6 +42,7 @@ export interface Driver {
   created_at: Timestamp | undefined;
   actions: Action[];
   outcome: Outcome | undefined;
+  description: string;
 }
 
 export interface Action {
@@ -58,6 +59,7 @@ export interface Action {
   completed_at: Timestamp | undefined;
   outcome: Outcome | undefined;
   driver: Driver | undefined;
+  description: string;
 }
 
 export const OUTCOMES_SERVICE_V1_PACKAGE_NAME = "outcomes_service.v1";

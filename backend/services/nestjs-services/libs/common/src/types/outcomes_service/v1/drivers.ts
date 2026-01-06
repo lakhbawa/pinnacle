@@ -16,6 +16,7 @@ export interface CreateDriverRequest {
   title: string;
   outcome_id: string;
   position?: number | undefined;
+  description?: string | undefined;
 }
 
 export interface GetDriverRequest {
@@ -25,6 +26,7 @@ export interface GetDriverRequest {
 export interface UpdateDriverRequest {
   id: string;
   title?: string | undefined;
+  description?: string | undefined;
 }
 
 export interface ListDriversRequest {

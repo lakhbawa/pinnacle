@@ -25,6 +25,8 @@ message CreateActionRequest {
   string driver_id = 4;
   optional string scheduled_for = 5;
   optional float position = 6;
+  optional float description = 7;
+
 }
 
 message GetActionRequest {
@@ -40,6 +42,9 @@ message UpdateActionRequest {
   optional string user_id = 6;
   optional google.protobuf.Timestamp completed_at = 7;
   optional google.protobuf.Timestamp scheduled_for = 8;
+  optional bool is_completed = 9;
+  optional string description = 10;
+
 }
 
 message ListActionsRequest {

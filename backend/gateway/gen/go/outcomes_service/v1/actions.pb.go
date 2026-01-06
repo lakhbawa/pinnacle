@@ -31,6 +31,7 @@ type CreateActionRequest struct {
 	DriverId      string                 `protobuf:"bytes,4,opt,name=driver_id,json=driverId,proto3" json:"driver_id,omitempty"`
 	ScheduledFor  *string                `protobuf:"bytes,5,opt,name=scheduled_for,json=scheduledFor,proto3,oneof" json:"scheduled_for,omitempty"`
 	Position      *float32               `protobuf:"fixed32,6,opt,name=position,proto3,oneof" json:"position,omitempty"`
+	Description   *float32               `protobuf:"fixed32,7,opt,name=description,proto3,oneof" json:"description,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -107,6 +108,13 @@ func (x *CreateActionRequest) GetPosition() float32 {
 	return 0
 }
 
+func (x *CreateActionRequest) GetDescription() float32 {
+	if x != nil && x.Description != nil {
+		return *x.Description
+	}
+	return 0
+}
+
 type GetActionRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -161,6 +169,8 @@ type UpdateActionRequest struct {
 	UserId        *string                `protobuf:"bytes,6,opt,name=user_id,json=userId,proto3,oneof" json:"user_id,omitempty"`
 	CompletedAt   *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=completed_at,json=completedAt,proto3,oneof" json:"completed_at,omitempty"`
 	ScheduledFor  *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=scheduled_for,json=scheduledFor,proto3,oneof" json:"scheduled_for,omitempty"`
+	IsCompleted   *bool                  `protobuf:"varint,9,opt,name=is_completed,json=isCompleted,proto3,oneof" json:"is_completed,omitempty"`
+	Description   *string                `protobuf:"bytes,10,opt,name=description,proto3,oneof" json:"description,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -249,6 +259,20 @@ func (x *UpdateActionRequest) GetScheduledFor() *timestamppb.Timestamp {
 		return x.ScheduledFor
 	}
 	return nil
+}
+
+func (x *UpdateActionRequest) GetIsCompleted() bool {
+	if x != nil && x.IsCompleted != nil {
+		return *x.IsCompleted
+	}
+	return false
+}
+
+func (x *UpdateActionRequest) GetDescription() string {
+	if x != nil && x.Description != nil {
+		return *x.Description
+	}
+	return ""
 }
 
 type ListActionsRequest struct {
@@ -487,7 +511,7 @@ var File_outcomes_service_v1_actions_proto protoreflect.FileDescriptor
 
 const file_outcomes_service_v1_actions_proto_rawDesc = "" +
 	"\n" +
-	"!outcomes_service/v1/actions.proto\x12\x13outcomes_service.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1cgoogle/api/annotations.proto\x1a outcomes_service/v1/models.proto\"\xea\x01\n" +
+	"!outcomes_service/v1/actions.proto\x12\x13outcomes_service.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1cgoogle/api/annotations.proto\x1a outcomes_service/v1/models.proto\"\xa1\x02\n" +
 	"\x13CreateActionRequest\x12\x14\n" +
 	"\x05title\x18\x01 \x01(\tR\x05title\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x1d\n" +
@@ -495,11 +519,13 @@ const file_outcomes_service_v1_actions_proto_rawDesc = "" +
 	"outcome_id\x18\x03 \x01(\tR\toutcomeId\x12\x1b\n" +
 	"\tdriver_id\x18\x04 \x01(\tR\bdriverId\x12(\n" +
 	"\rscheduled_for\x18\x05 \x01(\tH\x00R\fscheduledFor\x88\x01\x01\x12\x1f\n" +
-	"\bposition\x18\x06 \x01(\x02H\x01R\bposition\x88\x01\x01B\x10\n" +
+	"\bposition\x18\x06 \x01(\x02H\x01R\bposition\x88\x01\x01\x12%\n" +
+	"\vdescription\x18\a \x01(\x02H\x02R\vdescription\x88\x01\x01B\x10\n" +
 	"\x0e_scheduled_forB\v\n" +
-	"\t_position\"\"\n" +
+	"\t_positionB\x0e\n" +
+	"\f_description\"\"\n" +
 	"\x10GetActionRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\xb2\x03\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\xa2\x04\n" +
 	"\x13UpdateActionRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x19\n" +
 	"\x05title\x18\x02 \x01(\tH\x00R\x05title\x88\x01\x01\x12\x1f\n" +
@@ -509,7 +535,10 @@ const file_outcomes_service_v1_actions_proto_rawDesc = "" +
 	"\tdriver_id\x18\x05 \x01(\tH\x03R\bdriverId\x88\x01\x01\x12\x1c\n" +
 	"\auser_id\x18\x06 \x01(\tH\x04R\x06userId\x88\x01\x01\x12B\n" +
 	"\fcompleted_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampH\x05R\vcompletedAt\x88\x01\x01\x12D\n" +
-	"\rscheduled_for\x18\b \x01(\v2\x1a.google.protobuf.TimestampH\x06R\fscheduledFor\x88\x01\x01B\b\n" +
+	"\rscheduled_for\x18\b \x01(\v2\x1a.google.protobuf.TimestampH\x06R\fscheduledFor\x88\x01\x01\x12&\n" +
+	"\fis_completed\x18\t \x01(\bH\aR\visCompleted\x88\x01\x01\x12%\n" +
+	"\vdescription\x18\n" +
+	" \x01(\tH\bR\vdescription\x88\x01\x01B\b\n" +
 	"\x06_titleB\v\n" +
 	"\t_positionB\r\n" +
 	"\v_outcome_idB\f\n" +
@@ -518,7 +547,9 @@ const file_outcomes_service_v1_actions_proto_rawDesc = "" +
 	"\n" +
 	"\b_user_idB\x0f\n" +
 	"\r_completed_atB\x10\n" +
-	"\x0e_scheduled_for\"o\n" +
+	"\x0e_scheduled_forB\x0f\n" +
+	"\r_is_completedB\x0e\n" +
+	"\f_description\"o\n" +
 	"\x12ListActionsRequest\x12\x1d\n" +
 	"\n" +
 	"outcome_id\x18\x01 \x01(\tR\toutcomeId\x12\x1b\n" +

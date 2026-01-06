@@ -5,6 +5,7 @@ import { outcomeAPI } from "@/utils/fetchWrapper";
 import { useRouter } from "next/navigation";
 import FormErrors from "@/app/components/FormErrors";
 import Link from "next/link";
+import {ActionResponse} from "@/app/types/outcomeTypes";
 
 export default function UpdateAction({ params }: { params: Promise<{ outcome_id: string, driver_id: string, action_id: string, username: string }> }) {
   const { outcome_id, driver_id, action_id, username } = use(params);
@@ -43,9 +44,11 @@ export default function UpdateAction({ params }: { params: Promise<{ outcome_id:
     async function fetchData() {
       try {
         setLoading(true);
-        const data = await outcomeAPI.get(`/actions/${action_id}`);
+        const data = await outcomeAPI.get<ActionResponse>(`/actions/${action_id}`);
+
         const itemData = data.data;
-        setFormData({
+        if (itemData) {
+          setFormData({
           title: itemData.title,
           description: itemData.description || '',
           scheduled_for: itemData.scheduled_for ? toDateTimeLocal(itemData.scheduled_for) : '',
@@ -53,6 +56,8 @@ export default function UpdateAction({ params }: { params: Promise<{ outcome_id:
           driver_id: itemData.driver_id,
           user_id: itemData.user_id,
         });
+        }
+
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load action');
       } finally {
@@ -100,7 +105,7 @@ export default function UpdateAction({ params }: { params: Promise<{ outcome_id:
           <div>
             <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Update Action</h1>
             <p className="mt-2 text-sm text-gray-500">
-              Make changes to your action's details
+              Make changes to your action&#39;s details
             </p>
           </div>
           <Link

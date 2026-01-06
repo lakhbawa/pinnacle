@@ -1,3 +1,4 @@
+
 export interface Outcome {
     id: string;
     title: string;
@@ -5,11 +6,23 @@ export interface Outcome {
     createdAt: string;
     updatedAt: string;
     drivers: Driver[];
+    why_it_matters: string,
+    success_metric_value: number,
+    success_metric_unit: string,
+    deadline: string,
+    status: string,
+    created_at: string,
+    completed_at: string,
+    archived_at: string,
+
 }
 
 export type Driver = {
     id: string;
     title: string;
+    description: string;
+    position: string;
+    outcome_id: string;
     createdAt: string;
     updatedAt: string;
     outcome?: Outcome;
@@ -19,11 +32,19 @@ export type Driver = {
 export type Action = {
     id: string;
     title: string;
+    description: string;
+
     user_id: string;
     outcome_id: string;
     driver_id: string;
+    is_completed: boolean;
     outcome: Outcome;
     driver: Driver;
+    created_at: string;
+    updated_at: string;
+    scheduled_for: string;
+    last_moved_outcome_at: string;
+    completed_at: string;
 }
 
 
@@ -42,4 +63,34 @@ export type AuthResponse = {
         user: User,
         token: string,
     }
+}
+
+export type DriverResponse = {
+    success: boolean,
+    data?: Driver
+}
+
+export type DriverListResponse = {
+    success: boolean,
+    data?: Driver[]
+}
+
+export type ActionResponse = {
+    success: boolean,
+    data?: Action
+}
+
+export type ActionListResponse = {
+    success: boolean,
+    data?: Action[]
+}
+
+export type OutcomeResponse = {
+    success: boolean,
+    data?: Outcome
+}
+
+export type OutcomeListResponse = {
+    success: boolean,
+    data?: Outcome[]
 }

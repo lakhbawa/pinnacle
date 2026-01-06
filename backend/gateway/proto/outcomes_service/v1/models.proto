@@ -53,4 +53,5 @@ message Action {
   google.protobuf.Timestamp completed_at = 11;
   Outcome outcome = 12;
   Driver driver = 13;
+  string description = 14;
 }

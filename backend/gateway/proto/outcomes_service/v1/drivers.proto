@@ -45,6 +45,8 @@ message CreateDriverRequest {
   string title = 2;
   string outcome_id = 3;
   optional float position = 4;
+  optional float description = 5;
+
 }
 
 message GetDriverRequest {
@@ -55,6 +57,8 @@ message UpdateDriverRequest {
   string id = 1;
   optional string title = 2;
   optional float position = 3;
+  optional float description = 4;
+
 }
 
 message ListDriversRequest {

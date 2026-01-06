@@ -2369,6 +2369,7 @@ export namespace Prisma {
     outcome_id: string | null
     user_id: string | null
     title: string | null
+    description: string | null
     position: number | null
     created_at: Date | null
   }
@@ -2378,6 +2379,7 @@ export namespace Prisma {
     outcome_id: string | null
     user_id: string | null
     title: string | null
+    description: string | null
     position: number | null
     created_at: Date | null
   }
@@ -2387,6 +2389,7 @@ export namespace Prisma {
     outcome_id: number
     user_id: number
     title: number
+    description: number
     position: number
     created_at: number
     _all: number
@@ -2406,6 +2409,7 @@ export namespace Prisma {
     outcome_id?: true
     user_id?: true
     title?: true
+    description?: true
     position?: true
     created_at?: true
   }
@@ -2415,6 +2419,7 @@ export namespace Prisma {
     outcome_id?: true
     user_id?: true
     title?: true
+    description?: true
     position?: true
     created_at?: true
   }
@@ -2424,6 +2429,7 @@ export namespace Prisma {
     outcome_id?: true
     user_id?: true
     title?: true
+    description?: true
     position?: true
     created_at?: true
     _all?: true
@@ -2520,6 +2526,7 @@ export namespace Prisma {
     outcome_id: string
     user_id: string
     title: string
+    description: string | null
     position: number | null
     created_at: Date
     _count: DriverCountAggregateOutputType | null
@@ -2548,6 +2555,7 @@ export namespace Prisma {
     outcome_id?: boolean
     user_id?: boolean
     title?: boolean
+    description?: boolean
     position?: boolean
     created_at?: boolean
     outcome?: boolean | OutcomeDefaultArgs<ExtArgs>
@@ -2560,6 +2568,7 @@ export namespace Prisma {
     outcome_id?: boolean
     user_id?: boolean
     title?: boolean
+    description?: boolean
     position?: boolean
     created_at?: boolean
     outcome?: boolean | OutcomeDefaultArgs<ExtArgs>
@@ -2570,6 +2579,7 @@ export namespace Prisma {
     outcome_id?: boolean
     user_id?: boolean
     title?: boolean
+    description?: boolean
     position?: boolean
     created_at?: boolean
     outcome?: boolean | OutcomeDefaultArgs<ExtArgs>
@@ -2580,11 +2590,12 @@ export namespace Prisma {
     outcome_id?: boolean
     user_id?: boolean
     title?: boolean
+    description?: boolean
     position?: boolean
     created_at?: boolean
   }
 
-  export type DriverOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outcome_id" | "user_id" | "title" | "position" | "created_at", ExtArgs["result"]["driver"]>
+  export type DriverOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outcome_id" | "user_id" | "title" | "description" | "position" | "created_at", ExtArgs["result"]["driver"]>
   export type DriverInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     outcome?: boolean | OutcomeDefaultArgs<ExtArgs>
     actions?: boolean | Driver$actionsArgs<ExtArgs>
@@ -2608,6 +2619,7 @@ export namespace Prisma {
       outcome_id: string
       user_id: string
       title: string
+      description: string | null
       position: number | null
       created_at: Date
     }, ExtArgs["result"]["driver"]>
@@ -3039,6 +3051,7 @@ export namespace Prisma {
     readonly outcome_id: FieldRef<"Driver", 'String'>
     readonly user_id: FieldRef<"Driver", 'String'>
     readonly title: FieldRef<"Driver", 'String'>
+    readonly description: FieldRef<"Driver", 'String'>
     readonly position: FieldRef<"Driver", 'Float'>
     readonly created_at: FieldRef<"Driver", 'DateTime'>
   }
@@ -3505,7 +3518,9 @@ export namespace Prisma {
     outcome_id: string | null
     user_id: string | null
     title: string | null
+    description: string | null
     position: number | null
+    is_completed: boolean | null
     completed_at: Date | null
     scheduled_for: Date | null
     last_moved_outcome_at: Date | null
@@ -3519,7 +3534,9 @@ export namespace Prisma {
     outcome_id: string | null
     user_id: string | null
     title: string | null
+    description: string | null
     position: number | null
+    is_completed: boolean | null
     completed_at: Date | null
     scheduled_for: Date | null
     last_moved_outcome_at: Date | null
@@ -3533,7 +3550,9 @@ export namespace Prisma {
     outcome_id: number
     user_id: number
     title: number
+    description: number
     position: number
+    is_completed: number
     completed_at: number
     scheduled_for: number
     last_moved_outcome_at: number
@@ -3557,7 +3576,9 @@ export namespace Prisma {
     outcome_id?: true
     user_id?: true
     title?: true
+    description?: true
     position?: true
+    is_completed?: true
     completed_at?: true
     scheduled_for?: true
     last_moved_outcome_at?: true
@@ -3571,7 +3592,9 @@ export namespace Prisma {
     outcome_id?: true
     user_id?: true
     title?: true
+    description?: true
     position?: true
+    is_completed?: true
     completed_at?: true
     scheduled_for?: true
     last_moved_outcome_at?: true
@@ -3585,7 +3608,9 @@ export namespace Prisma {
     outcome_id?: true
     user_id?: true
     title?: true
+    description?: true
     position?: true
+    is_completed?: true
     completed_at?: true
     scheduled_for?: true
     last_moved_outcome_at?: true
@@ -3686,7 +3711,9 @@ export namespace Prisma {
     outcome_id: string
     user_id: string
     title: string
+    description: string | null
     position: number | null
+    is_completed: boolean
     completed_at: Date | null
     scheduled_for: Date | null
     last_moved_outcome_at: Date | null
@@ -3719,7 +3746,9 @@ export namespace Prisma {
     outcome_id?: boolean
     user_id?: boolean
     title?: boolean
+    description?: boolean
     position?: boolean
+    is_completed?: boolean
     completed_at?: boolean
     scheduled_for?: boolean
     last_moved_outcome_at?: boolean
@@ -3735,7 +3764,9 @@ export namespace Prisma {
     outcome_id?: boolean
     user_id?: boolean
     title?: boolean
+    description?: boolean
     position?: boolean
+    is_completed?: boolean
     completed_at?: boolean
     scheduled_for?: boolean
     last_moved_outcome_at?: boolean
@@ -3751,7 +3782,9 @@ export namespace Prisma {
     outcome_id?: boolean
     user_id?: boolean
     title?: boolean
+    description?: boolean
     position?: boolean
+    is_completed?: boolean
     completed_at?: boolean
     scheduled_for?: boolean
     last_moved_outcome_at?: boolean
@@ -3767,7 +3800,9 @@ export namespace Prisma {
     outcome_id?: boolean
     user_id?: boolean
     title?: boolean
+    description?: boolean
     position?: boolean
+    is_completed?: boolean
     completed_at?: boolean
     scheduled_for?: boolean
     last_moved_outcome_at?: boolean
@@ -3775,7 +3810,7 @@ export namespace Prisma {
     updated_at?: boolean
   }
 
-  export type ActionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "driver_id" | "outcome_id" | "user_id" | "title" | "position" | "completed_at" | "scheduled_for" | "last_moved_outcome_at" | "created_at" | "updated_at", ExtArgs["result"]["action"]>
+  export type ActionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "driver_id" | "outcome_id" | "user_id" | "title" | "description" | "position" | "is_completed" | "completed_at" | "scheduled_for" | "last_moved_outcome_at" | "created_at" | "updated_at", ExtArgs["result"]["action"]>
   export type ActionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     driver?: boolean | DriverDefaultArgs<ExtArgs>
     outcome?: boolean | OutcomeDefaultArgs<ExtArgs>
@@ -3801,7 +3836,9 @@ export namespace Prisma {
       outcome_id: string
       user_id: string
       title: string
+      description: string | null
       position: number | null
+      is_completed: boolean
       completed_at: Date | null
       scheduled_for: Date | null
       last_moved_outcome_at: Date | null
@@ -4237,7 +4274,9 @@ export namespace Prisma {
     readonly outcome_id: FieldRef<"Action", 'String'>
     readonly user_id: FieldRef<"Action", 'String'>
     readonly title: FieldRef<"Action", 'String'>
+    readonly description: FieldRef<"Action", 'String'>
     readonly position: FieldRef<"Action", 'Float'>
+    readonly is_completed: FieldRef<"Action", 'Boolean'>
     readonly completed_at: FieldRef<"Action", 'DateTime'>
     readonly scheduled_for: FieldRef<"Action", 'DateTime'>
     readonly last_moved_outcome_at: FieldRef<"Action", 'DateTime'>
@@ -4693,6 +4732,7 @@ export namespace Prisma {
     outcome_id: 'outcome_id',
     user_id: 'user_id',
     title: 'title',
+    description: 'description',
     position: 'position',
     created_at: 'created_at'
   };
@@ -4706,7 +4746,9 @@ export namespace Prisma {
     outcome_id: 'outcome_id',
     user_id: 'user_id',
     title: 'title',
+    description: 'description',
     position: 'position',
+    is_completed: 'is_completed',
     completed_at: 'completed_at',
     scheduled_for: 'scheduled_for',
     last_moved_outcome_at: 'last_moved_outcome_at',
@@ -4799,6 +4841,13 @@ export namespace Prisma {
    * Reference to a field of type 'OutcomeStatus[]'
    */
   export type ListEnumOutcomeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OutcomeStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -4917,6 +4966,7 @@ export namespace Prisma {
     outcome_id?: StringFilter<"Driver"> | string
     user_id?: StringFilter<"Driver"> | string
     title?: StringFilter<"Driver"> | string
+    description?: StringNullableFilter<"Driver"> | string | null
     position?: FloatNullableFilter<"Driver"> | number | null
     created_at?: DateTimeFilter<"Driver"> | Date | string
     outcome?: XOR<OutcomeScalarRelationFilter, OutcomeWhereInput>
@@ -4928,6 +4978,7 @@ export namespace Prisma {
     outcome_id?: SortOrder
     user_id?: SortOrder
     title?: SortOrder
+    description?: SortOrderInput | SortOrder
     position?: SortOrderInput | SortOrder
     created_at?: SortOrder
     outcome?: OutcomeOrderByWithRelationInput
@@ -4942,6 +4993,7 @@ export namespace Prisma {
     outcome_id?: StringFilter<"Driver"> | string
     user_id?: StringFilter<"Driver"> | string
     title?: StringFilter<"Driver"> | string
+    description?: StringNullableFilter<"Driver"> | string | null
     position?: FloatNullableFilter<"Driver"> | number | null
     created_at?: DateTimeFilter<"Driver"> | Date | string
     outcome?: XOR<OutcomeScalarRelationFilter, OutcomeWhereInput>
@@ -4953,6 +5005,7 @@ export namespace Prisma {
     outcome_id?: SortOrder
     user_id?: SortOrder
     title?: SortOrder
+    description?: SortOrderInput | SortOrder
     position?: SortOrderInput | SortOrder
     created_at?: SortOrder
     _count?: DriverCountOrderByAggregateInput
@@ -4970,6 +5023,7 @@ export namespace Prisma {
     outcome_id?: StringWithAggregatesFilter<"Driver"> | string
     user_id?: StringWithAggregatesFilter<"Driver"> | string
     title?: StringWithAggregatesFilter<"Driver"> | string
+    description?: StringNullableWithAggregatesFilter<"Driver"> | string | null
     position?: FloatNullableWithAggregatesFilter<"Driver"> | number | null
     created_at?: DateTimeWithAggregatesFilter<"Driver"> | Date | string
   }
@@ -4983,7 +5037,9 @@ export namespace Prisma {
     outcome_id?: StringFilter<"Action"> | string
     user_id?: StringFilter<"Action"> | string
     title?: StringFilter<"Action"> | string
+    description?: StringNullableFilter<"Action"> | string | null
     position?: FloatNullableFilter<"Action"> | number | null
+    is_completed?: BoolFilter<"Action"> | boolean
     completed_at?: DateTimeNullableFilter<"Action"> | Date | string | null
     scheduled_for?: DateTimeNullableFilter<"Action"> | Date | string | null
     last_moved_outcome_at?: DateTimeNullableFilter<"Action"> | Date | string | null
@@ -4999,7 +5055,9 @@ export namespace Prisma {
     outcome_id?: SortOrder
     user_id?: SortOrder
     title?: SortOrder
+    description?: SortOrderInput | SortOrder
     position?: SortOrderInput | SortOrder
+    is_completed?: SortOrder
     completed_at?: SortOrderInput | SortOrder
     scheduled_for?: SortOrderInput | SortOrder
     last_moved_outcome_at?: SortOrderInput | SortOrder
@@ -5018,7 +5076,9 @@ export namespace Prisma {
     outcome_id?: StringFilter<"Action"> | string
     user_id?: StringFilter<"Action"> | string
     title?: StringFilter<"Action"> | string
+    description?: StringNullableFilter<"Action"> | string | null
     position?: FloatNullableFilter<"Action"> | number | null
+    is_completed?: BoolFilter<"Action"> | boolean
     completed_at?: DateTimeNullableFilter<"Action"> | Date | string | null
     scheduled_for?: DateTimeNullableFilter<"Action"> | Date | string | null
     last_moved_outcome_at?: DateTimeNullableFilter<"Action"> | Date | string | null
@@ -5034,7 +5094,9 @@ export namespace Prisma {
     outcome_id?: SortOrder
     user_id?: SortOrder
     title?: SortOrder
+    description?: SortOrderInput | SortOrder
     position?: SortOrderInput | SortOrder
+    is_completed?: SortOrder
     completed_at?: SortOrderInput | SortOrder
     scheduled_for?: SortOrderInput | SortOrder
     last_moved_outcome_at?: SortOrderInput | SortOrder
@@ -5056,7 +5118,9 @@ export namespace Prisma {
     outcome_id?: StringWithAggregatesFilter<"Action"> | string
     user_id?: StringWithAggregatesFilter<"Action"> | string
     title?: StringWithAggregatesFilter<"Action"> | string
+    description?: StringNullableWithAggregatesFilter<"Action"> | string | null
     position?: FloatNullableWithAggregatesFilter<"Action"> | number | null
+    is_completed?: BoolWithAggregatesFilter<"Action"> | boolean
     completed_at?: DateTimeNullableWithAggregatesFilter<"Action"> | Date | string | null
     scheduled_for?: DateTimeNullableWithAggregatesFilter<"Action"> | Date | string | null
     last_moved_outcome_at?: DateTimeNullableWithAggregatesFilter<"Action"> | Date | string | null
@@ -5174,6 +5238,7 @@ export namespace Prisma {
     id?: string
     user_id: string
     title: string
+    description?: string | null
     position?: number | null
     created_at?: Date | string
     outcome: OutcomeCreateNestedOneWithoutDriversInput
@@ -5185,6 +5250,7 @@ export namespace Prisma {
     outcome_id: string
     user_id: string
     title: string
+    description?: string | null
     position?: number | null
     created_at?: Date | string
     actions?: ActionUncheckedCreateNestedManyWithoutDriverInput
@@ -5194,6 +5260,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableFloatFieldUpdateOperationsInput | number | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     outcome?: OutcomeUpdateOneRequiredWithoutDriversNestedInput
@@ -5205,6 +5272,7 @@ export namespace Prisma {
     outcome_id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableFloatFieldUpdateOperationsInput | number | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     actions?: ActionUncheckedUpdateManyWithoutDriverNestedInput
@@ -5215,6 +5283,7 @@ export namespace Prisma {
     outcome_id: string
     user_id: string
     title: string
+    description?: string | null
     position?: number | null
     created_at?: Date | string
   }
@@ -5223,6 +5292,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableFloatFieldUpdateOperationsInput | number | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5232,6 +5302,7 @@ export namespace Prisma {
     outcome_id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableFloatFieldUpdateOperationsInput | number | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5240,7 +5311,9 @@ export namespace Prisma {
     id?: string
     user_id: string
     title: string
+    description?: string | null
     position?: number | null
+    is_completed?: boolean
     completed_at?: Date | string | null
     scheduled_for?: Date | string | null
     last_moved_outcome_at?: Date | string | null
@@ -5256,7 +5329,9 @@ export namespace Prisma {
     outcome_id: string
     user_id: string
     title: string
+    description?: string | null
     position?: number | null
+    is_completed?: boolean
     completed_at?: Date | string | null
     scheduled_for?: Date | string | null
     last_moved_outcome_at?: Date | string | null
@@ -5268,7 +5343,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableFloatFieldUpdateOperationsInput | number | null
+    is_completed?: BoolFieldUpdateOperationsInput | boolean
     completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduled_for?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_moved_outcome_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5284,7 +5361,9 @@ export namespace Prisma {
     outcome_id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableFloatFieldUpdateOperationsInput | number | null
+    is_completed?: BoolFieldUpdateOperationsInput | boolean
     completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduled_for?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_moved_outcome_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5298,7 +5377,9 @@ export namespace Prisma {
     outcome_id: string
     user_id: string
     title: string
+    description?: string | null
     position?: number | null
+    is_completed?: boolean
     completed_at?: Date | string | null
     scheduled_for?: Date | string | null
     last_moved_outcome_at?: Date | string | null
@@ -5310,7 +5391,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableFloatFieldUpdateOperationsInput | number | null
+    is_completed?: BoolFieldUpdateOperationsInput | boolean
     completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduled_for?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_moved_outcome_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5324,7 +5407,9 @@ export namespace Prisma {
     outcome_id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableFloatFieldUpdateOperationsInput | number | null
+    is_completed?: BoolFieldUpdateOperationsInput | boolean
     completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduled_for?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_moved_outcome_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5534,6 +5619,21 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type FloatNullableFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel> | null
     in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
@@ -5555,6 +5655,7 @@ export namespace Prisma {
     outcome_id?: SortOrder
     user_id?: SortOrder
     title?: SortOrder
+    description?: SortOrder
     position?: SortOrder
     created_at?: SortOrder
   }
@@ -5568,6 +5669,7 @@ export namespace Prisma {
     outcome_id?: SortOrder
     user_id?: SortOrder
     title?: SortOrder
+    description?: SortOrder
     position?: SortOrder
     created_at?: SortOrder
   }
@@ -5577,12 +5679,31 @@ export namespace Prisma {
     outcome_id?: SortOrder
     user_id?: SortOrder
     title?: SortOrder
+    description?: SortOrder
     position?: SortOrder
     created_at?: SortOrder
   }
 
   export type DriverSumOrderByAggregateInput = {
     position?: SortOrder
+  }
+
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -5601,6 +5722,11 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type DriverScalarRelationFilter = {
     is?: DriverWhereInput
     isNot?: DriverWhereInput
@@ -5612,7 +5738,9 @@ export namespace Prisma {
     outcome_id?: SortOrder
     user_id?: SortOrder
     title?: SortOrder
+    description?: SortOrder
     position?: SortOrder
+    is_completed?: SortOrder
     completed_at?: SortOrder
     scheduled_for?: SortOrder
     last_moved_outcome_at?: SortOrder
@@ -5630,7 +5758,9 @@ export namespace Prisma {
     outcome_id?: SortOrder
     user_id?: SortOrder
     title?: SortOrder
+    description?: SortOrder
     position?: SortOrder
+    is_completed?: SortOrder
     completed_at?: SortOrder
     scheduled_for?: SortOrder
     last_moved_outcome_at?: SortOrder
@@ -5644,7 +5774,9 @@ export namespace Prisma {
     outcome_id?: SortOrder
     user_id?: SortOrder
     title?: SortOrder
+    description?: SortOrder
     position?: SortOrder
+    is_completed?: SortOrder
     completed_at?: SortOrder
     scheduled_for?: SortOrder
     last_moved_outcome_at?: SortOrder
@@ -5654,6 +5786,14 @@ export namespace Prisma {
 
   export type ActionSumOrderByAggregateInput = {
     position?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type DriverCreateNestedManyWithoutOutcomeInput = {
@@ -5784,6 +5924,10 @@ export namespace Prisma {
     connect?: ActionWhereUniqueInput | ActionWhereUniqueInput[]
   }
 
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
   export type NullableFloatFieldUpdateOperationsInput = {
     set?: number | null
     increment?: number
@@ -5838,6 +5982,10 @@ export namespace Prisma {
     create?: XOR<OutcomeCreateWithoutActionsInput, OutcomeUncheckedCreateWithoutActionsInput>
     connectOrCreate?: OutcomeCreateOrConnectWithoutActionsInput
     connect?: OutcomeWhereUniqueInput
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type DriverUpdateOneRequiredWithoutActionsNestedInput = {
@@ -6003,6 +6151,20 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type NestedFloatNullableFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel> | null
     in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
@@ -6012,6 +6174,23 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -6030,10 +6209,24 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type DriverCreateWithoutOutcomeInput = {
     id?: string
     user_id: string
     title: string
+    description?: string | null
     position?: number | null
     created_at?: Date | string
     actions?: ActionCreateNestedManyWithoutDriverInput
@@ -6043,6 +6236,7 @@ export namespace Prisma {
     id?: string
     user_id: string
     title: string
+    description?: string | null
     position?: number | null
     created_at?: Date | string
     actions?: ActionUncheckedCreateNestedManyWithoutDriverInput
@@ -6062,7 +6256,9 @@ export namespace Prisma {
     id?: string
     user_id: string
     title: string
+    description?: string | null
     position?: number | null
+    is_completed?: boolean
     completed_at?: Date | string | null
     scheduled_for?: Date | string | null
     last_moved_outcome_at?: Date | string | null
@@ -6076,7 +6272,9 @@ export namespace Prisma {
     driver_id: string
     user_id: string
     title: string
+    description?: string | null
     position?: number | null
+    is_completed?: boolean
     completed_at?: Date | string | null
     scheduled_for?: Date | string | null
     last_moved_outcome_at?: Date | string | null
@@ -6118,6 +6316,7 @@ export namespace Prisma {
     outcome_id?: StringFilter<"Driver"> | string
     user_id?: StringFilter<"Driver"> | string
     title?: StringFilter<"Driver"> | string
+    description?: StringNullableFilter<"Driver"> | string | null
     position?: FloatNullableFilter<"Driver"> | number | null
     created_at?: DateTimeFilter<"Driver"> | Date | string
   }
@@ -6147,7 +6346,9 @@ export namespace Prisma {
     outcome_id?: StringFilter<"Action"> | string
     user_id?: StringFilter<"Action"> | string
     title?: StringFilter<"Action"> | string
+    description?: StringNullableFilter<"Action"> | string | null
     position?: FloatNullableFilter<"Action"> | number | null
+    is_completed?: BoolFilter<"Action"> | boolean
     completed_at?: DateTimeNullableFilter<"Action"> | Date | string | null
     scheduled_for?: DateTimeNullableFilter<"Action"> | Date | string | null
     last_moved_outcome_at?: DateTimeNullableFilter<"Action"> | Date | string | null
@@ -6194,7 +6395,9 @@ export namespace Prisma {
     id?: string
     user_id: string
     title: string
+    description?: string | null
     position?: number | null
+    is_completed?: boolean
     completed_at?: Date | string | null
     scheduled_for?: Date | string | null
     last_moved_outcome_at?: Date | string | null
@@ -6208,7 +6411,9 @@ export namespace Prisma {
     outcome_id: string
     user_id: string
     title: string
+    description?: string | null
     position?: number | null
+    is_completed?: boolean
     completed_at?: Date | string | null
     scheduled_for?: Date | string | null
     last_moved_outcome_at?: Date | string | null
@@ -6287,6 +6492,7 @@ export namespace Prisma {
     id?: string
     user_id: string
     title: string
+    description?: string | null
     position?: number | null
     created_at?: Date | string
     outcome: OutcomeCreateNestedOneWithoutDriversInput
@@ -6297,6 +6503,7 @@ export namespace Prisma {
     outcome_id: string
     user_id: string
     title: string
+    description?: string | null
     position?: number | null
     created_at?: Date | string
   }
@@ -6356,6 +6563,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableFloatFieldUpdateOperationsInput | number | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     outcome?: OutcomeUpdateOneRequiredWithoutDriversNestedInput
@@ -6366,6 +6574,7 @@ export namespace Prisma {
     outcome_id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableFloatFieldUpdateOperationsInput | number | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -6415,6 +6624,7 @@ export namespace Prisma {
     id?: string
     user_id: string
     title: string
+    description?: string | null
     position?: number | null
     created_at?: Date | string
   }
@@ -6424,7 +6634,9 @@ export namespace Prisma {
     driver_id: string
     user_id: string
     title: string
+    description?: string | null
     position?: number | null
+    is_completed?: boolean
     completed_at?: Date | string | null
     scheduled_for?: Date | string | null
     last_moved_outcome_at?: Date | string | null
@@ -6436,6 +6648,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableFloatFieldUpdateOperationsInput | number | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     actions?: ActionUpdateManyWithoutDriverNestedInput
@@ -6445,6 +6658,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableFloatFieldUpdateOperationsInput | number | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     actions?: ActionUncheckedUpdateManyWithoutDriverNestedInput
@@ -6454,6 +6668,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableFloatFieldUpdateOperationsInput | number | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -6462,7 +6677,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableFloatFieldUpdateOperationsInput | number | null
+    is_completed?: BoolFieldUpdateOperationsInput | boolean
     completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduled_for?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_moved_outcome_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6476,7 +6693,9 @@ export namespace Prisma {
     driver_id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableFloatFieldUpdateOperationsInput | number | null
+    is_completed?: BoolFieldUpdateOperationsInput | boolean
     completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduled_for?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_moved_outcome_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6489,7 +6708,9 @@ export namespace Prisma {
     driver_id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableFloatFieldUpdateOperationsInput | number | null
+    is_completed?: BoolFieldUpdateOperationsInput | boolean
     completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduled_for?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_moved_outcome_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6502,7 +6723,9 @@ export namespace Prisma {
     outcome_id: string
     user_id: string
     title: string
+    description?: string | null
     position?: number | null
+    is_completed?: boolean
     completed_at?: Date | string | null
     scheduled_for?: Date | string | null
     last_moved_outcome_at?: Date | string | null
@@ -6514,7 +6737,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableFloatFieldUpdateOperationsInput | number | null
+    is_completed?: BoolFieldUpdateOperationsInput | boolean
     completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduled_for?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_moved_outcome_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6528,7 +6753,9 @@ export namespace Prisma {
     outcome_id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableFloatFieldUpdateOperationsInput | number | null
+    is_completed?: BoolFieldUpdateOperationsInput | boolean
     completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduled_for?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_moved_outcome_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6541,7 +6768,9 @@ export namespace Prisma {
     outcome_id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableFloatFieldUpdateOperationsInput | number | null
+    is_completed?: BoolFieldUpdateOperationsInput | boolean
     completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduled_for?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_moved_outcome_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

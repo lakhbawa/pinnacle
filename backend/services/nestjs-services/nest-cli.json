@@ -21,6 +21,15 @@
         "watchAssets": true
       }
     },
+    "auth-service": {
+      "type": "application",
+      "root": "apps/auth-service",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
+      "compilerOptions": {
+        "tsConfigPath": "apps/auth-service/tsconfig.app.json"
+      }
+    },
     "boards-service": {
       "type": "application",
       "root": "apps/boards-service",
@@ -49,6 +58,15 @@
         "tsConfigPath": "apps/monolith/tsconfig.app.json"
       }
     },
+    "notifications-service": {
+      "type": "application",
+      "root": "apps/notifications-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/notifications-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/notifications-service/tsconfig.app.json"
+      }
+    },
     "outcomes-service": {
       "type": "application",
       "root": "apps/outcomes-service",
@@ -56,7 +74,6 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/outcomes-service/tsconfig.app.json"
-
       }
     },
     "users-service": {
@@ -66,17 +83,6 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/users-service/tsconfig.app.json"
-
-      }
-    },
-    "auth-service": {
-      "type": "application",
-      "root": "apps/auth-service",
-      "entryFile": "src/main",
-      "sourceRoot": "./",
-      "compilerOptions": {
-        "tsConfigPath": "apps/auth-service/tsconfig.app.json"
-
       }
     }
   }

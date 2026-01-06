@@ -46,6 +46,7 @@ model Driver {
   outcome_id String
   user_id              String
   title      String
+  description            String?
   position   Float?
   created_at DateTime @default(now())
 
@@ -61,7 +62,9 @@ model Action {
   outcome_id             String
   user_id                String
   title                  String
+  description            String?
   position   Float?
+  is_completed           Boolean   @default(false)
   completed_at           DateTime?
   scheduled_for          DateTime?
   last_moved_outcome_at  DateTime?
@@ -72,6 +75,6 @@ model Action {
   outcome Outcome @relation(fields: [outcome_id], references: [id], onDelete: Cascade)
 
   @@index([user_id, scheduled_for])
-  @@index([outcome_id, completed_at])
+  @@index([outcome_id, is_completed])
   @@map("actions")
 }

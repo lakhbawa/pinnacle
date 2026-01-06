@@ -3,10 +3,10 @@
 import { use, useEffect, useState } from "react";
 import { outcomeAPI } from "@/utils/fetchWrapper";
 import Link from "next/link";
-import { Action } from "@/app/types/outcomeTypes";
+import {Action, ActionResponse} from "@/app/types/outcomeTypes";
 
 export default function ViewActionPage({ params }: { params: Promise<{ outcome_id: string, driver_id: string, action_id: string, username: string }> }) {
-  const [actionData, setActionData] = useState<Action | null>(null);
+  const [actionData, setActionData] = useState<Action | undefined>();
   const { outcome_id, driver_id, action_id, username } = use(params);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -15,7 +15,7 @@ export default function ViewActionPage({ params }: { params: Promise<{ outcome_i
     async function fetchData() {
       try {
         setLoading(true);
-        const data = await outcomeAPI.get(`/actions/${action_id}`);
+        const data = await outcomeAPI.get<ActionResponse>(`/actions/${action_id}`);
         setActionData(data.data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load action');
@@ -33,10 +33,10 @@ export default function ViewActionPage({ params }: { params: Promise<{ outcome_i
     if (!actionData) return;
 
     try {
-      await outcomeAPI.patch(`/actions/${action_id}`, {
+      await outcomeAPI.patch<ActionResponse>(`/actions/${action_id}`, {
         is_completed: !actionData.is_completed
       });
-      setActionData(prev => prev ? { ...prev, is_completed: !prev.is_completed } : null);
+      setActionData(prev => prev ? { ...prev, is_completed: !prev.is_completed } : undefined);
     } catch (error) {
       console.error('Failed to update action status:', error);
     }

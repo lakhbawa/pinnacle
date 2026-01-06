@@ -2,10 +2,10 @@
 import {use, useEffect, useState} from "react";
 import {outcomeAPI} from "@/utils/fetchWrapper";
 import Link from "next/link";
-import {Outcome} from "@/app/types/outcomeTypes";
+import {Outcome, OutcomeResponse} from "@/app/types/outcomeTypes";
 
 export default function ViewOutcomePage({params}: { params: Promise<{ outcome_id: string, username: string }> }) {
-    const [outcomeData, setOutcomeData] = useState<Outcome | null>(null);
+    const [outcomeData, setOutcomeData] = useState<Outcome | undefined>();
     const {outcome_id, username} = use(params);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -14,7 +14,7 @@ export default function ViewOutcomePage({params}: { params: Promise<{ outcome_id
         async function fetchData() {
             try {
                 setLoading(true);
-                const data = await outcomeAPI.get(`/outcomes/${outcome_id}?include[]=lists&include[]=lists.issues`);
+                const data = await outcomeAPI.get<OutcomeResponse>(`/outcomes/${outcome_id}?include[]=lists&include[]=lists.issues`);
                 setOutcomeData(data.data);
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Failed to load outcome');

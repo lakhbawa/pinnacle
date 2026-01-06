@@ -137,7 +137,7 @@ export class APIError extends Error {
     return null;
   }
 
-  private normalizeErrorObject(obj: Record<string, unknown>): Record<string, string[]> {
+  private normalizeErrorObject(obj: Record<string, unknown>): Record<string, string[]> | null {
     const result: Record<string, string[]> = {};
 
     for (const [key, value] of Object.entries(obj)) {
@@ -157,7 +157,7 @@ export class APIError extends Error {
     return Object.keys(result).length > 0 ? result : null;
   }
 
-  private normalizeErrorArray(arr: unknown[]): Record<string, string[]> {
+  private normalizeErrorArray(arr: unknown[]): Record<string, string[]> | null {
     const result: Record<string, string[]> = {};
 
     for (const item of arr) {
@@ -443,7 +443,18 @@ export class FetchWrapper {
 
       // Parse body from the clone to ensure we can always read it
       const responseData = await this.parseResponseBody(responseClone);
-      const statusText = responseData?.error?.message ?? response.statusText;
+      let statusText = response.statusText;
+
+      if (
+        responseData &&
+        typeof responseData === 'object' &&
+        'error' in responseData &&
+        responseData.error &&
+        typeof responseData.error === 'object' &&
+        'message' in responseData.error
+      ) {
+        statusText = String((responseData.error as { message: unknown }).message);
+      }
 
       if (!response.ok) {
         let error = new APIError({

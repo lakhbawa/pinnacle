@@ -3,10 +3,10 @@
 import { use, useEffect, useState } from "react";
 import { outcomeAPI } from "@/utils/fetchWrapper";
 import Link from "next/link";
-import { Driver } from "@/app/types/outcomeTypes";
+import {Driver, DriverResponse} from "@/app/types/outcomeTypes";
 
 export default function ViewDriverPage({ params }: { params: Promise<{ outcome_id: string, driver_id: string, username: string }> }) {
-  const [driverData, setDriverData] = useState<Driver | null>(null);
+  const [driverData, setDriverData] = useState<Driver | undefined>();
   const { outcome_id, driver_id, username } = use(params);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -15,7 +15,7 @@ export default function ViewDriverPage({ params }: { params: Promise<{ outcome_i
     async function fetchData() {
       try {
         setLoading(true);
-        const data = await outcomeAPI.get(`/drivers/${driver_id}`);
+        const data = await outcomeAPI.get<DriverResponse>(`/drivers/${driver_id}`);
         setDriverData(data.data);
         console.log(data.data)
       } catch (err) {

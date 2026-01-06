@@ -19,6 +19,7 @@ export interface CreateActionRequest {
   driver_id: string;
   scheduled_for?: string | undefined;
   position?: number | undefined;
+  description?: number | undefined;
 }
 
 export interface GetActionRequest {
@@ -34,6 +35,8 @@ export interface UpdateActionRequest {
   user_id?: string | undefined;
   completed_at?: Timestamp | undefined;
   scheduled_for?: Timestamp | undefined;
+  is_completed?: boolean | undefined;
+  description?: string | undefined;
 }
 
 export interface ListActionsRequest {

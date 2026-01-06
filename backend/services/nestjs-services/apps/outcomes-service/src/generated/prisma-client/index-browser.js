@@ -139,6 +139,7 @@ exports.Prisma.DriverScalarFieldEnum = {
   outcome_id: 'outcome_id',
   user_id: 'user_id',
   title: 'title',
+  description: 'description',
   position: 'position',
   created_at: 'created_at'
 };
@@ -149,7 +150,9 @@ exports.Prisma.ActionScalarFieldEnum = {
   outcome_id: 'outcome_id',
   user_id: 'user_id',
   title: 'title',
+  description: 'description',
   position: 'position',
+  is_completed: 'is_completed',
   completed_at: 'completed_at',
   scheduled_for: 'scheduled_for',
   last_moved_outcome_at: 'last_moved_outcome_at',

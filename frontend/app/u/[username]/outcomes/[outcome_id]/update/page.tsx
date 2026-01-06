@@ -4,6 +4,7 @@ import {outcomeAPI} from "@/utils/fetchWrapper";
 import {useRouter} from "next/navigation";
 import FormErrors from "@/app/components/FormErrors";
 import Link from "next/link";
+import {OutcomeResponse} from "@/app/types/outcomeTypes";
 
 export default function UpdateOutcome({params}: { params: Promise<{ outcome_id: string }> }) {
     const {outcome_id} = use(params);
@@ -39,17 +40,19 @@ export default function UpdateOutcome({params}: { params: Promise<{ outcome_id: 
         async function fetchData() {
             try {
                 setLoading(true)
-                const data = await outcomeAPI.get(`/outcomes/${outcome_id}`);
+                const data = await outcomeAPI.get<OutcomeResponse>(`/outcomes/${outcome_id}`);
                 const outcomeData = data.data
-                console.log(outcomeData)
-                setFormData({
-                    ...formData,
-                    title: outcomeData.title,
-                    why_it_matters: outcomeData.why_it_matters,
-                    success_metric_unit: outcomeData.success_metric_unit,
-                    success_metric_value: outcomeData.success_metric_value,
-                    deadline: toDateTimeLocal(outcomeData.deadline),
-                })
+                if (outcomeData) {
+                    setFormData({
+                        ...formData,
+                        title: outcomeData.title,
+                        why_it_matters: outcomeData.why_it_matters,
+                        success_metric_unit: outcomeData.success_metric_unit,
+                        success_metric_value: outcomeData.success_metric_value,
+                        deadline: toDateTimeLocal(outcomeData.deadline),
+                    })
+                }
+
 
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Failed to load project')
