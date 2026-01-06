@@ -45,9 +45,12 @@ message Action {
   string outcome_id = 3;
   string user_id = 4;
   string title = 5;
-  google.protobuf.Timestamp created_at = 6;
-  google.protobuf.Timestamp updated_at = 7;
-  google.protobuf.Timestamp scheduled_for = 8;
-  google.protobuf.Timestamp last_moved_outcome_at = 9;
-  google.protobuf.Timestamp completed_at = 10;
+  bool is_completed = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+  google.protobuf.Timestamp scheduled_for = 9;
+  google.protobuf.Timestamp last_moved_outcome_at = 10;
+  google.protobuf.Timestamp completed_at = 11;
+  Outcome outcome = 12;
+  Driver driver = 13;
 }

@@ -9,7 +9,7 @@ export class ActionMapper {
             position: driver.position,
             created_at: this.toTimestamp(driver.created_at),
             actions: driver.actions?.map((t) => this.toProtoAction(t)) || [],
-            outcome: undefined,
+            outcome: driver.outcome,
         };
     }
 
@@ -26,8 +26,8 @@ export class ActionMapper {
             scheduled_for: task.scheduled_for ? this.toTimestamp(task.scheduled_for) : undefined,
             last_moved_outcome_at: task.last_moved_outcome_at ? this.toTimestamp(task.last_moved_outcome_at) : undefined,
             completed_at: task.completed_at ? this.toTimestamp(task.completed_at) : undefined,
-            outcome: undefined,
-            driver: undefined,
+            outcome: task.outcome,
+            driver: task.driver,
         };
     }
 

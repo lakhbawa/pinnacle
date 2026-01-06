@@ -54,6 +54,7 @@ export class DriversController implements DriversServiceController {
     async getDriver(request: GetDriverRequest): Promise<Driver> {
         const driver = await this.driversService.findOne(
             {id: request.id},
+            { actions: true, outcome: true}
         );
         if (!driver) {
             throw new RpcException({

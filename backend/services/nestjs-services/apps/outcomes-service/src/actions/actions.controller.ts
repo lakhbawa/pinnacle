@@ -70,6 +70,7 @@ export class ActionsController implements ActionsServiceController {
                 message: 'Action not found',
             });
         }
+
         return ActionMapper.toProtoAction(action);
     }
 
