@@ -25,28 +25,28 @@ const (
 type OutcomeStatus int32
 
 const (
-	OutcomeStatus_OUTCOME_STATUS_UNSPECIFIED OutcomeStatus = 0
-	OutcomeStatus_OUTCOME_STATUS_ACTIVE      OutcomeStatus = 1
-	OutcomeStatus_OUTCOME_STATUS_PARKED      OutcomeStatus = 2
-	OutcomeStatus_OUTCOME_STATUS_COMPLETED   OutcomeStatus = 3
-	OutcomeStatus_OUTCOME_STATUS_ABANDONED   OutcomeStatus = 4
+	OutcomeStatus_UNSPECIFIED OutcomeStatus = 0
+	OutcomeStatus_ACTIVE      OutcomeStatus = 1
+	OutcomeStatus_PARKED      OutcomeStatus = 2
+	OutcomeStatus_COMPLETED   OutcomeStatus = 3
+	OutcomeStatus_ABANDONED   OutcomeStatus = 4
 )
 
 // Enum value maps for OutcomeStatus.
 var (
 	OutcomeStatus_name = map[int32]string{
-		0: "OUTCOME_STATUS_UNSPECIFIED",
-		1: "OUTCOME_STATUS_ACTIVE",
-		2: "OUTCOME_STATUS_PARKED",
-		3: "OUTCOME_STATUS_COMPLETED",
-		4: "OUTCOME_STATUS_ABANDONED",
+		0: "UNSPECIFIED",
+		1: "ACTIVE",
+		2: "PARKED",
+		3: "COMPLETED",
+		4: "ABANDONED",
 	}
 	OutcomeStatus_value = map[string]int32{
-		"OUTCOME_STATUS_UNSPECIFIED": 0,
-		"OUTCOME_STATUS_ACTIVE":      1,
-		"OUTCOME_STATUS_PARKED":      2,
-		"OUTCOME_STATUS_COMPLETED":   3,
-		"OUTCOME_STATUS_ABANDONED":   4,
+		"UNSPECIFIED": 0,
+		"ACTIVE":      1,
+		"PARKED":      2,
+		"COMPLETED":   3,
+		"ABANDONED":   4,
 	}
 )
 
@@ -179,7 +179,7 @@ func (x *Outcome) GetStatus() OutcomeStatus {
 	if x != nil {
 		return x.Status
 	}
-	return OutcomeStatus_OUTCOME_STATUS_UNSPECIFIED
+	return OutcomeStatus_UNSPECIFIED
 }
 
 func (x *Outcome) GetCreatedAt() *timestamppb.Timestamp {
@@ -226,6 +226,7 @@ type Driver struct {
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	Actions       []*Action              `protobuf:"bytes,6,rep,name=actions,proto3" json:"actions,omitempty"`
 	Outcome       *Outcome               `protobuf:"bytes,7,opt,name=outcome,proto3" json:"outcome,omitempty"`
+	Description   string                 `protobuf:"bytes,8,opt,name=description,proto3" json:"description,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -307,6 +308,13 @@ func (x *Driver) GetOutcome() *Outcome {
 		return x.Outcome
 	}
 	return nil
+}
+
+func (x *Driver) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
 }
 
 type Action struct {
@@ -478,7 +486,7 @@ const file_outcomes_service_v1_models_proto_rawDesc = "" +
 	"\varchived_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\n" +
 	"archivedAt\x125\n" +
 	"\adrivers\x18\f \x03(\v2\x1b.outcomes_service.v1.DriverR\adrivers\x125\n" +
-	"\aactions\x18\r \x03(\v2\x1b.outcomes_service.v1.ActionR\aactions\"\x93\x02\n" +
+	"\aactions\x18\r \x03(\v2\x1b.outcomes_service.v1.ActionR\aactions\"\xb5\x02\n" +
 	"\x06Driver\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1d\n" +
@@ -488,7 +496,8 @@ const file_outcomes_service_v1_models_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x125\n" +
 	"\aactions\x18\x06 \x03(\v2\x1b.outcomes_service.v1.ActionR\aactions\x126\n" +
-	"\aoutcome\x18\a \x01(\v2\x1c.outcomes_service.v1.OutcomeR\aoutcome\"\xfa\x04\n" +
+	"\aoutcome\x18\a \x01(\v2\x1c.outcomes_service.v1.OutcomeR\aoutcome\x12 \n" +
+	"\vdescription\x18\b \x01(\tR\vdescription\"\xfa\x04\n" +
 	"\x06Action\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
 	"\tdriver_id\x18\x02 \x01(\tR\bdriverId\x12\x1d\n" +
@@ -507,13 +516,15 @@ const file_outcomes_service_v1_models_proto_rawDesc = "" +
 	"\fcompleted_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\vcompletedAt\x126\n" +
 	"\aoutcome\x18\f \x01(\v2\x1c.outcomes_service.v1.OutcomeR\aoutcome\x123\n" +
 	"\x06driver\x18\r \x01(\v2\x1b.outcomes_service.v1.DriverR\x06driver\x12 \n" +
-	"\vdescription\x18\x0e \x01(\tR\vdescription*\xa1\x01\n" +
-	"\rOutcomeStatus\x12\x1e\n" +
-	"\x1aOUTCOME_STATUS_UNSPECIFIED\x10\x00\x12\x19\n" +
-	"\x15OUTCOME_STATUS_ACTIVE\x10\x01\x12\x19\n" +
-	"\x15OUTCOME_STATUS_PARKED\x10\x02\x12\x1c\n" +
-	"\x18OUTCOME_STATUS_COMPLETED\x10\x03\x12\x1c\n" +
-	"\x18OUTCOME_STATUS_ABANDONED\x10\x04B$Z\"gateway/gen/go/outcomes_service/v1b\x06proto3"
+	"\vdescription\x18\x0e \x01(\tR\vdescription*V\n" +
+	"\rOutcomeStatus\x12\x0f\n" +
+	"\vUNSPECIFIED\x10\x00\x12\n" +
+	"\n" +
+	"\x06ACTIVE\x10\x01\x12\n" +
+	"\n" +
+	"\x06PARKED\x10\x02\x12\r\n" +
+	"\tCOMPLETED\x10\x03\x12\r\n" +
+	"\tABANDONED\x10\x04B$Z\"gateway/gen/go/outcomes_service/v1b\x06proto3"
 
 var (
 	file_outcomes_service_v1_models_proto_rawDescOnce sync.Once

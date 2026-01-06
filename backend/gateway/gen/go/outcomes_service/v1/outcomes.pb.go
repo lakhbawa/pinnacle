@@ -240,7 +240,7 @@ func (x *UpdateOutcomeRequest) GetStatus() OutcomeStatus {
 	if x != nil && x.Status != nil {
 		return *x.Status
 	}
-	return OutcomeStatus_OUTCOME_STATUS_UNSPECIFIED
+	return OutcomeStatus_UNSPECIFIED
 }
 
 type ListOutcomesRequest struct {
@@ -294,7 +294,7 @@ func (x *ListOutcomesRequest) GetStatus() OutcomeStatus {
 	if x != nil && x.Status != nil {
 		return *x.Status
 	}
-	return OutcomeStatus_OUTCOME_STATUS_UNSPECIFIED
+	return OutcomeStatus_UNSPECIFIED
 }
 
 func (x *ListOutcomesRequest) GetPageSize() int32 {

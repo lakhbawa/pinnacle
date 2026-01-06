@@ -28,7 +28,7 @@ type CreateDriverRequest struct {
 	Title         string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
 	OutcomeId     string                 `protobuf:"bytes,3,opt,name=outcome_id,json=outcomeId,proto3" json:"outcome_id,omitempty"`
 	Position      *float32               `protobuf:"fixed32,4,opt,name=position,proto3,oneof" json:"position,omitempty"`
-	Description   *float32               `protobuf:"fixed32,5,opt,name=description,proto3,oneof" json:"description,omitempty"`
+	Description   *string                `protobuf:"bytes,5,opt,name=description,proto3,oneof" json:"description,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -91,11 +91,11 @@ func (x *CreateDriverRequest) GetPosition() float32 {
 	return 0
 }
 
-func (x *CreateDriverRequest) GetDescription() float32 {
+func (x *CreateDriverRequest) GetDescription() string {
 	if x != nil && x.Description != nil {
 		return *x.Description
 	}
-	return 0
+	return ""
 }
 
 type GetDriverRequest struct {
@@ -147,7 +147,7 @@ type UpdateDriverRequest struct {
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Title         *string                `protobuf:"bytes,2,opt,name=title,proto3,oneof" json:"title,omitempty"`
 	Position      *float32               `protobuf:"fixed32,3,opt,name=position,proto3,oneof" json:"position,omitempty"`
-	Description   *float32               `protobuf:"fixed32,4,opt,name=description,proto3,oneof" json:"description,omitempty"`
+	Description   *string                `protobuf:"bytes,4,opt,name=description,proto3,oneof" json:"description,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -203,11 +203,11 @@ func (x *UpdateDriverRequest) GetPosition() float32 {
 	return 0
 }
 
-func (x *UpdateDriverRequest) GetDescription() float32 {
+func (x *UpdateDriverRequest) GetDescription() string {
 	if x != nil && x.Description != nil {
 		return *x.Description
 	}
-	return 0
+	return ""
 }
 
 type ListDriversRequest struct {
@@ -461,7 +461,7 @@ const file_outcomes_service_v1_drivers_proto_rawDesc = "" +
 	"\n" +
 	"outcome_id\x18\x03 \x01(\tR\toutcomeId\x12\x1f\n" +
 	"\bposition\x18\x04 \x01(\x02H\x00R\bposition\x88\x01\x01\x12%\n" +
-	"\vdescription\x18\x05 \x01(\x02H\x01R\vdescription\x88\x01\x01B\v\n" +
+	"\vdescription\x18\x05 \x01(\tH\x01R\vdescription\x88\x01\x01B\v\n" +
 	"\t_positionB\x0e\n" +
 	"\f_description\"\"\n" +
 	"\x10GetDriverRequest\x12\x0e\n" +
@@ -470,7 +470,7 @@ const file_outcomes_service_v1_drivers_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x19\n" +
 	"\x05title\x18\x02 \x01(\tH\x00R\x05title\x88\x01\x01\x12\x1f\n" +
 	"\bposition\x18\x03 \x01(\x02H\x01R\bposition\x88\x01\x01\x12%\n" +
-	"\vdescription\x18\x04 \x01(\x02H\x02R\vdescription\x88\x01\x01B\b\n" +
+	"\vdescription\x18\x04 \x01(\tH\x02R\vdescription\x88\x01\x01B\b\n" +
 	"\x06_titleB\v\n" +
 	"\t_positionB\x0e\n" +
 	"\f_description\"\x88\x01\n" +
