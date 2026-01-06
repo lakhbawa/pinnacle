@@ -38,8 +38,6 @@ COPY --from=proto-builder /app/gen ./gen
 
 # Copy source code
 COPY cmd/ ./cmd/
-COPY internal/ ./internal/
-COPY pkg/ ./pkg/
 # Add other source directories as needed
 
 # Build with optimizations
