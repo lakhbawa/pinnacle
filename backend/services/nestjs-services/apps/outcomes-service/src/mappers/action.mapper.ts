@@ -10,6 +10,7 @@ export class ActionMapper {
             created_at: this.toTimestamp(driver.created_at),
             actions: driver.actions?.map((t) => this.toProtoAction(t)) || [],
             outcome: driver.outcome,
+            description: driver.description,
         };
     }
 
@@ -20,6 +21,7 @@ export class ActionMapper {
             outcome_id: task.outcome_id,
             user_id: task.user_id,
             title: task.title,
+            description: task.description,
             is_completed: task.is_completed,
             created_at: this.toTimestamp(task.created_at),
             updated_at: this.toTimestamp(task.updated_at),

@@ -5,6 +5,7 @@ export class DriverMapper {
         return {
             id: driver.id,
             title: driver.title,
+            description: driver.description,
             outcome_id: driver.outcome_id,
             position: driver.position,
             created_at: this.toTimestamp(driver.created_at),
@@ -20,6 +21,7 @@ export class DriverMapper {
             outcome_id: task.outcome_id,
             user_id: task.user_id,
             title: task.title,
+            description: task.description,
             is_completed: task.is_completed,
             created_at: this.toTimestamp(task.created_at),
             updated_at: this.toTimestamp(task.updated_at),
