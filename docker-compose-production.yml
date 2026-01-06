@@ -2,9 +2,31 @@ version: "3.8"
 
 services:
 
-  # ===================
-  # GO GATEWAY (API Entry)
-  # ===================
+  pinnacle-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    environment:
+      - NEXT_PUBLIC_API_URL=https://api.pinnacle.lakhveerbawa.com
+      - NEXTAUTH_URL = "https://pinnacle.lakhveerbawa.com"
+      - NEXTAUTH_SECRET="your-secret-here-at-least-32-chars"
+      - GITHUB_ID="Ov23lizCGkFF2NrJGP7O"
+      - GITHUB_SECRET="360f1c227368531c8412aa9c91fbd8f75bc44596"
+    restart: always
+    depends_on:
+      - pinnacle-gateway
+    networks:
+      - pinnacle-network
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pinnacle-lakhveerbawa-com.rule=Host(`pinnacle.lakhveerbawa.com`)"
+      - "traefik.http.routers.pinnacle-lakhveerbawa-com.entrypoints=websecure"
+      - "traefik.http.routers.pinnacle-lakhveerbawa-com.tls=true"
+      - "traefik.http.routers.pinnacle-lakhveerbawa-com.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.pinnacle-lakhveerbawa-com.service=pinnacle-lakhveerbawa-com"
+      - "traefik.http.services.pinnacle-lakhveerbawa-com.loadbalancer.server.port=3000"
+
   pinnacle-gateway:
     build:
       context: ./backend/gateway
