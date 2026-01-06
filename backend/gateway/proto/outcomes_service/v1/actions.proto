@@ -48,7 +48,7 @@ message CreateActionRequest {
   string driver_id = 4;
   optional string scheduled_for = 5;
   optional float position = 6;
-  optional float description = 7;
+  optional string description = 7;
 
 }
 
