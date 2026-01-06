@@ -8,9 +8,12 @@ export default function ProjectLayout({
 }: {
   children: React.ReactNode
 }) {
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
     const {data: session} = useSession();
     let desktopAuthLinks = (<></>)
+
+    const username = 'lakhbawa'
     desktopAuthLinks = (
         <>
             <button
@@ -57,7 +60,7 @@ export default function ProjectLayout({
                         </div>
 
                         <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-8">
-                            <Link href="/">Home</Link>
+                            <Link href={`/u/${username}/outcomes`}>Outcomes</Link>
 
                             {desktopAuthLinks}
                         </div>
