@@ -146,7 +146,7 @@ export default function HomePage() {
               <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center text-white font-semibold text-sm">
                 S
               </div>
-              <span className="text-lg font-semibold">StrategyForge</span>
+              <span className="text-lg font-semibold">Pinnacle</span>
             </Link>
 
             <div className="hidden md:flex items-center gap-8">
@@ -302,7 +302,7 @@ export default function HomePage() {
                 </div>
                 <div className="flex-1 mx-4">
                   <div className="bg-gray-100 rounded-md px-3 py-1.5 text-xs text-gray-500 max-w-md mx-auto">
-                    strategyforge.app/focus
+                    pinnacle.app/focus
                   </div>
                 </div>
               </div>
@@ -420,7 +420,7 @@ export default function HomePage() {
             </div>
 
             <div className="bg-white border border-gray-200 rounded-xl p-6">
-              <div className="text-sm font-medium text-green-600 mb-4">With StrategyForge</div>
+              <div className="text-sm font-medium text-green-600 mb-4">With Pinnacle</div>
               <ul className="space-y-3">
                 {[
                   "Start with measurable outcomes, work backwards",
@@ -608,7 +608,7 @@ export default function HomePage() {
             Built for solo founders
           </h2>
           <p className="text-gray-600 mb-8 leading-relaxed">
-            StrategyForge isn't for teams managing sprints or agencies tracking billable hours. It's for the founder working alone who can't afford to spend a week on the wrong thing.
+            Pinnacle isn't for teams managing sprints or agencies tracking billable hours. It's for the founder working alone who can't afford to spend a week on the wrong thing.
           </p>
 
           <div className="inline-flex flex-wrap justify-center gap-2">
@@ -690,7 +690,7 @@ export default function HomePage() {
                 <div className="w-7 h-7 bg-gray-900 rounded-lg flex items-center justify-center text-white text-xs font-semibold">
                   S
                 </div>
-                <span className="font-semibold">StrategyForge</span>
+                <span className="font-semibold">Pinnacle</span>
               </div>
               <p className="text-sm text-gray-500">
                 Outcome-driven project management for solo founders.
@@ -733,7 +733,7 @@ export default function HomePage() {
           </div>
 
           <div className="pt-8 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-gray-500">© 2025 StrategyForge. All rights reserved.</p>
+            <p className="text-sm text-gray-500">© 2025 Pinnacle. All rights reserved.</p>
             <div className="flex items-center gap-4">
               <Link href="https://github.com/lakhbawa/pinnacle" target="_blank" className="text-gray-400 hover:text-gray-600">
                 <GitHubIcon />
