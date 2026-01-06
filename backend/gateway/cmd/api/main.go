@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strings"
 
+	"gateway/config"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -243,10 +244,12 @@ func main() {
 
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 
+	urls := config.GetServiceURLs()
+
 	err := outcomesservicepb.RegisterOutcomesServiceHandlerFromEndpoint(
 		ctx,
 		grpcMux,
-		"host.docker.internal:4440",
+		urls.OutcomesService,
 		opts,
 	)
 	if err != nil {
@@ -256,7 +259,7 @@ func main() {
 	err = outcomesservicepb.RegisterDriversServiceHandlerFromEndpoint(
 		ctx,
 		grpcMux,
-		"host.docker.internal:4440",
+		urls.OutcomesService,
 		opts,
 	)
 	if err != nil {
@@ -266,7 +269,7 @@ func main() {
 	err = outcomesservicepb.RegisterActionsServiceHandlerFromEndpoint(
 		ctx,
 		grpcMux,
-		"host.docker.internal:4440",
+		urls.OutcomesService,
 		opts,
 	)
 	if err != nil {
@@ -277,7 +280,7 @@ func main() {
 	err = outcomesservicepb.RegisterFocusServiceHandlerFromEndpoint(
 		ctx,
 		grpcMux,
-		"host.docker.internal:4440",
+		urls.OutcomesService,
 		opts,
 	)
 	if err != nil {
@@ -287,7 +290,7 @@ func main() {
 	err = usersservicepb.RegisterUsersServiceHandlerFromEndpoint(
 		ctx,
 		grpcMux,
-		"host.docker.internal:4450",
+		urls.UsersService,
 		opts,
 	)
 	if err != nil {
@@ -297,7 +300,8 @@ func main() {
 	err = authservicepb.RegisterAccountsServiceHandlerFromEndpoint(
 		ctx,
 		grpcMux,
-		"host.docker.internal:4460",
+		urls.AuthService,
+
 		opts,
 	)
 	if err != nil {
@@ -307,21 +311,12 @@ func main() {
 	err = authservicepb.RegisterAuthServiceHandlerFromEndpoint(
 		ctx,
 		grpcMux,
-		"host.docker.internal:4460",
+		urls.AuthService,
+
 		opts,
 	)
 	if err != nil {
 		log.Fatalf("Failed to register auth gateway - authservice: %v", err)
-	}
-
-	err = boardspb.RegisterBoardsServiceHandlerFromEndpoint(
-		ctx,
-		grpcMux,
-		"host.docker.internal:4012",
-		opts,
-	)
-	if err != nil {
-		log.Fatalf("Failed to register boards gateway: %v", err)
 	}
 
 	router.Any("/api/*any", gin.WrapH(grpcMux))
