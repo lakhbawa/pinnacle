@@ -1,0 +1,159 @@
+version: "3.8"
+
+services:
+
+  # ===================
+  # GO GATEWAY (API Entry)
+  # ===================
+  pinnacle-gateway:
+    build:
+      context: ./backend/gateway
+      dockerfile: Dockerfile.prod
+    env_file: .env
+    environment:
+      - REDIS_HOST=pinnacle-redis
+      - REDIS_PORT=6379
+      - AUTH_SERVICE_URL=pinnacle-auth-service:4460
+      - USERS_SERVICE_URL=pinnacle-users-service:4450
+      - OUTCOMES_SERVICE_URL=pinnacle-outcomes-service:4440
+      - BOARDS_SERVICE_URL=pinnacle-boards-service:4470
+    depends_on:
+      - pinnacle-redis
+      - pinnacle-auth-service
+      - pinnacle-users-service
+    networks:
+      - pinnacle-network
+      - web
+    labels:
+
+      # Main router (non-www)
+      - "traefik.http.routers.pinnacle-lakhveerbawa-com.rule=Host(`api.pinnacle.lakhveerbawa.com`)"
+      - "traefik.http.routers.pinnacle-lakhveerbawa-com.entrypoints=websecure"
+      - "traefik.http.routers.pinnacle-lakhveerbawa-com.tls=true"
+      - "traefik.http.routers.pinnacle-lakhveerbawa-com.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.pinnacle-lakhveerbawa-com.service=pinnacle-lakhveerbawa-com"
+
+      # Service
+      - "traefik.http.services.pinnacle-lakhveerbawa-com.loadbalancer.server.port=80"
+
+  # ===================
+  # NESTJS MICROSERVICES (Internal gRPC)
+  # ===================
+  pinnacle-auth-service:
+    build:
+      context: ./backend/services/nestjs-services
+      dockerfile: Dockerfile.prod
+      args:
+        SERVICE_NAME: auth-service
+
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@pinnacle-auth-service-db:5432/auth
+      - REDIS_HOST=pinnacle-redis
+    restart: always
+    depends_on:
+      - pinnacle-auth-service-db
+      - pinnacle-redis
+    networks:
+      - pinnacle-network
+    # No Traefik labels - internal only
+    # No port exposure - accessed via Docker network
+
+  pinnacle-users-service:
+    build:
+      context: ./backend/services/nestjs-services
+      dockerfile: Dockerfile.prod
+      args:
+        SERVICE_NAME: users-service
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@pinnacle-users-service-db:5432/users
+      - REDIS_HOST=pinnacle-redis
+    restart: always
+    depends_on:
+      - pinnacle-users-service-db
+      - pinnacle-redis
+    networks:
+      - pinnacle-network
+
+  pinnacle-outcomes-service:
+    build:
+      context: ./backend/services/nestjs-services
+      dockerfile: Dockerfile.prod
+      args:
+        SERVICE_NAME: outcomes-service
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@pinnacle-outcomes-service-db:5432/outcomes
+      - REDIS_HOST=pinnacle-redis
+    restart: always
+    depends_on:
+      - pinnacle-outcomes-service-db
+      - pinnacle-redis
+    networks:
+      - pinnacle-network
+
+
+  # ===================
+  # DATABASES
+  # ===================
+  pinnacle-db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: pinnacle
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    networks:
+      - pinnacle-network
+    # No port exposure in production
+
+  pinnacle-auth-service-db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: auth
+    volumes:
+      - dbdata_auth_service:/var/lib/postgresql/data
+    networks:
+      - pinnacle-network
+
+  pinnacle-users-service-db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: users
+    volumes:
+      - dbdata_users_service:/var/lib/postgresql/data
+    networks:
+      - pinnacle-network
+
+  pinnacle-outcomes-service-db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: outcomes
+    volumes:
+      - dbdata_outcomes_service:/var/lib/postgresql/data
+    networks:
+      - pinnacle-network
+
+  pinnacle-redis:
+    image: redis:7-alpine
+    volumes:
+      - redisdata:/data
+    networks:
+      - pinnacle-network
+
+networks:
+  pinnacle-network:
+    driver: bridge
+  web:
+    external: true
+volumes:
+  dbdata:
+  dbdata_auth_service:
+  dbdata_users_service:
+  dbdata_outcomes_service:
+  redisdata:
