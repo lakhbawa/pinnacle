@@ -46,6 +46,8 @@ COPY --from=builder /app/proto ./proto/
 # Copy Prisma schema (for migrations)
 COPY --from=builder /app/apps/${SERVICE_NAME}/prisma ./prisma/
 
+COPY --from=builder /app/apps/${SERVICE_NAME}/prisma/prisma.config.ts ./prisma.config.ts
+
 # Set environment
 ENV NODE_ENV=production
 
