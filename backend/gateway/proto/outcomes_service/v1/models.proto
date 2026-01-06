@@ -4,13 +4,12 @@ package outcomes_service.v1;
 option go_package = "gateway/gen/go/outcomes_service/v1";
 
 import "google/protobuf/timestamp.proto";
-
 enum OutcomeStatus {
-  OUTCOME_STATUS_UNSPECIFIED = 0;
-  OUTCOME_STATUS_ACTIVE = 1;
-  OUTCOME_STATUS_PARKED = 2;
-  OUTCOME_STATUS_COMPLETED = 3;
-  OUTCOME_STATUS_ABANDONED = 4;
+  UNSPECIFIED = 0;
+  ACTIVE = 1;
+  PARKED = 2;
+  COMPLETED = 3;
+  ABANDONED = 4;
 }
 
 message Outcome {
@@ -37,6 +36,8 @@ message Driver {
   google.protobuf.Timestamp created_at = 5;
   repeated Action actions = 6;
   Outcome outcome = 7;
+  string description = 8;
+
 }
 
 message Action {
@@ -54,4 +55,5 @@ message Action {
   Outcome outcome = 12;
   Driver driver = 13;
   string description = 14;
+
 }
