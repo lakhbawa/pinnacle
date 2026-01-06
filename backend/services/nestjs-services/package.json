@@ -18,10 +18,10 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/nestjs-services/test/jest-e2e.json",
-    "proto:generate:outcome": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./libs/common/src/types --ts_proto_opt=nestJs=true --ts_proto_opt=snakeToCamel=false -I./proto -I./node_modules ./proto/outcomes_service/v1/*.proto",
-    "proto:generate:user": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./libs/common/src/types --ts_proto_opt=nestJs=true --ts_proto_opt=snakeToCamel=false -I./proto -I./node_modules ./proto/users_service/v1/*.proto",
+    "proto:generate:outcomes": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./libs/common/src/types --ts_proto_opt=nestJs=true --ts_proto_opt=snakeToCamel=false -I./proto -I./node_modules ./proto/outcomes_service/v1/*.proto",
+    "proto:generate:users": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./libs/common/src/types --ts_proto_opt=nestJs=true --ts_proto_opt=snakeToCamel=false -I./proto -I./node_modules ./proto/users_service/v1/*.proto",
     "proto:generate:auth": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./libs/common/src/types --ts_proto_opt=nestJs=true --ts_proto_opt=snakeToCamel=false -I./proto -I./node_modules ./proto/auth_service/v1/*.proto",
-    "proto:generate:all": "npm run proto:generate:outcome && npm run proto:generate:user && npm run proto:generate:auth",
+    "proto:generate:all": "npm run proto:generate:outcomes && npm run proto:generate:users && npm run proto:generate:auth",
     "prisma:generate:monolith": "prisma generate --schema=apps/monolith/prisma/schema.prisma",
     "prisma:generate:outcomes": "prisma generate --schema=apps/outcomes-service/prisma/schema.prisma",
     "prisma:generate:users": "prisma generate --schema=apps/users-service/prisma/schema.prisma",
@@ -31,7 +31,9 @@
 
     "db:seed:auth": "ts-node -r tsconfig-paths/register apps/auth-service/src/database/seed.ts",
     "db:seed:refresh:auth": "ts-node -r tsconfig-paths/register  apps/auth-service/src/database/seed.ts --refresh",
-    "db:reset:auth": "prisma migrate reset && npm run db:seed"
+
+    "db:seed:outcomes": "ts-node -r tsconfig-paths/register apps/outcomes-service/src/database/seed.ts",
+    "db:seed:refresh:outcomes": "ts-node -r tsconfig-paths/register  apps/outcomes-service/src/database/seed.ts --refresh"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.14.3",
