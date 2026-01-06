@@ -26,6 +26,7 @@ export interface GetDriverRequest {
 export interface UpdateDriverRequest {
   id: string;
   title?: string | undefined;
+  position?: number | undefined;
   description?: string | undefined;
 }
 
