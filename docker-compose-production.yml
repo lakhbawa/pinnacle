@@ -25,7 +25,7 @@ services:
       - pinnacle-network
       - web
     labels:
-
+      - "traefik.enable=true"
       # Main router (non-www)
       - "traefik.http.routers.pinnacle-lakhveerbawa-com.rule=Host(`api.pinnacle.lakhveerbawa.com`)"
       - "traefik.http.routers.pinnacle-lakhveerbawa-com.entrypoints=websecure"
