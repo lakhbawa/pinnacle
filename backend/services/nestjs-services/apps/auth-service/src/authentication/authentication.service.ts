@@ -11,6 +11,8 @@ import {RpcException} from "@nestjs/microservices";
 import {USERS_SERVICE_NAME, UsersServiceClient} from "@app/common/types/users_service/v1/users";
 import * as microservices from "@nestjs/microservices";
 import {firstValueFrom} from "rxjs";
+import {md5} from "../../utils/misc";
+
 
 @Injectable()
 export class AuthenticationService {
@@ -24,6 +26,22 @@ export class AuthenticationService {
     }
 
     async signUp(request: SignUpRequest): Promise<AuthenticatedResponse> {
+
+        const password = md5(request.password);
+
+        const existingAccount = await this.accountsService.findOne({
+            email: request.email,
+        });
+
+        if (existingAccount) {
+            throw new RpcException({
+                code: Status.UNAUTHENTICATED,
+                message: "Account with this email already exists",
+            });
+        }
+
+
+
         // Convert Observable to Promise and await it
         const user = await firstValueFrom(
             this.userService.createUser({
@@ -43,7 +61,7 @@ export class AuthenticationService {
         const account = await this.accountsService.create({
             user_id: user.id,
             email: user.email,
-            password: request.password,
+            password: password,
         });
 
         return {
@@ -61,10 +79,11 @@ export class AuthenticationService {
 
 
     async signIn(request: SignInRequest) {
+        const password = md5(request.password);
         const account = await this.prisma.account.findFirst({
             where: {
                 email: request.email,
-                password: request.password
+                password: password
             }
         })
 

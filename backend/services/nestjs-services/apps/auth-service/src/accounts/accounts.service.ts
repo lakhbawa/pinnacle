@@ -32,10 +32,16 @@ export class AccountsService {
         });
     }
 
-    async findOne(
+    async findUnique(
         where: Prisma.AccountWhereUniqueInput,
     ): Promise<Account | null> {
         return this.prisma.account.findUnique({ where });
+    }
+
+        async findOne(
+        where: Prisma.AccountWhereInput,
+    ): Promise<Account | null> {
+        return this.prisma.account.findFirst({ where });
     }
 
     async update(params: {

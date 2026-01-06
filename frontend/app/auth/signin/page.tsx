@@ -34,7 +34,7 @@ export default function SignInPage() {
                 alert(result.error);
             } else {
                 // Sign in successful
-                router.push("/"); // Redirect to protected route
+               router.replace("/");
                 router.refresh();
             }
         } catch (err: any) {
