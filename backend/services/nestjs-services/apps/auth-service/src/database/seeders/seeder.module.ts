@@ -2,8 +2,6 @@ import { Module } from '@nestjs/common';
 import { SeederService } from './seeder.service';
 import { AccountsSeeder } from './accounts.seeder';
 import {PrismaModule} from "../../prisma.module";
-import {AccountsService} from "../../accounts/accounts.service";
-import {AuthenticationService} from "../../authentication/authentication.service";
 import {AuthenticationModule} from "../../authentication/authentication.module";
 import {ConfigModule} from "@nestjs/config";
 import appConfig from "../../config/app.config";
