@@ -18,7 +18,6 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 
 	authservicepb "gateway/gen/go/auth_service/v1"
-	boardspb "gateway/gen/go/boardsservice"
 	outcomesservicepb "gateway/gen/go/outcomes_service/v1"
 	usersservicepb "gateway/gen/go/users_service/v1"
 )
