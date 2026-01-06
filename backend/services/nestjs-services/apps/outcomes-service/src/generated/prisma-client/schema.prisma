@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma-client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Outcome {
+  id                   String        @id @default(uuid())
+  user_id              String
+  title                String
+  why_it_matters       String
+  success_metric_value Float
+  success_metric_unit  String
+  deadline             DateTime
+  status               OutcomeStatus @default(ACTIVE)
+  created_at           DateTime      @default(now())
+  completed_at         DateTime?
+  archived_at          DateTime?
+
+  drivers Driver[]
+  actions Action[]
+
+  @@index([user_id, status])
+  @@map("outcomes")
+}
+
+enum OutcomeStatus {
+  UNSPECIFIED
+  ACTIVE
+  PARKED
+  COMPLETED
+  ABANDONED
+}
+
+model Driver {
+  id         String   @id @default(uuid())
+  outcome_id String
+  user_id    String
+  title      String
+  position   Float?
+  created_at DateTime @default(now())
+
+  outcome Outcome  @relation(fields: [outcome_id], references: [id], onDelete: Cascade)
+  actions Action[]
+
+  @@map("drivers")
+}
+
+model Action {
+  id                    String    @id @default(uuid())
+  driver_id             String
+  outcome_id            String
+  user_id               String
+  title                 String
+  position              Float?
+  completed_at          DateTime?
+  scheduled_for         DateTime?
+  last_moved_outcome_at DateTime?
+  created_at            DateTime  @default(now())
+  updated_at            DateTime  @updatedAt
+
+  driver  Driver  @relation(fields: [driver_id], references: [id], onDelete: Cascade)
+  outcome Outcome @relation(fields: [outcome_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id, scheduled_for])
+  @@index([outcome_id, completed_at])
+  @@map("actions")
+}

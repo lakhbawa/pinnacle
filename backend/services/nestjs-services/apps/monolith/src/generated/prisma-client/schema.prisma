@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma-client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Project {
+  id         String   @id @default(uuid())
+  title      String
+  position   String
+  user_id    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user  User   @relation(fields: [user_id], references: [id])
+  lists List[]
+
+  @@map("projects")
+}
+
+model List {
+  id         String   @id @default(uuid())
+  title      String
+  position   String
+  project_id String
+  user_id    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  project Project @relation(fields: [project_id], references: [id])
+  user    User    @relation(fields: [user_id], references: [id])
+  issues  Issue[]
+
+  @@map("lists")
+}
+
+model Issue {
+  id         String    @id @default(uuid())
+  title      String
+  issue_type String    @default("task")
+  position   String
+  due_date   DateTime?
+  list_id    String
+  user_id    String
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+
+  list List @relation(fields: [list_id], references: [id])
+  user User @relation(fields: [user_id], references: [id])
+
+  @@map("issues")
+}
+
+model User {
+  id          String  @id @default(uuid())
+  name        String
+  email       String
+  company     String?
+  password    String
+  is_verified Boolean @default(false)
+
+  projects Project[]
+  lists    List[]
+  issues   Issue[]
+
+  @@map("users")
+}
