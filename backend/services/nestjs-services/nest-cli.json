@@ -13,7 +13,7 @@
   "projects": {
     "api-gateway": {
       "type": "application",
-      "root": "apps/api-gateway",
+      "root": "apps/api-gateway-deprecated",
       "entryFile": "src/main",
       "sourceRoot": "./",
       "compilerOptions": {
@@ -51,7 +51,7 @@
     },
     "monolith": {
       "type": "application",
-      "root": "apps/monolith",
+      "root": "apps/monolith-deprecated",
       "entryFile": "src/main",
       "sourceRoot": "./",
       "compilerOptions": {
