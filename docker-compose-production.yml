@@ -59,7 +59,6 @@ services:
     # No port exposure - accessed via Docker network
 
   pinnacle-users-service:
-    command: tail -f /dev/null
     build:
       context: ./backend/services/nestjs-services
       dockerfile: Dockerfile.prod
