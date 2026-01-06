@@ -131,3 +131,15 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary-400);
 }
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
