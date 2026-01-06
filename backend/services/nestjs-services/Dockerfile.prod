@@ -19,6 +19,9 @@ COPY proto/ ./proto/
 # Build argument for which service to build
 ARG SERVICE_NAME
 
+# Generate Prisma client for the specific service
+RUN npx prisma generate --schema=./apps/${SERVICE_NAME}/prisma/schema.prisma
+
 # Build the specific service
 RUN npm run build ${SERVICE_NAME}
 
@@ -31,12 +34,15 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production
 
-# Copy built application
+# Copy built application (includes generated prisma client since it's in src/)
 ARG SERVICE_NAME
 COPY --from=builder /app/dist/apps/${SERVICE_NAME} ./dist/
 
 # Copy proto files (needed at runtime for gRPC)
 COPY --from=builder /app/proto ./proto/
+
+# Copy Prisma schema (for migrations)
+COPY --from=builder /app/apps/${SERVICE_NAME}/prisma ./prisma/
 
 # Set environment
 ENV NODE_ENV=production
