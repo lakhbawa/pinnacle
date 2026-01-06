@@ -242,6 +242,10 @@ func main() {
 		})
 	})
 
+    router.GET("/health", func(c *gin.Context) {
+        c.JSON(http.StatusOK, gin.H{"status": "ok"})
+    })
+
 	ctx := context.Background()
 	grpcMux := runtime.NewServeMux(
 		runtime.WithErrorHandler(customHTTPError),
