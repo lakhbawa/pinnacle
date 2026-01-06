@@ -31,7 +31,7 @@ type CreateActionRequest struct {
 	DriverId      string                 `protobuf:"bytes,4,opt,name=driver_id,json=driverId,proto3" json:"driver_id,omitempty"`
 	ScheduledFor  *string                `protobuf:"bytes,5,opt,name=scheduled_for,json=scheduledFor,proto3,oneof" json:"scheduled_for,omitempty"`
 	Position      *float32               `protobuf:"fixed32,6,opt,name=position,proto3,oneof" json:"position,omitempty"`
-	Description   *float32               `protobuf:"fixed32,7,opt,name=description,proto3,oneof" json:"description,omitempty"`
+	Description   *string                `protobuf:"bytes,7,opt,name=description,proto3,oneof" json:"description,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -108,11 +108,11 @@ func (x *CreateActionRequest) GetPosition() float32 {
 	return 0
 }
 
-func (x *CreateActionRequest) GetDescription() float32 {
+func (x *CreateActionRequest) GetDescription() string {
 	if x != nil && x.Description != nil {
 		return *x.Description
 	}
-	return 0
+	return ""
 }
 
 type GetActionRequest struct {
@@ -520,7 +520,7 @@ const file_outcomes_service_v1_actions_proto_rawDesc = "" +
 	"\tdriver_id\x18\x04 \x01(\tR\bdriverId\x12(\n" +
 	"\rscheduled_for\x18\x05 \x01(\tH\x00R\fscheduledFor\x88\x01\x01\x12\x1f\n" +
 	"\bposition\x18\x06 \x01(\x02H\x01R\bposition\x88\x01\x01\x12%\n" +
-	"\vdescription\x18\a \x01(\x02H\x02R\vdescription\x88\x01\x01B\x10\n" +
+	"\vdescription\x18\a \x01(\tH\x02R\vdescription\x88\x01\x01B\x10\n" +
 	"\x0e_scheduled_forB\v\n" +
 	"\t_positionB\x0e\n" +
 	"\f_description\"\"\n" +

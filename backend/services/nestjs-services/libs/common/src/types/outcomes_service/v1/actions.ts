@@ -19,7 +19,7 @@ export interface CreateActionRequest {
   driver_id: string;
   scheduled_for?: string | undefined;
   position?: number | undefined;
-  description?: number | undefined;
+  description?: string | undefined;
 }
 
 export interface GetActionRequest {
