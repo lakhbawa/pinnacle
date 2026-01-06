@@ -94,17 +94,6 @@ services:
   # ===================
   # DATABASES
   # ===================
-  pinnacle-db:
-    image: postgres:16
-    environment:
-      POSTGRES_USER: ${DB_USER:-postgres}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
-      POSTGRES_DB: pinnacle
-    volumes:
-      - dbdata:/var/lib/postgresql/data
-    networks:
-      - pinnacle-network
-    # No port exposure in production
 
   pinnacle-auth-service-db:
     image: postgres:16
