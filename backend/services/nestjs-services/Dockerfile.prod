@@ -30,12 +30,14 @@ FROM node:22-alpine AS production
 
 WORKDIR /app
 
+# Redeclare ARG after FROM (it doesn't carry over)
+ARG SERVICE_NAME
+
 # Copy package files and install production deps only
 COPY package*.json ./
 RUN npm ci --only=production
 
-# Copy built application (includes generated prisma client since it's in src/)
-ARG SERVICE_NAME
+# Copy built application
 COPY --from=builder /app/dist/apps/${SERVICE_NAME} ./dist/
 
 # Copy proto files (needed at runtime for gRPC)
