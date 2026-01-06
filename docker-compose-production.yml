@@ -72,6 +72,7 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@pinnacle-auth-service-db:5432/auth
       - REDIS_HOST=pinnacle-redis
+      - USERS_SERVICE_URL=pinnacle-users-service:4450
     restart: always
     depends_on:
       - pinnacle-auth-service-db

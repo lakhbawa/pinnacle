@@ -35,7 +35,7 @@ const protoBasePath = join(process.cwd(), 'proto');
                 options: {
                     package: USERS_SERVICE_V1_PACKAGE_NAME,
                     protoPath: join(protoBasePath, 'users_service/v1/users.proto'),
-                    url: '0.0.0.0:4450',
+                    url: process.env.USERS_SERVICE_URL || 'pinnacle-users-service:4450',
                     loader: {
                         keepCase: true,
                         includeDirs: [protoBasePath],
