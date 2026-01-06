@@ -1,5 +1,4 @@
-Pinnacle is outcome-driven project management software that focuses on doing the right things and prevents 
-you from getting distracted by low-impact things. Prioritisation is at heart the pinnacle. Workflow is very opinionated to keep yourself focused
+Pinnacle is outcome-driven project management software that keeps you focused on high-impact work. With opinionated workflows and prioritization at its core, it cuts through the noise and prevents distraction from low-value tasks.
 
 ## System Design 
 [https://www.tldraw.com/p/Tz-EJdJEB6hq8Z-nOMSjH?d=v-130.0.2552.1324.page](https://www.tldraw.com/p/Tz-EJdJEB6hq8Z-nOMSjH?d=v-25.-664.8132.4219.page)
