@@ -26,7 +26,12 @@
     "prisma:generate:outcomes": "prisma generate --schema=apps/outcomes-service/prisma/schema.prisma",
     "prisma:generate:users": "prisma generate --schema=apps/users-service/prisma/schema.prisma",
     "prisma:generate:auth": "prisma generate --schema=apps/auth-service/prisma/schema.prisma",
-    "prisma:generate:all": "npm run prisma:generate:monolith && npm run prisma:generate:outcomes && npm run prisma:generate:users && npm run prisma:generate:auth"
+    "prisma:generate:all": "npm run prisma:generate:monolith && npm run prisma:generate:outcomes && npm run prisma:generate:users && npm run prisma:generate:auth",
+
+
+    "db:seed:auth": "ts-node -r tsconfig-paths/register apps/auth-service/src/database/seed.ts",
+    "db:seed:refresh:auth": "ts-node -r tsconfig-paths/register  apps/auth-service/src/database/seed.ts --refresh",
+    "db:reset:auth": "prisma migrate reset && npm run db:seed"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.14.3",

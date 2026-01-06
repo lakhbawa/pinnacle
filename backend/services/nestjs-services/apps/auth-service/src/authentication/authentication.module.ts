@@ -2,7 +2,7 @@ import {Module} from '@nestjs/common';
 import {PrismaService} from "../prisma.service";
 import {JwtModule, JwtModuleOptions} from "@nestjs/jwt";
 import {PassportModule} from "@nestjs/passport";
-import {ConfigService} from "@nestjs/config";
+import {ConfigModule, ConfigService} from "@nestjs/config";
 import {AccountsService} from "../accounts/accounts.service";
 import {AuthenticationController} from "./authentication.controller";
 import {AuthenticationService} from "./authentication.service";
@@ -15,8 +15,10 @@ const protoBasePath = join(process.cwd(), 'proto');
 @Module({
 
     imports: [
+        ConfigModule,
         PassportModule,
         JwtModule.registerAsync({
+            imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: (config: ConfigService): JwtModuleOptions => ({
                 secret: config.get<string>('app.jwt.secret') || 'fallback-secret',
@@ -47,6 +49,7 @@ const protoBasePath = join(process.cwd(), 'proto');
         PrismaService,
         AccountsService,
     ],
+    exports: [AuthenticationService]
 })
 export class AuthenticationModule {
 }
