@@ -5,6 +5,8 @@ Pinnacle is outcome-driven project management software that keeps you focused on
 
 ![System Design](/architecture/system-design-v2.png)
 
+## Note: It's a Work In Progress Project
+
 ## Stack Startup
 - Open 3-4 Terminal Tabs, run following commands in separate terminal tabs
 - `make up`
