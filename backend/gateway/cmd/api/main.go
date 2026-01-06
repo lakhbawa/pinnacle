@@ -235,6 +235,13 @@ func main() {
 		AllowCredentials: true,
 	}))
 
+    router.GET("/hello", func(c *gin.Context) {
+		c.JSON(http.StatusOK, APIResponse{
+			Success: true,
+			Data:    "Hello World!",
+		})
+	})
+
 	ctx := context.Background()
 	grpcMux := runtime.NewServeMux(
 		runtime.WithErrorHandler(customHTTPError),
