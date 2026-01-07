@@ -3,7 +3,7 @@ Pinnacle is outcome-driven project management software that keeps you focused on
 ## System Design 
 [https://www.tldraw.com/p/Tz-EJdJEB6hq8Z-nOMSjH?d=v-130.0.2552.1324.page](https://www.tldraw.com/p/Tz-EJdJEB6hq8Z-nOMSjH?d=v-25.-664.8132.4219.page)
 
-![System Design](/architecture/system-design-v2.png)
+![System Design](/architecture/system-design-v3.png)
 
 ## Note: It's a Work In Progress Project
 
