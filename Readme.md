@@ -8,7 +8,7 @@ Pinnacle is outcome-driven project management software that keeps you focused on
 ## Note: It's a Work In Progress Project
 
 ## Stack Startup
-- Open 3-4 Terminal Tabs, run following commands in separate terminal tabs
+- Open 3-4 Terminal Tabs, run the following commands in separate terminal tabs
 - `make up`
 - `make start-gateway`
 - `make start-outcome`
@@ -16,41 +16,31 @@ Pinnacle is outcome-driven project management software that keeps you focused on
 - `make start-frontend`
 - Open `127.0.0.1:3000`
 
-### Ideal Request Cycle after Development:
+### Request Chain:
 Client Request -> NextJs -> API Gateway (Go + Gin) -> NestJs microservices
 
 ### Current Tech Stack:
-- **API**: - NestJs + NodeJs + TypeScript
+- **API / Microservices**: - NestJs + NodeJs + TypeScript
 - **Frontend**: NextJs / ReactJs + Typescript
 - **DB**: Postgres, Redis
+- **API Gateway**: Go, Gin
+- **Tools**: Kafka, Docker, Traefik
 
-### Notes:
-- NestJS runs on 4000
-  - Boards Service
-    - 4010
-  - Lists Service
-    - 4020
-  - Issues Service
-    - 4030
-  - API Gateway:
-    - 4050
-  - Outcomes:
-    - 4040
-  - Users
-    - 4050
-- NextJS runs on 3000
+### Service Ports:
+- API Gateway: 8080
+
+- Microservices Ports
+  - Outcomes Service: 4440
+  - Auth Service: 4460
+  - Users Service: 4450
+ 
+- Frontend:
+  - NextJs - 3000
 
 
-npx protoc \
-  --ts_proto_out=. \
-  --ts_proto_opt=nestJs=true \
-  ./proto/outcomes.proto
+## Self Guide
 
-
-npx prisma init --datasource-provider postgresql
-
-
-### Steps for Adding new microservice - Self Guide:
+### Steps for Adding new microservice
 - Create New NestJs app using command `nest generate app {object:plural}-service`
 - create directory proto within the service directory
 - create file named {object:plural}.proto
