@@ -1,14 +1,35 @@
-// outcomes.service.ts
-import { Injectable } from '@nestjs/common';
+import {Injectable, Logger} from '@nestjs/common';
 import { PrismaService } from "../prisma.service";
 import { Prisma, Outcome } from '../generated/prisma-client';
+import {KafkaService} from "@app/common/kafka/src/kafka.service";
+import {OutcomeCreatedEvent} from "@app/common/kafka/src/interfaces/kafka-message.interface";
 
 @Injectable()
 export class OutcomesService {
-    constructor(private prisma: PrismaService) {}
+
+    private readonly logger = new Logger('OutcomesService');
+
+    constructor(private prisma: PrismaService, private kafkaService: KafkaService) {}
 
     async create(data: Prisma.OutcomeCreateInput): Promise<Outcome> {
-        return this.prisma.outcome.create({ data });
+
+        this.logger.log(`Creating outcome ${JSON.stringify(data)}`);
+
+        const outcome =  await this.prisma.outcome.create({ data });
+
+        const outcomeCreatedEvent: OutcomeCreatedEvent = {
+            outcomeId: outcome.id,
+            userId: outcome.user_id,
+            title: outcome.title
+        }
+
+        await this.kafkaService.publish(
+            'outcomes-events',
+            'OUTCOME_CREATED',
+            outcomeCreatedEvent,
+            outcome.user_id
+        )
+        return outcome;
     }
 
     async count(params: { where?: Prisma.OutcomeWhereInput }): Promise<number> {

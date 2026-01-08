@@ -20,6 +20,11 @@ start-auth:
 	cd backend/services/nestjs-services && \
 	npm run start:dev auth-service
 
+start-notifications:
+	docker compose up -d --remove-orphans
+	cd backend/services/nestjs-services && \
+	npm run start:dev notifications-service
+
 start-monolith:
 	docker compose up -d --remove-orphans
 	cd backend/services/nestjs-services && \

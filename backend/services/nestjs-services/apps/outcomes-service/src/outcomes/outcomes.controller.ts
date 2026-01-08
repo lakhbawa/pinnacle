@@ -1,8 +1,8 @@
-import {Controller} from '@nestjs/common';
+import {Controller, Inject} from '@nestjs/common';
 import {Prisma} from '../generated/prisma-client';
 import {OutcomeMapper} from '../mappers/outcome.mapper';
 import {createOutcomeSchema} from '../validators/outcomes-service.schema';
-import {RpcException} from '@nestjs/microservices';
+import {ClientKafka, RpcException} from '@nestjs/microservices';
 import {Status} from '@grpc/grpc-js/build/src/constants';
 import {
     CreateOutcomeRequest,
@@ -14,14 +14,18 @@ import {OutcomesService} from "./outcomes.service";
 import {Outcome} from "@app/common/types/outcomes_service/v1/models";
 import {formatZodErrors} from "@app/common/helpers/validation/utils";
 import {getPagination, getPaginationMeta} from "@app/common/helpers/pagination";
+import {KafkaService} from "@app/common/kafka/src/kafka.service";
 
 @Controller()
 @OutcomesServiceControllerMethods()
 export class OutcomesController implements OutcomesServiceController {
-    constructor(private readonly outcomesService: OutcomesService) {
+    constructor(private readonly outcomesService: OutcomesService, private kafkaService: KafkaService,) {
     }
 
     async createOutcome(request: CreateOutcomeRequest): Promise<Outcome> {
+
+        await this.kafkaService.publish('outcomes-events', 'TEST_EVENT', { hello: 'world' });
+
         console.log('Received request:', JSON.stringify(request, null, 2));
         const result = createOutcomeSchema.safeParse(request);
 

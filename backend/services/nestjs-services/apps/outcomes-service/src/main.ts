@@ -3,6 +3,7 @@ import { MicroserviceOptions, Transport } from "@nestjs/microservices";
 import { OutcomesServiceModule } from './outcomes-service.module';
 import { join } from 'path';
 import { OUTCOMES_SERVICE_V1_PACKAGE_NAME } from "@app/common/types/outcomes_service/v1/outcomes";
+import {Logger} from "@nestjs/common";
 
 async function bootstrap() {
   // Use process.cwd() - points to project root where you run the command
@@ -31,8 +32,11 @@ async function bootstrap() {
     }
   );
 
+  const logger = new Logger('OutcomesService');
+
+
   await app.listen();
-  console.log('Outcomes service running on port 4440');
+  logger.log('Outcomes service running on port 4440');
 }
 
 bootstrap();
