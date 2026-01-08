@@ -16,11 +16,10 @@ export class EmailService {
   ): Promise<void> {
     const { traceId, correlationId } = getTraceContext();
 
-    // Get user email from database
     const userEmail = await this.getUserEmail(recipientId);
 
-    // Send via SendGrid/SES
-    // await this.sendgrid.send({
+    // SEnd EMail
+    // await this.mailer.send({
     //   to: userEmail,
     //   subject: title,
     //   html: this.renderEmailTemplate(title, body, data),
@@ -37,7 +36,6 @@ export class EmailService {
   }
 
   private async getUserEmail(userId: string): Promise<string> {
-    // From database
     return 'user@example.com';
   }
 
