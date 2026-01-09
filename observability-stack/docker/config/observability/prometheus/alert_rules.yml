@@ -1,0 +1,99 @@
+groups:
+  - name: service_alerts
+    interval: 30s
+    rules:
+      # Service Down Alert
+      - alert: ServiceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Service {{ $labels.job }} is down"
+          description: "{{ $labels.job }} has been down for more than 1 minute."
+
+      # High CPU Usage
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is above 80% for more than 5 minutes."
+
+      # High Memory Usage
+      - alert: HighMemoryUsage
+        expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is above 85% for more than 5 minutes."
+
+      # Disk Space Low
+      - alert: DiskSpaceLow
+        expr: (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) * 100 < 20
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low disk space on {{ $labels.instance }}"
+          description: "Disk space is below 20% on root partition."
+
+  - name: api_alerts
+    interval: 30s
+    rules:
+      # High HTTP Error Rate
+      - alert: HighHTTPErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High HTTP error rate on {{ $labels.job }}"
+          description: "More than 5% of requests are failing with 5xx errors."
+
+      # Slow Response Time
+      - alert: SlowResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Slow response time on {{ $labels.job }}"
+          description: "95th percentile response time is above 1 second."
+
+  - name: container_alerts
+    interval: 30s
+    rules:
+      # Container High CPU
+      - alert: ContainerHighCPU
+        expr: rate(container_cpu_usage_seconds_total[5m]) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage in container {{ $labels.name }}"
+          description: "Container {{ $labels.name }} is using more than 80% CPU."
+
+      # Container High Memory
+      - alert: ContainerHighMemory
+        expr: container_memory_usage_bytes / container_spec_memory_limit_bytes > 0.9
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage in container {{ $labels.name }}"
+          description: "Container {{ $labels.name }} is using more than 90% of memory limit."
+
+      # Container Restarting
+      - alert: ContainerRestarting
+        expr: rate(container_last_seen[5m]) > 0
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Container {{ $labels.name }} is restarting"
+          description: "Container {{ $labels.name }} has restarted in the last 5 minutes."

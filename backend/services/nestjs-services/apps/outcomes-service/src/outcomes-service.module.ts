@@ -1,21 +1,35 @@
-import { Module } from '@nestjs/common';
-import { OutcomesModule } from './outcomes/outcomes.module';
+import {Module} from '@nestjs/common';
+import {OutcomesModule} from './outcomes/outcomes.module';
 import {ConfigModule} from "@nestjs/config";
 import appConfig from "@app/common/config/app.config";
 import {DriversModule} from "./drivers/drivers.module";
 import {ActionsModule} from "./actions/actions.module";
 import {FocusModule} from "./focus/focus.module";
 
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { MetricsModule } from './metrics/metrics.module';
+import { MetricsInterceptor } from './interceptors/metrics.interceptor';
+import { CustomMetricsService } from './metrics/custom-metrics.service';
+
 @Module({
-  imports: [ConfigModule.forRoot({
-      isGlobal: true,  // Makes ConfigModule available everywhere
-      envFilePath: 'apps/outcomes-service/.env',
-        load: [appConfig],
-    }),
-
-
-      OutcomesModule, DriversModule, ActionsModule, FocusModule],
-  controllers: [],
-  providers: [],
+    imports: [MetricsModule, ConfigModule.forRoot({
+    isGlobal: true,
+    envFilePath: [
+        'apps/outcomes-service/.env',
+        '.env'
+    ],
+    load: [appConfig],
+    expandVariables: true,
+}),
+        OutcomesModule, DriversModule, ActionsModule, FocusModule],
+    controllers: [],
+    providers: [
+        CustomMetricsService,
+        {
+            provide: APP_INTERCEPTOR,
+            useClass: MetricsInterceptor,
+        }
+    ],
 })
-export class OutcomesServiceModule {}
+export class OutcomesServiceModule {
+}

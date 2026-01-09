@@ -1,0 +1,68 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'strategyforge-monitor'
+
+# Alertmanager configuration (optional)
+# alerting:
+#   alertmanagers:
+#     - static_configs:
+#         - targets:
+#           - alertmanager:9093
+
+# Load rules once and periodically evaluate them
+rule_files:
+  - "alert_rules.yml"
+
+# Scrape configurations
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          group: 'monitoring'
+
+  # Node Exporter - System metrics
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          group: 'infrastructure'
+
+  # cAdvisor - Container metrics
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+        labels:
+          group: 'containers'
+
+  # Your microservices - Add your services here
+  # API Gateway (Go)
+#  - job_name: 'api-gateway'
+#    static_configs:
+#      - targets: ['api-gateway:8080']  # Adjust port as needed
+#        labels:
+#          service: 'api-gateway'
+#          environment: 'development'
+#
+#  # User Service (NestJS)
+#  - job_name: 'users-service'
+#    static_configs:
+#      - targets: ['users-service:3001']  # Adjust port as needed
+#        labels:
+#          service: 'user-service'
+#          environment: 'development'
+
+  - job_name: 'outcomes-service'
+    static_configs:
+        - targets: ['pinnacle-outcomes-service:4441']
+    metrics_path: '/metrics'
+  # Add more services as needed
+  # - job_name: 'notification-service'
+  #   static_configs:
+  #     - targets: ['notification-service:3004']
+  #       labels:
+  #         service: 'notification-service'
+  #         environment: 'development'

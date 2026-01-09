@@ -5,12 +5,12 @@ shellgateway:
 protoc:
 	protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=. --ts_proto_opt=nestJs=true src/proto/outcomes.proto
 
-start-outcome:
+start-outcomes:
 	docker compose up -d --remove-orphans
 	cd backend/services/nestjs-services && \
 	npm run start:dev outcomes-service
 
-start-user:
+start-users:
 	docker compose up -d --remove-orphans
 	cd backend/services/nestjs-services && \
 	npm run start:dev users-service
@@ -37,3 +37,6 @@ start-gateway:
 start-frontend:
 	cd frontend && \
 	npm run dev
+
+start-observer:
+	docker compose -f docker-compose-observability.yml up -d --remove-orphans

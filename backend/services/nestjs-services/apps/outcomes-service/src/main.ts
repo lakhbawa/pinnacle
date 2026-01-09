@@ -3,40 +3,38 @@ import { MicroserviceOptions, Transport } from "@nestjs/microservices";
 import { OutcomesServiceModule } from './outcomes-service.module';
 import { join } from 'path';
 import { OUTCOMES_SERVICE_V1_PACKAGE_NAME } from "@app/common/types/outcomes_service/v1/outcomes";
-import {Logger} from "@nestjs/common";
+import { Logger } from "@nestjs/common";
 
 async function bootstrap() {
-  // Use process.cwd() - points to project root where you run the command
+  const logger = new Logger('OutcomesService');
   const protoBasePath = join(process.cwd(), 'proto');
 
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    OutcomesServiceModule,
-    {
-      transport: Transport.GRPC,
-      options: {
-        package: OUTCOMES_SERVICE_V1_PACKAGE_NAME,
-        protoPath: [
-          join(protoBasePath, 'outcomes_service/v1/models.proto'),
-          join(protoBasePath, 'outcomes_service/v1/outcomes.proto'),
-          join(protoBasePath, 'outcomes_service/v1/drivers.proto'),
-          join(protoBasePath, 'outcomes_service/v1/actions.proto'),
-          join(protoBasePath, 'outcomes_service/v1/focus.proto'),
+  // Create hybrid app (HTTP + gRPC)
+  const app = await NestFactory.create(OutcomesServiceModule);
 
-        ],
-        url: '0.0.0.0:4440',
-        loader: {
-          keepCase: true,
-          includeDirs: [protoBasePath],
-        },
+  // Add gRPC microservice
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.GRPC,
+    options: {
+      package: OUTCOMES_SERVICE_V1_PACKAGE_NAME,
+      protoPath: [
+        join(protoBasePath, 'outcomes_service/v1/models.proto'),
+        join(protoBasePath, 'outcomes_service/v1/outcomes.proto'),
+        join(protoBasePath, 'outcomes_service/v1/drivers.proto'),
+        join(protoBasePath, 'outcomes_service/v1/actions.proto'),
+        join(protoBasePath, 'outcomes_service/v1/focus.proto'),
+      ],
+      url: '0.0.0.0:4440',
+      loader: {
+        keepCase: true,
+        includeDirs: [protoBasePath],
       },
-    }
-  );
+    },
+  });
 
-  const logger = new Logger('OutcomesService');
+  await app.startAllMicroservices();
+  await app.listen(4441, '0.0.0.0');
 
-
-  await app.listen();
-  logger.log('Outcomes service running on port 4440');
+  logger.log('HTTP (metrics) on :4441, gRPC on :4440');
 }
-
 bootstrap();
