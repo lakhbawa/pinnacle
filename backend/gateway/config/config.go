@@ -1,4 +1,3 @@
-// config/config.go
 package config
 
 import "os"
@@ -12,10 +11,9 @@ type ServiceURLs struct {
 
 func GetServiceURLs() ServiceURLs {
     return ServiceURLs{
-        AuthService:     getEnv("AUTH_SERVICE_URL", "localhost:4460"),
-        UsersService:    getEnv("USERS_SERVICE_URL", "localhost:4450"),
-        OutcomesService: getEnv("OUTCOMES_SERVICE_URL", "localhost:4440"),
-        BoardsService:   getEnv("BOARDS_SERVICE_URL", "localhost:4470"),
+        AuthService:     getEnv("AUTH_SERVICE_URL", "pinnacle-auth-service:4460"),
+        UsersService:    getEnv("USERS_SERVICE_URL", "pinnacle-users-service:4450"),
+        OutcomesService: getEnv("OUTCOMES_SERVICE_URL", "pinnacle-outcomes-service:4440"),
     }
 }
 
