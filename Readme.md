@@ -37,6 +37,13 @@ Client Request -> NextJs -> API Gateway (Go + Gin) -> NestJs microservices
 - Frontend:
   - NextJs - 3000
 
+## Observability:
+Tools used: Grafana, Promotheus, Loki, cadvisor, etc
+
+![System Analytics For Issue Flagging](/architecture/System_Analysics_using_node_exporter.png)
+
+![Prometheus Dashboard for various kind of analytics](/architecture/Grafana _+_Prothemeus_Setup.png)
+
 
 ## Self Guide
 
