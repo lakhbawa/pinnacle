@@ -40,6 +40,8 @@ Client Request -> NextJs -> API Gateway (Go + Gin) -> NestJs microservices
 ## Observability:
 Tools used: Grafana, Promotheus, Loki, cadvisor, etc
 
+Code: [Observability Infrastructure Code](https://github.com/lakhbawa/pinnacle/blob/main/observability-stack/docker-compose-observability.yml)
+
 ![System Analytics For Issue Flagging](/architecture/System_Analysics_using_node_exporter.png)
 
 
