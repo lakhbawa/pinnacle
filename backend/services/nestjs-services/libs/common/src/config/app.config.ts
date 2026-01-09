@@ -6,5 +6,13 @@ export default () => ({
             expiresIn: process.env.EXPIRES_IN || 300,
         },
         app_name: process.env.APP_NAME,
+    },
+    kafka: {
+        consumer_groups: {
+            'outcomes_service': '',
+            'notifications_service': '',
+            'authentication_service': '',
+            'users_service': '',
+        }
     }
 })
