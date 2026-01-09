@@ -46,6 +46,7 @@ services:
       - pinnacle-users-service
     networks:
       - pinnacle-network
+      - observer
       - web
     labels:
       - "traefik.enable=true"
@@ -77,8 +78,7 @@ services:
     depends_on:
       - pinnacle-auth-service-db
       - pinnacle-redis
-    networks:
-      - pinnacle-network
+    networks: [pinnacle-network, observer]
     # No Traefik labels - internal only
     # No port exposure - accessed via Docker network
 
@@ -95,8 +95,7 @@ services:
     depends_on:
       - pinnacle-users-service-db
       - pinnacle-redis
-    networks:
-      - pinnacle-network
+    networks: [pinnacle-network, observer]
 
   pinnacle-outcomes-service:
     build:
@@ -111,9 +110,30 @@ services:
     depends_on:
       - pinnacle-outcomes-service-db
       - pinnacle-redis
-    networks:
-      - pinnacle-network
+    networks: [pinnacle-network, observer]
+  pinnacle-notifications-service:
+    build:
+      context: ./backend/services/nestjs-services
+      dockerfile: Dockerfile.dev
+      args:
+        SERVICE_NAME: notifications-service
+    env_file:
+    - ./backend/services/nestjs-services/apps/notifications-service/.env
+    volumes:
+      - ./backend/services/nestjs-services:/app
+      - /app/node_modules
+      - /app/apps/notifications-service/node_modules
+    ports:
+      - "4470:4470"
+    depends_on:
+      pinnacle-kafka:
+        condition: service_healthy
+      pinnacle-notifications-service-db:
+        condition: service_started
+      pinnacle-redis:
+        condition: service_started
 
+    networks: [pinnacle-network, observer]
 
   # ===================
   # DATABASES
@@ -151,7 +171,18 @@ services:
       - dbdata_outcomes_service:/var/lib/postgresql/data
     networks:
       - pinnacle-network
-
+  pinnacle-notifications-service-db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: notifications
+    volumes:
+      - dbdata_notifications_service:/var/lib/postgresql/data
+      - ./docker/config/postgres/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "4472:5432"
+    networks: [pinnacle-network]
   pinnacle-redis:
     image: redis:7-alpine
     volumes:
@@ -164,9 +195,12 @@ networks:
     driver: bridge
   web:
     external: true
+  observer:
+    external: true
 volumes:
   dbdata:
   dbdata_auth_service:
   dbdata_users_service:
   dbdata_outcomes_service:
+  dbdata_notifications_service:
   redisdata:
