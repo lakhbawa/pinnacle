@@ -1,0 +1,25 @@
+FROM node:22-alpine
+
+WORKDIR /app
+
+# Install dependencies globally
+RUN npm install -g @nestjs/cli
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies (including dev)
+RUN npm ci
+
+# Copy source code
+COPY . .
+
+# Build argument for service name
+ARG SERVICE_NAME
+ENV SERVICE_NAME=${SERVICE_NAME}
+
+# Generate Prisma client for the service
+RUN npx prisma generate --schema=./apps/${SERVICE_NAME}/prisma/schema.prisma --config=./apps/${SERVICE_NAME}/prisma.config.ts
+
+# Start in watch mode
+CMD ["sh", "-c", "npm run start:dev ${SERVICE_NAME}"]

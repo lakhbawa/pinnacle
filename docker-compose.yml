@@ -1,7 +1,7 @@
+version: "3.8"
 
-version: "3"
 services:
-
+  # KAFKA INFRASTRUCTURE
   pinnacle-zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
     environment:
@@ -21,16 +21,22 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: pinnacle-zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://pinnacle-kafka:29092,PLAINTEXT_HOST://localhost:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://pinnacle-kafka:9092,PLAINTEXT_INTERNAL://pinnacle-kafka:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:29092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     volumes:
       - kafka-data:/var/lib/kafka/data
     networks: [pinnacle-network]
+    healthcheck:
+      test: kafka-topics --bootstrap-server localhost:29092 --list
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
 
-  # Optional: UI for debugging
   pinnacle-kafka-ui:
     image: provectuslabs/kafka-ui:latest
     ports:
@@ -42,77 +48,123 @@ services:
     depends_on:
       - pinnacle-kafka
     networks: [pinnacle-network]
-#  nginx:
-#    image: nginx:alpine
-#    restart: unless-stopped
-#    tty: true
-#    ports:
-#      - "2000:80"
-#      - "2001:443"
-#    volumes:
-#      - ./:/var/www
-#      - ./docker/config/nginx/conf.d.local/:/etc/nginx/conf.d/
-#      - ./docker/config/nginx/conf.d.local/ssl:/etc/nginx/ssl/
-#    networks:
-#      - app-network
+
+  # GATEWAY (Go)
   pinnacle-gateway:
     build:
       context: ./backend/gateway
       dockerfile: Dockerfile.dev
     env_file: .env
     environment:
-      # Explicitly set these to ensure they're available
-      - REDIS_HOST=${REDIS_HOST}
-      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_HOST=pinnacle-redis
+      - REDIS_PORT=6379
+      - AUTH_SERVICE_URL=pinnacle-auth-service:4460
+      - USERS_SERVICE_URL=pinnacle-users-service:4450
+      - OUTCOMES_SERVICE_URL=pinnacle-outcomes-service:4440
+      - BOARDS_SERVICE_URL=pinnacle-boards-service:4470
     volumes:
-    - ./backend/gateway:/app
-    - go-modules:/go/pkg/mod
+      - ./backend/gateway:/app
+      - go-modules:/go/pkg/mod
     command: go run cmd/api/main.go
     ports:
       - "4700:8080"
     depends_on:
       - pinnacle-redis
-      - pinnacle-db
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - pinnacle-auth-service
+      - pinnacle-users-service
+      - pinnacle-outcomes-service
     networks: [pinnacle-network]
 
-  pinnacle-db:
-    image: postgres:16
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: pinnacle
+  # NESTJS MICROSERVICES
+  pinnacle-auth-service:
+    build:
+      context: ./backend/services/nestjs-services
+      dockerfile: Dockerfile.dev
+      args:
+        SERVICE_NAME: auth-service
+    env_file:
+        - ./backend/services/nestjs-services/apps/outcomes-service/.env
     volumes:
-      - dbdata:/var/lib/postgresql/data
-      - ./docker/config/postgres/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./backend/services/nestjs-services:/app
+      - /app/node_modules
+      - /app/apps/auth-service/node_modules
     ports:
-      - "4732:5432"
+      - "4460:4460"
+    depends_on:
+      - pinnacle-auth-service-db
+      - pinnacle-redis
     networks: [pinnacle-network]
-  pinnacle-outcomes-service-db:
-    image: postgres:16
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: outcomes
+
+  pinnacle-users-service:
+    build:
+      context: ./backend/services/nestjs-services
+      dockerfile: Dockerfile.dev
+      args:
+        SERVICE_NAME: users-service
+    env_file:
+    - ./backend/services/nestjs-services/apps/users-service/.env
     volumes:
-      - dbdata_outcomes_service:/var/lib/postgresql/data
-      - ./docker/config/postgres/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./backend/services/nestjs-services:/app
+      - /app/node_modules
+      - /app/apps/users-service/node_modules
     ports:
-      - "4442:5432"
+      - "4450:4450"
+    depends_on:
+      - pinnacle-users-service-db
+      - pinnacle-redis
     networks: [pinnacle-network]
-  pinnacle-users-service-db:
-    image: postgres:16
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: users
+
+  pinnacle-outcomes-service:
+    build:
+      context: ./backend/services/nestjs-services
+      dockerfile: Dockerfile.dev
+      args:
+        SERVICE_NAME: outcomes-service
+    env_file:
+    - ./backend/services/nestjs-services/apps/outcomes-service/.env
     volumes:
-      - dbdata_users_service:/var/lib/postgresql/data
-      - ./docker/config/postgres/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./backend/services/nestjs-services:/app
+      - /app/node_modules
+      - /app/apps/outcomes-service/node_modules
     ports:
-      - "4452:5432"
-    networks: [pinnacle-network]
+      - "4440:4440"
+      - "4441:4441"
+    depends_on:
+      pinnacle-kafka:
+        condition: service_healthy
+      pinnacle-outcomes-service-db:
+        condition: service_started
+      pinnacle-redis:
+        condition: service_started
+
+    networks: [pinnacle-network, observer]
+
+  pinnacle-notifications-service:
+    build:
+      context: ./backend/services/nestjs-services
+      dockerfile: Dockerfile.dev
+      args:
+        SERVICE_NAME: notifications-service
+    env_file:
+    - ./backend/services/nestjs-services/apps/notifications-service/.env
+    volumes:
+      - ./backend/services/nestjs-services:/app
+      - /app/node_modules
+      - /app/apps/notifications-service/node_modules
+    ports:
+      - "4470:4470"
+    depends_on:
+      pinnacle-kafka:
+        condition: service_healthy
+      pinnacle-notifications-service-db:
+        condition: service_started
+      pinnacle-redis:
+        condition: service_started
+
+    networks: [pinnacle-network, observer]
+  # DATABASES
+
+
   pinnacle-auth-service-db:
     image: postgres:16
     environment:
@@ -126,48 +178,74 @@ services:
       - "4462:5432"
     networks: [pinnacle-network]
 
+  pinnacle-users-service-db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: users
+    volumes:
+      - dbdata_users_service:/var/lib/postgresql/data
+      - ./docker/config/postgres/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "4452:5432"
+    networks: [pinnacle-network]
+
+  pinnacle-outcomes-service-db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: outcomes
+    volumes:
+      - dbdata_outcomes_service:/var/lib/postgresql/data
+      - ./docker/config/postgres/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "4442:5432"
+    networks: [pinnacle-network]
+  pinnacle-notifications-service-db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: notifications
+    volumes:
+      - dbdata_notifications_service:/var/lib/postgresql/data
+      - ./docker/config/postgres/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "4472:5432"
+    networks: [pinnacle-network]
+  # UTILITIES
+
   pinnacle-adminer:
     image: adminer:latest
     ports:
       - "4780:8080"
-    depends_on:
-      - pinnacle-db
     networks: [pinnacle-network]
+
   pinnacle-redis:
-    image: arm64v8/redis
-    restart: unless-stopped
-    tty: true
-    expose:
-      - 6379
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
     volumes:
       - redisdata:/data
-    networks:
-      - pinnacle-network
+    networks: [pinnacle-network]
 
-#Docker Networks
 networks:
   pinnacle-network:
     driver: bridge
-#Volumes
+    name: pinnacle-network
+  observer:
+    external: true
+
 volumes:
   dbdata:
-    driver: local
   dbdata_outcomes_service:
-    driver: local
   dbdata_users_service:
-    driver: local
   dbdata_auth_service:
-    driver: local
+  dbdata_notifications_service:
   redisdata:
-    driver: local
   go-modules:
   zookeeper-data:
-    driver: local
   zookeeper-log:
-    driver: local
   kafka-data:
-    driver: local
-
-#  default:
-#    external:
-#      name: nginx-proxy
