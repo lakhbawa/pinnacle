@@ -43,7 +43,7 @@ Tools used: Grafana, Promotheus, Loki, cadvisor, etc
 ![System Analytics For Issue Flagging](/architecture/System_Analysics_using_node_exporter.png)
 
 
-![Prometheus_Dashboard_for_various_kind_of_analytics](/architecture/Grafana _Prometheus_Setup.png)
+![Prometheus_Dashboard_for_various_kind_of_analytics](/architecture/grafana_prometheus_setup.png)
 
 
 ## Self Guide
