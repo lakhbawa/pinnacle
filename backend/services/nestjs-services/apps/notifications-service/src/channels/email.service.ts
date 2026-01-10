@@ -1,55 +1,48 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import {getTraceContext} from "@app/common/kafka/src/tracing/tracing.context";
+
+interface EmailContent {
+  title: string;
+  body: string;
+}
 
 @Injectable()
 export class EmailService {
   private readonly logger = new Logger(EmailService.name);
 
-  constructor(private configService: ConfigService) {}
+  constructor(private config: ConfigService) {}
 
-  async send(
-    recipientId: string,
-    title: string,
-    body: string,
-    data: Record<string, any>,
-  ): Promise<void> {
-    const { traceId, correlationId } = getTraceContext();
+  async send(user_id: string, content: EmailContent): Promise<void> {
+    const email = await this.getUserEmail(user_id);
 
-    const userEmail = await this.getUserEmail(recipientId);
-
-    // SEnd EMail
-    // await this.mailer.send({
-    //   to: userEmail,
-    //   subject: title,
-    //   html: this.renderEmailTemplate(title, body, data),
-    // });
-
+    // TODO: Replace with SendGrid/SES
     this.logger.log({
       message: 'Email sent',
-      recipientId,
-      email: userEmail,
-      subject: title,
-      traceId,
-      correlationId,
+      to: email,
+      subject: content.title,
     });
+
+    // SendGrid example:
+    // await this.sendgrid.send({
+    //   to: email,
+    //   from: this.config.get('EMAIL_FROM'),
+    //   subject: content.title,
+    //   html: this.renderHtml(content),
+    // });
   }
 
-  private async getUserEmail(userId: string): Promise<string> {
+  private async getUserEmail(user_id: string): Promise<string> {
+    // TODO: Fetch from users service or cache
     return 'user@example.com';
   }
 
-  private renderEmailTemplate(
-    title: string,
-    body: string,
-    data: Record<string, any>,
-  ): string {
+  private renderHtml(content: EmailContent): string {
     return `
+      <!DOCTYPE html>
       <html>
         <body>
-          <h1>${title}</h1>
-          <p>${body}</p>
-          <a href="${data.deepLink || '#'}">View Details</a>
+          <h1>${content.title}</h1>
+          <p>${content.body}</p>
         </body>
       </html>
     `;

@@ -1,11 +1,11 @@
 import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
-import {NotificationsService} from "./notifications/notifications.service";
+import {NotificationsService} from "../notifications/notifications.service";
 import {KafkaService} from "@app/common/kafka/src/kafka.service";
 import {TraceContext} from "@app/common/kafka/src/tracing/tracing.context";
 
 @Injectable()
-export class NotificationConsumer implements OnModuleInit {
-  private readonly logger = new Logger(NotificationConsumer.name);
+export class KafkaConsumer implements OnModuleInit {
+  private readonly logger = new Logger(KafkaConsumer.name);
 
   constructor(
     private kafkaService: KafkaService,
@@ -32,12 +32,14 @@ export class NotificationConsumer implements OnModuleInit {
       correlationId: context.correlationId,
     });
 
-    switch (eventType) {
 
+    switch (eventType) {
 
       case 'OUTCOME_CREATED':
         // await this.notificationService.sendWelcomeNotification(data);
+
           this.logger.warn('OUTCOME_CREATED');
+          await this.notificationService.handleEvent(eventType, data);
         break;
 
       default:

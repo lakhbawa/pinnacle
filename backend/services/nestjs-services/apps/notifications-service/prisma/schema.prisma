@@ -14,5 +14,66 @@ datasource db {
 }
 
 model NotificationTemplate {
-  id String @id @default(uuid())
+  id             String   @id @default(uuid())
+  code           String   @unique // lowercase identifier
+  event_type     String   @unique // eventType
+  title_template String
+  body_template  String
+  category       String // category is just for organization, usually entity such as Outcome, user etc
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  notifications Notification[]
+
+  @@map("notification_templates")
+}
+
+model Notification {
+  id           String    @id @default(uuid())
+  template_id  String?
+  type         String // eventType
+  title        String // rendered title
+  body         String? // rendered body
+  actor_type   String? // for example: system or user_id
+  actor_id     String? // null for system, user_id for user
+  target_type  String? // outcome
+  target_id    String? // outcomeId for example
+  data         Json      @default("{}")
+
+  created_at   DateTime  @default(now())
+  template   NotificationTemplate? @relation(fields: [template_id], references: [id])
+  recipients NotificationRecipient[]
+
+  @@index([target_type, target_id])
+  @@map("notifications")
+}
+
+model NotificationRecipient {
+  id              String    @id @default(uuid())
+  notification_id String
+  user_id         String
+  read_at         DateTime?
+  dismissed_at    DateTime?
+  created_at      DateTime  @default(now())
+
+  notification Notification @relation(fields: [notification_id], references: [id], onDelete: Cascade)
+
+  @@unique([notification_id, user_id])
+  @@index([user_id, created_at(sort: Desc)])
+  @@index([user_id])
+  @@map("notification_recipients")
+}
+
+model NotificationPreference {
+  id         String   @id @default(uuid())
+  user_id    String
+  channel    String
+  category   String
+  enabled    Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@unique([user_id, channel, category])
+  @@index([user_id])
+  @@map("notification_preferences")
 }

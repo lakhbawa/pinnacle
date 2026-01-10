@@ -29,5 +29,12 @@
       <jdbc-url>jdbc:postgresql://localhost:4442/outcomes</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="Notifications" uuid="74c065e6-2ad5-4ec1-9f57-c7e2eb2e0aae">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost:4472/notifications</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

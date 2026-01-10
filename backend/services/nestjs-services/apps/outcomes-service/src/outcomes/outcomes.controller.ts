@@ -24,9 +24,7 @@ export class OutcomesController implements OutcomesServiceController {
 
     async createOutcome(request: CreateOutcomeRequest): Promise<Outcome> {
 
-        await this.kafkaService.publish('outcomes-events', 'TEST_EVENT', { hello: 'world' });
 
-        console.log('Received request:', JSON.stringify(request, null, 2));
         const result = createOutcomeSchema.safeParse(request);
 
         if (!result.success) {
@@ -53,6 +51,20 @@ export class OutcomesController implements OutcomesServiceController {
     async listOutcomes(
         request: ListOutcomesRequest,
     ): Promise<ListOutcomesResponse> {
+
+                await this.kafkaService.publish('outcomes-events', 'OUTCOME_CREATED', {
+            recipient_ids: ['user-001'] ,
+            data: {
+                actor_id: ['user-001'],
+                target_type: 'outcome',
+                target_id: 'outcome-1',
+                name: "Lakhveeer"
+            }
+        }
+        );
+
+        console.log('Received request:', JSON.stringify(request, null, 2));
+
         const where: Prisma.OutcomeWhereInput = {user_id: request.user_id};
         if (request.status) {
             where.status = OutcomeMapper.toPrismaStatus(request.status);

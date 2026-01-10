@@ -2,6 +2,14 @@ up:
 	docker compose up -d --remove-orphans
 shellgateway:
 	docker compose exec pinnacle-gateway /bin/sh
+shellserviceoutcomes:
+	docker compose exec pinnacle-outcomes-service  sh -c "cd /app/apps/outcomes-service && sh"
+shellservicenotifications:
+	docker compose exec pinnacle-notifications-service  sh -c "cd /app/apps/notifications-service && sh"
+shellserviceusers:
+	docker compose exec pinnacle-users-service  sh -c "cd /app/apps/users-service && sh"
+shellserviceauth:
+	docker compose exec pinnacle-auth-service  sh -c "cd /app/apps/auth-service && sh"
 protoc:
 	protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=. --ts_proto_opt=nestJs=true src/proto/outcomes.proto
 

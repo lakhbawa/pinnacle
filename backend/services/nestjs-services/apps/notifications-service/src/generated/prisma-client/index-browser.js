@@ -120,9 +120,81 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.NotificationTemplateScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  event_type: 'event_type',
+  title_template: 'title_template',
+  body_template: 'body_template',
+  category: 'category',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.NotificationScalarFieldEnum = {
+  id: 'id',
+  template_id: 'template_id',
+  type: 'type',
+  title: 'title',
+  body: 'body',
+  actor_type: 'actor_type',
+  actor_id: 'actor_id',
+  target_type: 'target_type',
+  target_id: 'target_id',
+  data: 'data',
+  created_at: 'created_at'
+};
+
+exports.Prisma.NotificationRecipientScalarFieldEnum = {
+  id: 'id',
+  notification_id: 'notification_id',
+  user_id: 'user_id',
+  read_at: 'read_at',
+  dismissed_at: 'dismissed_at',
+  created_at: 'created_at'
+};
+
+exports.Prisma.NotificationPreferenceScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  channel: 'channel',
+  category: 'category',
+  enabled: 'enabled',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.SortOrder = {
+  asc: 'asc',
+  desc: 'desc'
+};
+
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
+};
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+
 
 exports.Prisma.ModelName = {
-
+  NotificationTemplate: 'NotificationTemplate',
+  Notification: 'Notification',
+  NotificationRecipient: 'NotificationRecipient',
+  NotificationPreference: 'NotificationPreference'
 };
 
 /**

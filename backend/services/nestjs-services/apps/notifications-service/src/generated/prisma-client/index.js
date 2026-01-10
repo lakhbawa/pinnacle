@@ -93,9 +93,81 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.NotificationTemplateScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  event_type: 'event_type',
+  title_template: 'title_template',
+  body_template: 'body_template',
+  category: 'category',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.NotificationScalarFieldEnum = {
+  id: 'id',
+  template_id: 'template_id',
+  type: 'type',
+  title: 'title',
+  body: 'body',
+  actor_type: 'actor_type',
+  actor_id: 'actor_id',
+  target_type: 'target_type',
+  target_id: 'target_id',
+  data: 'data',
+  created_at: 'created_at'
+};
+
+exports.Prisma.NotificationRecipientScalarFieldEnum = {
+  id: 'id',
+  notification_id: 'notification_id',
+  user_id: 'user_id',
+  read_at: 'read_at',
+  dismissed_at: 'dismissed_at',
+  created_at: 'created_at'
+};
+
+exports.Prisma.NotificationPreferenceScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  channel: 'channel',
+  category: 'category',
+  enabled: 'enabled',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.SortOrder = {
+  asc: 'asc',
+  desc: 'desc'
+};
+
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
+};
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+
 
 exports.Prisma.ModelName = {
-
+  NotificationTemplate: 'NotificationTemplate',
+  Notification: 'Notification',
+  NotificationRecipient: 'NotificationRecipient',
+  NotificationPreference: 'NotificationPreference'
 };
 /**
  * Create the Client
@@ -105,10 +177,10 @@ const config = {
   "clientVersion": "7.2.0",
   "engineVersion": "0c8ef2ce45c83248ab3df073180d5eda9e8be7a3",
   "activeProvider": "postgresql",
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/prisma-client\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n"
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/prisma-client\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel NotificationTemplate {\n  id             String   @id @default(uuid())\n  code           String   @unique // lowercase identifier\n  event_type     String   @unique // eventType\n  title_template String\n  body_template  String\n  category       String // category is just for organization, usually entity such as Outcome, user etc\n  created_at     DateTime @default(now())\n  updated_at     DateTime @updatedAt\n\n  notifications Notification[]\n\n  @@map(\"notification_templates\")\n}\n\nmodel Notification {\n  id          String  @id @default(uuid())\n  template_id String?\n  type        String // eventType\n  title       String // rendered title\n  body        String? // rendered body\n  actor_type  String? // for example: system or user_id\n  actor_id    String? // null for system, user_id for user\n  target_type String? // outcome\n  target_id   String? // outcomeId for example\n  data        Json    @default(\"{}\")\n\n  created_at DateTime                @default(now())\n  template   NotificationTemplate?   @relation(fields: [template_id], references: [id])\n  recipients NotificationRecipient[]\n\n  @@index([target_type, target_id])\n  @@map(\"notifications\")\n}\n\nmodel NotificationRecipient {\n  id              String    @id @default(uuid())\n  notification_id String\n  user_id         String\n  read_at         DateTime?\n  dismissed_at    DateTime?\n  created_at      DateTime  @default(now())\n\n  notification Notification @relation(fields: [notification_id], references: [id], onDelete: Cascade)\n\n  @@unique([notification_id, user_id])\n  @@index([user_id, created_at(sort: Desc)])\n  @@index([user_id])\n  @@map(\"notification_recipients\")\n}\n\nmodel NotificationPreference {\n  id         String   @id @default(uuid())\n  user_id    String\n  channel    String\n  category   String\n  enabled    Boolean  @default(true)\n  created_at DateTime @default(now())\n  updated_at DateTime @updatedAt\n\n  @@unique([user_id, channel, category])\n  @@index([user_id])\n  @@map(\"notification_preferences\")\n}\n"
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"NotificationTemplate\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"event_type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title_template\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"body_template\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"category\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"notifications\",\"kind\":\"object\",\"type\":\"Notification\",\"relationName\":\"NotificationToNotificationTemplate\"}],\"dbName\":\"notification_templates\"},\"Notification\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"template_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"body\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"actor_type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"actor_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"target_type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"target_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"data\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"template\",\"kind\":\"object\",\"type\":\"NotificationTemplate\",\"relationName\":\"NotificationToNotificationTemplate\"},{\"name\":\"recipients\",\"kind\":\"object\",\"type\":\"NotificationRecipient\",\"relationName\":\"NotificationToNotificationRecipient\"}],\"dbName\":\"notifications\"},\"NotificationRecipient\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"notification_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"read_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"dismissed_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"notification\",\"kind\":\"object\",\"type\":\"Notification\",\"relationName\":\"NotificationToNotificationRecipient\"}],\"dbName\":\"notification_recipients\"},\"NotificationPreference\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"channel\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"category\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"enabled\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"notification_preferences\"}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.compilerWasm = {
       getRuntime: async () => require('./query_compiler_bg.js'),

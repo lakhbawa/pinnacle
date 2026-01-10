@@ -1,102 +1,145 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { PrismaService } from '../prisma.service';
+import { TemplatesService } from '../templates/templates.service';
+import { EmailService } from '../channels/email.service';
+import { NotificationsGateway } from './notifications.gateway';
 
-import {EmailService} from "../channels/email.service";
-import {NotificationRequestEvent} from "@app/common/kafka/src/interfaces/kafka-message.interface";
-interface NotificationTemplate {
-  titleTemplate: string;
-  bodyTemplate: string;
+interface EventData {
+  actor_id: string;
+  actor_name?: string;
+  recipient_ids: string[];
+  target_type: string;
+  target_id: string;
+  [key: string]: any;
 }
 
 @Injectable()
 export class NotificationsService {
   private readonly logger = new Logger(NotificationsService.name);
 
-  // In production, load from database
-  private templates: Map<string, NotificationTemplate> = new Map([
-    ['project_completed', {
-      titleTemplate: 'Project "{{projectName}}" is complete!',
-      bodyTemplate: 'Congratulations! All tasks have been completed.',
-    }],
-    ['outcome_milestone', {
-      titleTemplate: '{{projectName}} reached {{milestone}}%',
-      bodyTemplate: 'Your project is {{milestone}}% complete.',
-    }],
-    ['welcome', {
-      titleTemplate: 'Welcome to {{projectName}}',
-      bodyTemplate: 'You\'ve been added to the project. Get started!',
-    }],
-  ]);
-
   constructor(
-    private emailService: EmailService,
+    private prisma: PrismaService,
+    private templates: TemplatesService,
+    private email: EmailService,
+    private gateway: NotificationsGateway,
   ) {}
 
-  async processNotificationRequest(event: NotificationRequestEvent): Promise<void> {
-    const template = this.templates.get(event.templateCode);
+  async handleEvent(event_type: string, data: EventData) {
+    const recipients = data.recipient_ids.filter(id => id !== data.actor_id);
 
-    if (!template) {
-      this.logger.warn(`Template not found: ${event.templateCode}`);
+    if (recipients.length === 0) {
+      this.logger.debug(`No recipients for ${event_type}`);
       return;
     }
 
     // Render template
-    const title = this.renderTemplate(template.titleTemplate, event.data);
-    const body = this.renderTemplate(template.bodyTemplate, event.data);
+    // const content = this.templates.render(event_type, data);
 
-    // Process each recipient
-    for (const recipientId of event.recipientIds) {
-      // Get user preferences from database
-      const preferences = await this.getUserPreferences(recipientId);
+    const content = {
+      title: "Test Notification",
+      body: "Test Notification Body"
+    }
+    // Create notification with recipients
+    const notification = await this.prisma.notification.create({
+      data: {
+        type: event_type,
+        title: content.title,
+        body: content.body,
+        actor_type: 'user',
+        actor_id: data.actor_id,
+        target_type: data.target_type,
+        target_id: data.target_id,
+        data: data,
+        recipients: {
+          createMany: {
+            data: recipients.map(user_id => ({ user_id })),
+          },
+        },
+      },
+      include: { recipients: true },
+    });
 
-      for (const channel of event.channels) {
-        if (!preferences[channel]) {
-          this.logger.debug(`User ${recipientId} has ${channel} disabled`);
-          continue;
-        }
+    for (const recipient of notification.recipients) {
+      this.gateway.sendToUser(recipient.user_id, {
+        id: notification.id,
+        recipient_id: recipient.id,
+        type: notification.type,
+        title: notification.title,
+        body: notification.body,
+        data: notification.data,
+        created_at: notification.created_at,
+        read: false,
+      });
 
-        await this.sendViaChannel(channel, recipientId, title, body, event.data);
+      const count = await this.getUnreadCount(recipient.user_id);
+      this.gateway.sendUnreadCount(recipient.user_id, count);
+
+      const prefs = await this.getPreferences(recipient.user_id);
+      if (prefs.email) {
+        await this.email.send(recipient.user_id, content);
       }
     }
+
+    this.logger.log(`Notification ${event_type} sent to ${recipients.length} recipients`);
   }
 
-
-  async sendWelcomeNotification(data: { projectId: string; ownerId: string }): Promise<void> {
-    await this.processNotificationRequest({
-      recipientIds: [data.ownerId],
-      templateCode: 'welcome',
-      data: {
-        projectId: data.projectId,
-        projectName: 'New Project',
-      },
-      channels: ['email'],
+  async getUserFeed(user_id: string, limit = 50) {
+    return this.prisma.notificationRecipient.findMany({
+      where: { user_id, dismissed_at: null },
+      include: { notification: true },
+      orderBy: { created_at: 'desc' },
+      take: limit,
     });
   }
 
-  private renderTemplate(template: string, data: Record<string, any>): string {
-    return template.replace(/\{\{(\w+)\}\}/g, (_, key) => data[key] || '');
+  async getUnreadCount(user_id: string): Promise<number> {
+    return this.prisma.notificationRecipient.count({
+      where: { user_id, read_at: null, dismissed_at: null },
+    });
   }
 
-  private async sendViaChannel(
-    channel: string,
-    recipientId: string,
-    title: string,
-    body: string,
-    data: Record<string, any>,
-  ): Promise<void> {
-    switch (channel) {
+  async markRead(recipient_id: string) {
+    const recipient = await this.prisma.notificationRecipient.update({
+      where: { id: recipient_id },
+      data: { read_at: new Date() },
+    });
 
-      case 'email':
-        await this.emailService.send(recipientId, title, body, data);
-        break;
-    }
+    const count = await this.getUnreadCount(recipient.user_id);
+    this.gateway.sendUnreadCount(recipient.user_id, count);
+
+    return recipient;
   }
 
-  private async getUserPreferences(userId: string) {
-    // From database
-    return { in_app: true, email: true, push: false };
+  async markAllRead(user_id: string) {
+    await this.prisma.notificationRecipient.updateMany({
+      where: { user_id, read_at: null },
+      data: { read_at: new Date() },
+    });
+
+    this.gateway.sendUnreadCount(user_id, 0);
   }
 
-  private async getProjectMembers(projectId: string): Promise<string[]> {
-    return ['user-001', 'user-002'];
+  async dismiss(recipient_id: string) {
+    const recipient = await this.prisma.notificationRecipient.update({
+      where: { id: recipient_id },
+      data: { dismissed_at: new Date() },
+    });
+
+    const count = await this.getUnreadCount(recipient.user_id);
+    this.gateway.sendUnreadCount(recipient.user_id, count);
+
+    return recipient;
+  }
+
+  private async getPreferences(user_id: string) {
+    const prefs = await this.prisma.notificationPreference.findMany({
+      where: { user_id },
+    });
+
+    // Default: all enabled
+    return {
+      in_app: prefs.find(p => p.channel === 'in_app')?.enabled ?? true,
+      email: prefs.find(p => p.channel === 'email')?.enabled ?? true,
+    };
   }
 }
