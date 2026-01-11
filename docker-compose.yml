@@ -83,7 +83,7 @@ services:
       args:
         SERVICE_NAME: auth-service
     env_file:
-        - ./backend/services/nestjs-services/apps/outcomes-service/.env
+        - ./backend/services/nestjs-services/apps/auth-service/.env
     volumes:
       - ./backend/services/nestjs-services:/app
       - /app/node_modules
