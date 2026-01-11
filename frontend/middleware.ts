@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 const protectedRoutes: string[] = [
-    "/u/lakhbawa"
+    "/u/"
 ];
 
 export async function middleware(req: NextRequest) {
