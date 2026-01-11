@@ -114,17 +114,15 @@ services:
   pinnacle-notifications-service:
     build:
       context: ./backend/services/nestjs-services
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.prod
       args:
         SERVICE_NAME: notifications-service
     env_file:
-    - ./backend/services/nestjs-services/apps/notifications-service/.env
+      - ./backend/services/nestjs-services/apps/notifications-service/.env
     volumes:
       - ./backend/services/nestjs-services:/app
       - /app/node_modules
       - /app/apps/notifications-service/node_modules
-    ports:
-      - "4470:4470"
     depends_on:
       pinnacle-kafka:
         condition: service_healthy
@@ -132,8 +130,18 @@ services:
         condition: service_started
       pinnacle-redis:
         condition: service_started
-
-    networks: [pinnacle-network, observer]
+    networks:
+      - pinnacle-network
+      - observer
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.notifications-pinnacle.rule=Host(`notifications.pinnacle.lakhveerbawa.com`)"
+      - "traefik.http.routers.notifications-pinnacle.entrypoints=websecure"
+      - "traefik.http.routers.notifications-pinnacle.tls=true"
+      - "traefik.http.routers.notifications-pinnacle.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.notifications-pinnacle.service=notifications-pinnacle"
+      - "traefik.http.services.notifications-pinnacle.loadbalancer.server.port=4470"
 
   # ===================
   # DATABASES
