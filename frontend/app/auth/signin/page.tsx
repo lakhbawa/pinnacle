@@ -3,6 +3,7 @@ import {useState} from "react";
 import fetchWrapper from "@/utils/fetchWrapper";
 import {signIn} from "next-auth/react";
 import {useRouter} from "next/navigation";
+import Link from "next/link";
 
 export default function SignInPage() {
 
@@ -106,6 +107,16 @@ export default function SignInPage() {
                         </button>
                     </div>
                 </form>
+
+
+            <div className="mt-6 text-center">
+
+                <Link href="/auth/signup" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                    Create account
+                </Link>
+
+            </div>
+
        </>
     );
 

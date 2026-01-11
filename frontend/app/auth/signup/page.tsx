@@ -4,6 +4,7 @@ import {authAPI} from "@/utils/fetchWrapper";
 import {signIn} from "next-auth/react";
 import {useRouter} from "next/navigation";
 import {AuthResponse} from "@/app/types/outcomeTypes";
+import Link from "next/link";
 
 export default function SignUpPage() {
     const router = useRouter();
@@ -128,6 +129,14 @@ export default function SignUpPage() {
                     </button>
                 </div>
             </form>
+
+             <div className="mt-6 text-center">
+
+                <Link href="/auth/signin" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                    Already have account ? Sign in instead
+                </Link>
+
+            </div>
         </>
     );
 
