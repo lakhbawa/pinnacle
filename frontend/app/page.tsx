@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useSession, signIn, signOut } from 'next-auth/react'
 import {NotificationBell} from "@/app/components/NotificationBell";
+import Logo from "@/app/components/Logo";
 
 const ArrowRightIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -143,12 +144,7 @@ export default function HomePage() {
       <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-sm border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center text-white font-semibold text-sm">
-                P
-              </div>
-              <span className="text-lg font-semibold">Pinnacle</span>
-            </Link>
+            <Logo align="left"></Logo>
 
             <div className="hidden md:flex items-center gap-8">
               <Link href="#features" className="text-gray-600 hover:text-gray-900 text-sm">
@@ -689,12 +685,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
             <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-7 h-7 bg-gray-900 rounded-lg flex items-center justify-center text-white text-xs font-semibold">
-                  S
-                </div>
-                <span className="font-semibold">Pinnacle</span>
-              </div>
+              <Logo align="left"></Logo>
               <p className="text-sm text-gray-500">
                 Outcome-driven project management for solo founders.
               </p>

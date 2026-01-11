@@ -117,6 +117,17 @@ export default function SignInPage() {
 
             </div>
 
+
+    <div className="mt-6 text-left">
+        <div className="border-t border-gray-200 p-6 text-sm text-gray-500 bg-gray-300">
+            <h2 className="pb-3 text-3xl font-extrabold text-gray-900">
+                Sample Account
+            </h2>
+
+            <div><strong>Email</strong>: user@user.com</div>
+            <div><strong>Password</strong>: password</div>
+        </div>
+    </div>
        </>
     );
 
