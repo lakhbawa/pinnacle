@@ -17,7 +17,16 @@ export function useNotifications(userId: string) {
     const [socket, setSocket] = useState<Socket | null>(null);
 
     useEffect(() => {
-        const s = io("http://localhost:4470/notifications", {
+
+        let fallBackUrl: string;
+        fallBackUrl = 'http://localhost:4470/notifications'
+        if (process.env.NODE_ENV !== 'development') {
+            fallBackUrl = "https://notifications.pinnacle.lakhveerbawa.com/notifications";
+
+            console.log("Skipping socket connection in development mode")
+        }
+        const connectionUrl = process.env.NEXT_PUBLIC_NOTIFICATION_SERVICE_URL || fallBackUrl
+        const s = io(connectionUrl, {
             auth: {user_id: userId}
         });
 
