@@ -86,8 +86,8 @@ export class AccountsController implements AccountsServiceController {
         if (request.email) data.email = request.email;
         if (request.password !== undefined) data.password = request.password;
 
-        const outcome = await this.accountsService.update({where: {user_id: request.user_id}, data});
-        return AccountMapper.toProtoAccount(outcome);
+        const account = await this.accountsService.update({where: {user_id: request.user_id}, data});
+        return AccountMapper.toProtoAccount(account);
     }
 
     async deleteAccount(request: DeleteAccountRequest): Promise<DeleteAccountResponse> {

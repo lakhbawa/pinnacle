@@ -1,4 +1,4 @@
-import {Inject, Injectable, UnauthorizedException} from '@nestjs/common';
+import {Inject, Injectable, Logger, UnauthorizedException} from '@nestjs/common';
 import {PrismaService} from "../prisma.service";
 import {JwtService} from "@nestjs/jwt";
 import {ConfigService} from "@nestjs/config";
@@ -17,6 +17,8 @@ import {md5} from "../../utils/misc";
 @Injectable()
 export class AuthenticationService {
     private userService: UsersServiceClient;
+
+    private logger = new Logger(AuthenticationService.name);
 
     constructor(private prisma: PrismaService, private jwtService: JwtService, private config: ConfigService, private accountsService: AccountsService, @Inject(USERS_SERVICE_NAME) private client: microservices.ClientGrpc) {
     }
@@ -80,6 +82,7 @@ export class AuthenticationService {
 
     async signIn(request: SignInRequest) {
         const password = md5(request.password);
+        this.logger.log(password)
         const account = await this.prisma.account.findFirst({
             where: {
                 email: request.email,
@@ -90,7 +93,7 @@ export class AuthenticationService {
         if (!account) {
             throw new RpcException({
                 code: Status.UNAUTHENTICATED,
-                message: "Invalid Email or Password",
+                message: "Invalid Email or Password" + password,
             });
         }
 

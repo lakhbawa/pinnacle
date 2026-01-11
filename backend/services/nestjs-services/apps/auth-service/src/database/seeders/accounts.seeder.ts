@@ -13,13 +13,13 @@ export class AccountsSeeder implements Seeder {
         'name': 'Administrator',
         'email' : 'admin@admin.com',
         'company': 'Administrator',
-        'password': md5('password'),
+        'password': 'password',
     },
     {
         'name': 'Sample User',
         'email' : 'user@user.com',
         'company': 'Sample User Company',
-        'password': md5('password'),
+        'password': 'password',
     },
     ];
 

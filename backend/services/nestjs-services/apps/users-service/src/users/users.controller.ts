@@ -34,13 +34,13 @@ export class UsersController implements UsersServiceController {
             });
         }
 
-        const outcome = await this.usersService.create({
+        const user = await this.usersService.create({
             name: request.name,
             email: request.email,
             company: request.company,
         });
 
-        return UserMapper.toProtoUser(outcome);
+        return UserMapper.toProtoUser(user);
     }
 
     async listUsers(
