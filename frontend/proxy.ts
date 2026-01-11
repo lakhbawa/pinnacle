@@ -6,7 +6,7 @@ const protectedRoutes: string[] = [
     "/u/"
 ];
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
     console.log("middleware");
 
     // Get the session token from the JWT
