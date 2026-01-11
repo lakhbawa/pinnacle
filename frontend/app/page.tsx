@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import {useEffect, useState} from 'react'
 import Link from 'next/link'
 import { useSession, signIn, signOut } from 'next-auth/react'
 import {NotificationBell} from "@/app/components/NotificationBell";
 import Logo from "@/app/components/Logo";
+import {showToast} from "nextjs-toast-notify";
 
 const ArrowRightIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -137,6 +138,11 @@ export default function HomePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { data: session } = useSession()
   const username = 'lakhbawa'
+
+  useEffect(() => {
+
+  showToast.info("Welcome to Pinnacle")
+  })
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
