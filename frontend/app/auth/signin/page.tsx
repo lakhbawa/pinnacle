@@ -4,6 +4,7 @@ import fetchWrapper from "@/utils/fetchWrapper";
 import {signIn} from "next-auth/react";
 import {useRouter} from "next/navigation";
 import Link from "next/link";
+import {showToast} from "nextjs-toast-notify";
 
 export default function SignInPage() {
 
@@ -32,7 +33,7 @@ export default function SignInPage() {
             console.log(result);
             if (result?.error) {
                 setError(result.error);
-                alert(result.error);
+                showToast.error(result.error)
             } else {
                 // Sign in successful
                window.location.href = "/u/dashboard";
@@ -40,7 +41,7 @@ export default function SignInPage() {
             }
         } catch (err: any) {
             setError(err.message);
-            alert(err.message);
+            showToast.error(err.message)
         } finally {
             setLoading(false);
         }

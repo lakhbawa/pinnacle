@@ -34,7 +34,6 @@ export default function SignUpPage() {
                 return;
             }
 
-            console.log(res);
 
             const result = await signIn("credentials", {
                 redirect: false,
@@ -42,7 +41,6 @@ export default function SignUpPage() {
                 password: formData.password,
             });
 
-            console.log(result);
 
             if (result?.error) {
                 setError(result.error);
