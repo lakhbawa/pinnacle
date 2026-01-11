@@ -5,9 +5,9 @@ import { outcomeAPI } from "@/utils/fetchWrapper";
 import Link from "next/link";
 import {Action, ActionResponse} from "@/app/types/outcomeTypes";
 
-export default function ViewActionPage({ params }: { params: Promise<{ outcome_id: string, driver_id: string, action_id: string, username: string }> }) {
+export default function ViewActionPage({ params }: { params: Promise<{ outcome_id: string, driver_id: string, action_id: string,  }> }) {
   const [actionData, setActionData] = useState<Action | undefined>();
-  const { outcome_id, driver_id, action_id, username } = use(params);
+  const { outcome_id, driver_id, action_id } = use(params);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -82,7 +82,7 @@ export default function ViewActionPage({ params }: { params: Promise<{ outcome_i
           </svg>
           <p className="mt-4 text-gray-600 font-medium">No action found</p>
           <Link
-            href={`/u/${username}/outcomes/${outcome_id}/drivers/${driver_id}`}
+            href={`/u/outcomes/${outcome_id}/drivers/${driver_id}`}
             className="mt-4 inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
           >
             <svg className="mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -102,19 +102,19 @@ export default function ViewActionPage({ params }: { params: Promise<{ outcome_i
         <nav className="mb-8">
           <ol className="flex items-center space-x-2 text-sm text-gray-500">
             <li>
-              <Link href={`/u/${username}/outcomes`} className="hover:text-gray-700">Outcomes</Link>
+              <Link href={`/u/outcomes`} className="hover:text-gray-700">Outcomes</Link>
             </li>
             <li className="flex items-center">
               <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
               </svg>
-              <Link href={`/u/${username}/outcomes/${outcome_id}`} className="hover:text-gray-700">{actionData.outcome.title}</Link>
+              <Link href={`/u/outcomes/${outcome_id}`} className="hover:text-gray-700">{actionData.outcome.title}</Link>
             </li>
             <li className="flex items-center">
               <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
               </svg>
-              <Link href={`/u/${username}/outcomes/${outcome_id}/drivers/${driver_id}`} className="hover:text-gray-700">
+              <Link href={`/u/outcomes/${outcome_id}/drivers/${driver_id}`} className="hover:text-gray-700">
                 {actionData.driver.title}
               </Link>
             </li>
@@ -166,7 +166,7 @@ export default function ViewActionPage({ params }: { params: Promise<{ outcome_i
           <div className="px-4 py-4 sm:px-6 bg-gray-50 border-t border-gray-200">
             <div className="flex justify-end space-x-3">
               <Link
-                href={`/u/${username}/outcomes/${outcome_id}/drivers/${driver_id}/actions/${action_id}/update`}
+                href={`/u/outcomes/${outcome_id}/drivers/${driver_id}/actions/${action_id}/update`}
                 className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm
                          font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none
                          focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"

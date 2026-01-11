@@ -5,9 +5,9 @@ import { outcomeAPI } from "@/utils/fetchWrapper";
 import Link from "next/link";
 import {Driver, DriverResponse} from "@/app/types/outcomeTypes";
 
-export default function ViewDriverPage({ params }: { params: Promise<{ outcome_id: string, driver_id: string, username: string }> }) {
+export default function ViewDriverPage({ params }: { params: Promise<{ outcome_id: string, driver_id: string }> }) {
   const [driverData, setDriverData] = useState<Driver | undefined>();
-  const { outcome_id, driver_id, username } = use(params);
+  const { outcome_id, driver_id } = use(params);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -71,7 +71,7 @@ export default function ViewDriverPage({ params }: { params: Promise<{ outcome_i
           </svg>
           <p className="mt-4 text-gray-600 font-medium">No driver found</p>
           <Link
-            href={`/u/${username}/outcomes/${outcome_id}`}
+            href={`/u/outcomes/${outcome_id}`}
             className="mt-4 inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md
                      hover:bg-gray-200 transition-colors"
           >
@@ -92,13 +92,13 @@ export default function ViewDriverPage({ params }: { params: Promise<{ outcome_i
         <nav className="mb-8">
           <ol className="flex items-center space-x-2 text-sm text-gray-500">
             <li>
-              <Link href={`/u/${username}/outcomes`} className="hover:text-gray-700">Outcomes</Link>
+              <Link href={`/u/outcomes`} className="hover:text-gray-700">Outcomes</Link>
             </li>
             <li className="flex items-center">
               <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
               </svg>
-              <Link href={`/u/${username}/outcomes/${outcome_id}`} className="hover:text-gray-700">Outcome</Link>
+              <Link href={`/u/outcomes/${outcome_id}`} className="hover:text-gray-700">Outcome</Link>
             </li>
             <li className="flex items-center">
               <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -127,7 +127,7 @@ export default function ViewDriverPage({ params }: { params: Promise<{ outcome_i
             </div>
             <div className="mt-4 flex md:mt-0 md:ml-4 space-x-3">
               <Link
-                href={`/u/${username}/outcomes/${outcome_id}/drivers/${driver_id}/update`}
+                href={`/u/outcomes/${outcome_id}/drivers/${driver_id}/update`}
                 className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm
                          text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none
                          focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
@@ -153,7 +153,7 @@ export default function ViewDriverPage({ params }: { params: Promise<{ outcome_i
               </div>
               <div className="mt-4 sm:mt-0">
                 <Link
-                  href={`/u/${username}/outcomes/${outcome_id}/drivers/${driver_id}/actions/create`}
+                  href={`/u/outcomes/${outcome_id}/drivers/${driver_id}/actions/create`}
                   className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm
                            text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none
                            focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
@@ -180,7 +180,7 @@ export default function ViewDriverPage({ params }: { params: Promise<{ outcome_i
                   {driverData.actions.map((action) => (
                     <Link
                       key={action.id}
-                      href={`/u/${username}/outcomes/${outcome_id}/drivers/${driver_id}/actions/${action.id}`}
+                      href={`/u/outcomes/${outcome_id}/drivers/${driver_id}/actions/${action.id}`}
                       className="group block p-6 bg-white border border-gray-200 rounded-lg hover:shadow-md
                                transition-shadow duration-200"
                     >

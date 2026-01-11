@@ -184,7 +184,7 @@ export default function HomePage() {
                     Sign out
                   </button>
                   <Link
-                    href={`/u/${username}/focus`}
+                    href={`/u/dashboard`}
                     className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                   >
                     Open App

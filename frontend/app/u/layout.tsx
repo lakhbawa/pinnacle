@@ -24,7 +24,7 @@ export default function AuthenticatedLayout({
   const navigationItems = [
     {
       name: 'Focus',
-      href: `/u/${username}/focus`,
+      href: `/u/focus`,
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
@@ -34,7 +34,7 @@ export default function AuthenticatedLayout({
     },
     {
       name: 'Outcomes',
-      href: `/u/${username}/outcomes`,
+      href: `/u/outcomes`,
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"

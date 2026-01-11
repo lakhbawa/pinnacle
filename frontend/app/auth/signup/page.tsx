@@ -47,7 +47,7 @@ export default function SignUpPage() {
             if (result?.error) {
                 setError(result.error);
             } else {
-                window.location.href = "/";
+                window.location.href = "/u/dashboard";
             }
         } catch (err: any) {
             setError(err.message || "Something went wrong");

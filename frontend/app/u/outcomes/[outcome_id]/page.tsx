@@ -4,9 +4,9 @@ import {outcomeAPI} from "@/utils/fetchWrapper";
 import Link from "next/link";
 import {Outcome, OutcomeResponse} from "@/app/types/outcomeTypes";
 
-export default function ViewOutcomePage({params}: { params: Promise<{ outcome_id: string, username: string }> }) {
+export default function ViewOutcomePage({params}: { params: Promise<{ outcome_id: string }> }) {
     const [outcomeData, setOutcomeData] = useState<Outcome | undefined>();
-    const {outcome_id, username} = use(params);
+    const {outcome_id} = use(params);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -74,7 +74,7 @@ export default function ViewOutcomePage({params}: { params: Promise<{ outcome_id
                     </svg>
                     <p className="mt-4 text-gray-600 font-medium">No outcome found</p>
                     <Link
-                        href={`/u/${username}/outcomes`}
+                        href={`/u/outcomes`}
                         className="mt-4 inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md
                      hover:bg-gray-200 transition-colors"
                     >
@@ -122,7 +122,7 @@ export default function ViewOutcomePage({params}: { params: Promise<{ outcome_id
                         </div>
                         <div className="mt-4 flex md:mt-0 md:ml-4">
                             <Link
-                                href={`/u/${username}/outcomes/${outcome_id}/update`}
+                                href={`/u/outcomes/${outcome_id}/update`}
                                 className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm
                          text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none 
                          focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
@@ -158,7 +158,7 @@ export default function ViewOutcomePage({params}: { params: Promise<{ outcome_id
                             </div>
                             <div className="mt-4 sm:mt-0">
                                 <Link
-                                    href={`/u/${username}/outcomes/${outcome_id}/drivers/create`}
+                                    href={`/u/outcomes/${outcome_id}/drivers/create`}
                                     className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm
                            text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none 
                            focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
@@ -177,7 +177,7 @@ export default function ViewOutcomePage({params}: { params: Promise<{ outcome_id
                             {outcomeData.drivers.map((driver) => (
                                 <Link
                                     key={driver.id}
-                                    href={`/u/${username}/outcomes/${outcome_id}/drivers/${driver.id}`}
+                                    href={`/u/outcomes/${outcome_id}/drivers/${driver.id}`}
                                     className="relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset
                            focus-within:ring-primary-500 hover:bg-gray-50 rounded-lg border border-gray-200"
                                 >

@@ -35,7 +35,7 @@ export default function SignInPage() {
                 alert(result.error);
             } else {
                 // Sign in successful
-               router.replace("/");
+               window.location.href = "/u/dashboard";
                 router.refresh();
             }
         } catch (err: any) {

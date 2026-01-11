@@ -7,9 +7,9 @@ import Link from "next/link";
 import {DriverResponse} from "@/app/types/outcomeTypes";
 
 export default function UpdateDriver({params}: {
-    params: Promise<{ outcome_id: string, driver_id: string, username: string }>
+    params: Promise<{ outcome_id: string, driver_id: string }>
 }) {
-    const {outcome_id, driver_id, username} = use(params);
+    const {outcome_id, driver_id} = use(params);
     const userId = 'user-123';
     const [formData, setFormData] = useState({
         title: '',
@@ -62,7 +62,7 @@ export default function UpdateDriver({params}: {
 
         try {
             await outcomeAPI.patch(`/drivers/${driver_id}`, formData);
-            router.push(`/u/${username}/outcomes/${outcome_id}/drivers/${driver_id}`);
+            router.push(`/u/outcomes/${outcome_id}/drivers/${driver_id}`);
         } catch (err) {
             console.error('Update failed:', err);
             setError('Failed to update driver');
@@ -118,7 +118,7 @@ export default function UpdateDriver({params}: {
                         </p>
                     </div>
                     <Link
-                        href={`/u/${username}/outcomes/${outcome_id}/drivers/${driver_id}`}
+                        href={`/u/outcomes/${outcome_id}/drivers/${driver_id}`}
                         className="mt-4 md:mt-0 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700"
                     >
                         <svg className="mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

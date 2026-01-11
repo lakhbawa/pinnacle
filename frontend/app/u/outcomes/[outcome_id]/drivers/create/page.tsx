@@ -18,8 +18,8 @@ interface ApiResponse {
   error?: ApiResponseError;
 }
 
-export default function CreateDriver({ params }: { params: Promise<{ outcome_id: string, username: string }> }) {
-  const { outcome_id, username } = use(params);
+export default function CreateDriver({ params }: { params: Promise<{ outcome_id: string }> }) {
+  const { outcome_id, } = use(params);
   const userId = 'sadfasdf';
   const [formData, setFormData] = useState({
     title: '',
@@ -47,7 +47,7 @@ export default function CreateDriver({ params }: { params: Promise<{ outcome_id:
 
     try {
       await outcomeAPI.post<ApiResponse>('/drivers', formData);
-      router.push(`/u/${username}/outcomes/${outcome_id}`);
+      router.push(`/u/outcomes/${outcome_id}`);
     } catch (error) {
       if (error instanceof APIError) {
         const fieldErrors = error.getValidationErrors();
@@ -70,7 +70,7 @@ export default function CreateDriver({ params }: { params: Promise<{ outcome_id:
             </p>
           </div>
           <Link
-            href={`/u/${username}/outcomes/${outcome_id}`}
+            href={`/u/outcomes/${outcome_id}`}
             className="mt-4 md:mt-0 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700"
           >
             <svg className="mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

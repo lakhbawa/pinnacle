@@ -3,7 +3,7 @@ import Link from "next/link";
 import {use, useEffect, useState} from "react";
 import { outcomeAPI } from "@/utils/fetchWrapper";
 
-interface Driver {
+interface Action {
   id: string;
   title: string;
   user_id: string;
@@ -21,81 +21,81 @@ interface Meta {
   next_page?: string;
 }
 
-interface ListDriversResponse {
+interface ListActionsResponse {
   success: boolean;
-  data: Driver[];
+  data: Action[];
   meta: Meta;
 }
 
-export default function Drivers({params}: { params: Promise<{ outcome_id: string, username:string }> }) {
-  const [drivers, setDrivers] = useState<Driver[]>([]);
+export default function Actions({params}: { params: Promise<{ driver_id: string,outcome_id: string }> }) {
+  const [actions, setActions] = useState<Action[]>([]);
   const [meta, setMeta] = useState<Meta | null>(null);
   const [loading, setLoading] = useState(true);
-  const {outcome_id, username} = use(params);
+  const {outcome_id, driver_id} = use(params);
 
 
   useEffect(() => {
-    outcomeAPI.get<ListDriversResponse>('/drivers', {
-      params: { outcome_id: outcome_id, page_size: 20 }
+    outcomeAPI.get<ListActionsResponse>('/actions', {
+      params: { outcome_id: outcome_id,driver_id: driver_id, page_size: 20 }
     })
       .then((response) => {
-        setDrivers(response.data);
+        setActions(response.data);
         setMeta(response.meta);
       })
       .catch((error) => {
-        console.error('Failed to fetch drivers:', error);
+        console.error('Failed to fetch actions:', error);
       })
       .finally(() => {
         setLoading(false);
       })
   }, [])
 
-  const deleteDriver = (id: string) => async () => {
-    console.log("deleting driver", id);
-    const confirmed = confirm("Are you sure you want to delete this driver?")
+  const deleteAction = (id: string) => async () => {
+    console.log("deleting action", id);
+    const confirmed = confirm("Are you sure you want to delete this action?")
     if (confirmed) {
       try {
-        await outcomeAPI.delete(`/drivers/${id}`)
-        setDrivers(drivers.filter(p => p.id !== id))
-        console.log('Driver deleted successfully')
+        await outcomeAPI.delete(`/actions/${id}`)
+        setActions(actions.filter(p => p.id !== id))
+        console.log('Action deleted successfully')
       } catch (error) {
-        console.error('Failed to delete outcome:', error)
+        console.error('Failed to delete action:', error)
         alert('Failed to delete outcome')
       }
     }
   }
 
-  if (loading) return <div className="p-4">Loading drivers...</div>
+  if (loading) return <div className="p-4">Loading actions...</div>
 
   return (
     <>
       <section className="container mx-auto p-4">
 
-        <h1 className="p-4 font-bold bg-primary-600 text-white">Your Drivers</h1>
+        <h1 className="p-4 font-bold bg-primary-600 text-white">Your Actions</h1>
 
         {meta && (
           <p className="text-sm text-gray-600 p-2">
-            Showing {drivers.length} of {meta.total} drivers
+            Showing {actions.length} of {meta.total} actions
           </p>
         )}
 
         <section className="bg-gray-200 p-3">
           <section className="grid overflow-x-auto gap-3 grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
-            {drivers.length === 0 ? (
-              <div className="p-4 text-gray-500">No drivers yet. Create your first one!</div>
+            {actions.length === 0 ? (
+              <div className="p-4 text-gray-500">No actions yet. Create your first one!</div>
             ) : (
-              drivers.map((driver) => (
+              actions.map((action) => (
                 <div
                   className="px-4 py-5 min-w-[200px] rounded bg-primary-200 border-2 border-primary-300 flex flex-row items-start justify-between"
-                  key={driver.id}>
+                  key={action.id}>
                   <div className="pb-6">
-                    <Link href={`/u/${username}/drivers/${driver.id}`}
+                    <Link href={`/u/outcomes/${outcome_id}/drivers/${driver_id}/actions/${action.id}`}
                           className="font-semibold text-primary-600">
-                      {driver.title}
+                      {action.title}
                     </Link>
                   </div>
                   <div className="actions flex gap-3">
-                    <Link href={`/u/${username}/outcomes/${outcome_id}/drivers/${driver.id}/update`}
+                    <Link href={`/u/outcomes/${outcome_id}/drivers/${driver_id}/actions/${action.id}/update`}
                           className="font-medium bg-blue-500 p-2 shadow-2xl text-white rounded">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                            strokeWidth={1.5} stroke="currentColor" className="size-4">
@@ -104,7 +104,7 @@ export default function Drivers({params}: { params: Promise<{ outcome_id: string
                       </svg>
                     </Link>
                     <button
-                      onClick={deleteDriver(driver.id)}
+                      onClick={deleteAction(action.id)}
                       className="font-medium bg-red-500 p-2 shadow-2xl text-white rounded cursor-pointer hover:bg-red-600"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -120,9 +120,9 @@ export default function Drivers({params}: { params: Promise<{ outcome_id: string
           </section>
         </section>
 
-        <Link href={`/u/${username}/outcomes/${outcome_id}/drivers/create`}
+        <Link href={`/u/outcomes/${outcome_id}/drivers/${driver_id}/actions/create`}
               className="font-medium bg-blue-500 p-3 my-3 inline-block shadow-2xl text-white rounded">
-          Create Driver
+          Create Action
         </Link>
       </section>
     </>

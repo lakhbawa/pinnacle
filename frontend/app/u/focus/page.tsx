@@ -24,7 +24,6 @@ export default function FocusPage() {
     const driverInputRef = useRef<HTMLInputElement>(null)
     const actionInputRef = useRef<HTMLInputElement>(null)
 
-    const username = 'lakhbawa'
 
     const userId = '12345'
 
@@ -60,7 +59,7 @@ export default function FocusPage() {
 
     function fetchOutcomes() {
         setLoading(true)
-        outcomeAPI.get<ListOutcomesResponse>('/focus/' + username, {
+        outcomeAPI.get<ListOutcomesResponse>('/focus/' + userId, {
             params: {user_id: 'user-123', page_size: 20}
         })
             .then((response) => {
