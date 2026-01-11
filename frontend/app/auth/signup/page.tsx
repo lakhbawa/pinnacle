@@ -5,6 +5,7 @@ import {signIn} from "next-auth/react";
 import {useRouter} from "next/navigation";
 import {AuthResponse} from "@/app/types/outcomeTypes";
 import Link from "next/link";
+import {showToast} from "nextjs-toast-notify";
 
 export default function SignUpPage() {
     const router = useRouter();
@@ -45,6 +46,7 @@ export default function SignUpPage() {
             if (result?.error) {
                 setError(result.error);
             } else {
+                showToast.success("Signed up successfully");
                 window.location.href = "/u/dashboard";
             }
         } catch (err: any) {
