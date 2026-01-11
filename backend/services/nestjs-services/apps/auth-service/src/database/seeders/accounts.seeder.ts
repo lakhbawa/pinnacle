@@ -14,7 +14,14 @@ export class AccountsSeeder implements Seeder {
         'email' : 'admin@admin.com',
         'company': 'Administrator',
         'password': md5('password'),
-    },];
+    },
+    {
+        'name': 'Sample User',
+        'email' : 'user@user.com',
+        'company': 'Sample User Company',
+        'password': md5('password'),
+    },
+    ];
 
     for (const account of accounts) {
       await this.authenticationService.signUp(account);
