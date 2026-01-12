@@ -65,7 +65,7 @@ export default function AuthenticatedLayout({
   const bottomNavigationItems = [
     {
       name: 'Settings',
-      href: `/u/settings`,
+      href: `#`,
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
@@ -76,7 +76,7 @@ export default function AuthenticatedLayout({
     },
     {
       name: 'Help & Support',
-      href: `/u/help`,
+      href: `#`,
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
@@ -123,7 +123,8 @@ export default function AuthenticatedLayout({
             </div>
 
             <div className="flex items-center space-x-3">
-              <button
+              <Link
+                  href="/u/notifications"
                 className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
                 aria-label="Notifications"
               >
@@ -132,7 +133,7 @@ export default function AuthenticatedLayout({
                         d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
                 <span className="sr-only">View notifications</span>
-              </button>
+              </Link>
 
               {session && (
                 <div className="relative">
@@ -180,7 +181,7 @@ export default function AuthenticatedLayout({
                         <p className="text-xs text-gray-500 truncate">{session.user?.email}</p>
                       </div>
                       <Link
-                        href="/u/profile"
+                        href="#"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                       >
                         <div className="flex items-center">
@@ -192,7 +193,7 @@ export default function AuthenticatedLayout({
                         </div>
                       </Link>
                       <Link
-                        href="/u/settings"
+                        href="#"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                       >
                         <div className="flex items-center">
@@ -225,7 +226,6 @@ export default function AuthenticatedLayout({
         </div>
       </nav>
 
-      {/* Sidebar */}
       <aside className={`
         fixed inset-y-0 left-0 z-20 w-64 bg-white transform transition-transform duration-200 ease-in-out
         lg:transform-none lg:translate-x-0 border-r border-gray-200 shadow-lg lg:shadow-none
