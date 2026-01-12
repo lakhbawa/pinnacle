@@ -6,7 +6,9 @@
     "paths": {
       "@prisma/client": ["./src/generated/prisma-client"],
       "@app/common": ["libs/common/src/index.ts"],
-      "@app/common/*": ["libs/common/src/*"]
+      "@app/common/*": ["libs/common/src/*"],
+      "@app/grpc-clients": ["libs/grpc-clients/src"],
+      "@app/grpc-clients/*": ["libs/grpc-clients/src/*"]
     }
   },
   "include": ["src/**/*"],
