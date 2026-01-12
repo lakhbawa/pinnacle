@@ -279,7 +279,8 @@ networks:
   web:
     external: true
   observer:
-    external: true
+    driver: bridge
+#    external: true // use this instead of bridge driver when ready to deploy observer stack
 
 
 volumes:
