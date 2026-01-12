@@ -218,6 +218,8 @@ services:
       POSTGRES_DB: auth
     volumes:
       - dbdata_auth_service:/var/lib/postgresql/data
+    ports:
+      - "4462:5432"
     restart: always
     networks:
       - pinnacle-network
@@ -230,6 +232,8 @@ services:
       POSTGRES_DB: users
     volumes:
       - dbdata_users_service:/var/lib/postgresql/data
+    ports:
+      - "4452:5432"
     restart: always
     networks:
       - pinnacle-network
@@ -242,6 +246,8 @@ services:
       POSTGRES_DB: outcomes
     volumes:
       - dbdata_outcomes_service:/var/lib/postgresql/data
+    ports:
+      - "4442:5432"
     restart: always
     networks:
       - pinnacle-network
@@ -255,6 +261,8 @@ services:
     volumes:
       - dbdata_notifications_service:/var/lib/postgresql/data
       - ./docker/config/postgres/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "4472:5432"
     restart: always
     networks:
       - pinnacle-network
