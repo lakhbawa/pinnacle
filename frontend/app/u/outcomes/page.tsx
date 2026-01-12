@@ -3,8 +3,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { outcomeAPI } from "@/utils/fetchWrapper";
 import {useSession} from "next-auth/react";
-import { Session } from 'next-auth';
-
 
 interface Outcome {
   id: string;
@@ -14,6 +12,8 @@ interface Outcome {
   success_metric_value: number;
   success_metric_unit: string;
   status: string;
+  deadline?: string;
+  drivers?: any[];
 }
 
 interface Meta {
@@ -30,34 +30,49 @@ interface ListOutcomesResponse {
   meta: Meta;
 }
 
+type StatusFilter = 'ALL' | 'ACTIVE' | 'PARKED' | 'COMPLETED';
+
 export default function Outcomes() {
   const [outcomes, setOutcomes] = useState<Outcome[]>([]);
   const [meta, setMeta] = useState<Meta | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
 
   const { data: session, status } = useSession();
-    const isLoggedIn = !!session;
-    if (!isLoggedIn) {
-        return (
-            <>
-            You must be logged into your account.
-            </>
-        )
-    }
-    let userId: string;
-    if (isLoggedIn) {
-        userId = session?.user?.id;
-    }
-
 
   useEffect(() => {
-    outcomeAPI.get<ListOutcomesResponse>('/outcomes', {
-      params: {user_id: userId, page_size: 20}
-    })
+    // Wait for session to load
+    if (status === 'loading') return;
+
+    // Check if user is logged in
+    if (!session?.user?.id) {
+      setLoading(false);
+      return;
+    }
+
+    fetchOutcomes();
+  }, [session?.user?.id, status, statusFilter])
+
+  function fetchOutcomes() {
+    if (!session?.user?.id) return;
+
+    setLoading(true);
+
+    const params: any = {
+      user_id: session.user.id,
+      page_size: 20
+    };
+
+    // Add status filter if not ALL
+    if (statusFilter !== 'ALL') {
+      params.status = statusFilter;
+    }
+
+    outcomeAPI.get<ListOutcomesResponse>('/outcomes', { params })
         .then((response) => {
           console.log('response', response);
-          setOutcomes(response.data);
+          setOutcomes(response.data || []);
           setMeta(response.meta);
         })
         .catch((error) => {
@@ -66,7 +81,21 @@ export default function Outcomes() {
         .finally(() => {
           setLoading(false);
         })
-  }, [])
+  }
+
+  const handleStatusChange = async (outcomeId: string, newStatus: string) => {
+    try {
+      await outcomeAPI.patch(`/outcomes/${outcomeId}`, {
+        status: newStatus
+      });
+
+      // Refresh the list
+      fetchOutcomes();
+    } catch (error) {
+      console.error('Failed to update outcome status:', error);
+      alert('Failed to update outcome status');
+    }
+  };
 
   const deleteOutcome = (id: string) => async () => {
     console.log("deleting outcome", id);
@@ -82,10 +111,15 @@ export default function Outcomes() {
       }
     }
   }
+
   const filteredOutcomes = outcomes.filter(outcome =>
     outcome.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Count outcomes by status
+  const activeCount = outcomes.filter(o => o.status?.toUpperCase() === 'ACTIVE').length;
+  const parkedCount = outcomes.filter(o => o.status?.toUpperCase() === 'PARKED').length;
+  const completedCount = outcomes.filter(o => o.status?.toUpperCase() === 'COMPLETED').length;
 
   if (status === 'loading' || loading) {
     return (
@@ -98,7 +132,6 @@ export default function Outcomes() {
     );
   }
 
-  // Check authentication after loading
   if (!session) {
     return (
       <div className="min-h-screen bg-gray-50 py-12 flex items-center justify-center">
@@ -145,6 +178,59 @@ export default function Outcomes() {
                 </svg>
                 Create Outcome
               </Link>
+            </div>
+
+            {/* Status Filter Tabs */}
+            <div className="mt-6 flex items-center space-x-2 overflow-x-auto pb-2">
+              <button
+                onClick={() => setStatusFilter('ALL')}
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
+                  statusFilter === 'ALL'
+                    ? 'bg-primary-600 text-white'
+                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                }`}
+              >
+                All ({outcomes.length})
+              </button>
+              <button
+                onClick={() => setStatusFilter('ACTIVE')}
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
+                  statusFilter === 'ACTIVE'
+                    ? 'bg-green-600 text-white'
+                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                }`}
+              >
+                <span className="flex items-center">
+                  <span className="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
+                  Active ({activeCount})
+                </span>
+              </button>
+              <button
+                onClick={() => setStatusFilter('PARKED')}
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
+                  statusFilter === 'PARKED'
+                    ? 'bg-amber-600 text-white'
+                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                }`}
+              >
+                <span className="flex items-center">
+                  <span className="w-2 h-2 rounded-full bg-amber-500 mr-2"></span>
+                  Parked ({parkedCount})
+                </span>
+              </button>
+              <button
+                onClick={() => setStatusFilter('COMPLETED')}
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
+                  statusFilter === 'COMPLETED'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                }`}
+              >
+                <span className="flex items-center">
+                  <span className="w-2 h-2 rounded-full bg-blue-500 mr-2"></span>
+                  Completed ({completedCount})
+                </span>
+              </button>
             </div>
 
             {/* Search Bar - Only show if there are outcomes */}
@@ -217,6 +303,7 @@ export default function Outcomes() {
                     : null;
                   const isOverdue = daysUntilDeadline !== null && daysUntilDeadline < 0;
                   const isUrgent = daysUntilDeadline !== null && daysUntilDeadline <= 7 && daysUntilDeadline >= 0;
+                  const outcomeStatus = outcome.status?.toUpperCase();
 
                   return (
                     <li
@@ -234,13 +321,27 @@ export default function Outcomes() {
                                 <h3 className="text-lg font-semibold text-gray-900 group-hover:text-primary-600 transition-colors">
                                   {outcome.title}
                                 </h3>
-                                {daysUntilDeadline !== null && (
+
+                                {/* Status Badge */}
+                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                  outcomeStatus === 'ACTIVE'
+                                    ? 'bg-green-100 text-green-800'
+                                    : outcomeStatus === 'PARKED'
+                                    ? 'bg-amber-100 text-amber-800'
+                                    : outcomeStatus === 'COMPLETED'
+                                    ? 'bg-blue-100 text-blue-800'
+                                    : 'bg-gray-100 text-gray-800'
+                                }`}>
+                                  {outcomeStatus || 'ACTIVE'}
+                                </span>
+
+                                {daysUntilDeadline !== null && outcomeStatus !== 'COMPLETED' && (
                                   <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                                     isOverdue 
                                       ? 'bg-red-100 text-red-800' 
                                       : isUrgent
-                                      ? 'bg-amber-100 text-amber-800'
-                                      : 'bg-green-100 text-green-800'
+                                      ? 'bg-orange-100 text-orange-800'
+                                      : 'bg-gray-100 text-gray-600'
                                   }`}>
                                     {isOverdue
                                       ? 'Overdue'
@@ -302,6 +403,42 @@ export default function Outcomes() {
 
                           {/* Action Buttons */}
                           <div className="flex items-center space-x-2 flex-shrink-0">
+                            {/* Status Toggle Buttons */}
+                            {outcomeStatus === 'ACTIVE' ? (
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  handleStatusChange(outcome.id, 'PARKED');
+                                }}
+                                className="inline-flex items-center px-3 py-2 text-sm font-medium text-amber-700
+                                         bg-amber-50 border border-amber-200 rounded-lg hover:bg-amber-100
+                                         transition-colors duration-150"
+                                title="Park Outcome"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span className="ml-1.5 hidden sm:inline">Park</span>
+                              </button>
+                            ) : outcomeStatus === 'PARKED' ? (
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  handleStatusChange(outcome.id, 'ACTIVE');
+                                }}
+                                className="inline-flex items-center px-3 py-2 text-sm font-medium text-green-700
+                                         bg-green-50 border border-green-200 rounded-lg hover:bg-green-100
+                                         transition-colors duration-150"
+                                title="Activate Outcome"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span className="ml-1.5 hidden sm:inline">Activate</span>
+                              </button>
+                            ) : null}
+
                             <Link
                               href={`/u/outcomes/${outcome.id}`}
                               className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700

@@ -27,7 +27,7 @@ export default function FocusPage() {
     const driverInputRef = useRef<HTMLInputElement>(null)
     const actionInputRef = useRef<HTMLInputElement>(null)
 
-    const { activeOutcomes, parkedOutcomes, totalOutcomes } = useMemo(() => {
+    const {activeOutcomes, parkedOutcomes, totalOutcomes} = useMemo(() => {
         const active = outcomes.filter(o => {
             if (!o.status) return true;
             return o.status.toUpperCase() === 'ACTIVE';
@@ -42,72 +42,75 @@ export default function FocusPage() {
         };
     }, [outcomes]);
 
-useEffect(() => {
-    console.log('useEffect triggered - status:', status, 'session:', session, 'user_id:', session?.user?.id);
+    useEffect(() => {
 
-    async function loadOutcomes() {
-        if (status === 'loading') {
-            console.log('Session still loading, waiting...');
-            return;
-        }
-
-        if (status === 'unauthenticated') {
-            console.log('User not authenticated');
-            setLoading(false);
-            return;
-        }
-
-        if (!session || !session.user || !session.user.id) {
-            console.log('Incomplete session data, waiting...', { session, user: session?.user, id: session?.user?.id });
-            return;
-        }
-
-        console.log('Starting to fetch outcomes for user:', session.user.id);
-        setLoading(true);
-
-        try {
-            const response = await outcomeAPI.get<ListOutcomesResponse>('/outcomes', {
-                params: {user_id: session.user.id, page_size: 20}
-            });
-
-            console.log('API Response:', response);
-            console.log('Response data:', response.data);
-            console.log('Response data length:', response.data?.length);
-
-            if (response.data && Array.isArray(response.data)) {
-                console.log('Setting outcomes with:', response.data.length, 'items');
-                setOutcomes(response.data);
-
-                if (response.data.length > 0 && !currentOutcome) {
-                    const activeOnes = response.data.filter(o => {
-                        if (!o.status) return true;
-                        return o.status.toUpperCase() === 'ACTIVE';
-                    }).slice(0, 3);
-
-                    console.log('Active outcomes found:', activeOnes.length);
-
-                    if (activeOnes.length > 0) {
-                        const first = activeOnes[0];
-                        console.log('Selecting first outcome:', first.title);
-                        setCurrentOutcome(first);
-                        setSelectedDriverIds(first.drivers?.length > 0 ? [first.drivers[0].id] : []);
-                    }
-                }
-            } else {
-                console.error('Invalid response structure:', response);
-                setOutcomes([]);
+        async function loadOutcomes() {
+            if (status === 'loading') {
+                console.log('Session still loading, waiting...');
+                return;
             }
-        } catch (error) {
-            console.error('Failed to fetch outcomes - Error:', error);
-            setOutcomes([]);
-        } finally {
-            console.log('Fetch complete, setting loading to false');
-            setLoading(false);
-        }
-    }
 
-    loadOutcomes();
-}, [session, status, currentOutcome]);
+            if (status === 'unauthenticated') {
+                console.log('User not authenticated');
+                setLoading(false);
+                return;
+            }
+
+            if (!session || !session.user || !session.user.id) {
+                console.log('Incomplete session data, waiting...', {
+                    session,
+                    user: session?.user,
+                    id: session?.user?.id
+                });
+                return;
+            }
+
+            console.log('Starting to fetch outcomes for user:', session.user.id);
+            setLoading(true);
+
+            try {
+                const response = await outcomeAPI.get<ListOutcomesResponse>('/outcomes', {
+                    params: {user_id: session.user.id, page_size: 20}
+                });
+
+                console.log('API Response:', response);
+                console.log('Response data:', response.data);
+                console.log('Response data length:', response.data?.length);
+
+                if (response.data && Array.isArray(response.data)) {
+                    console.log('Setting outcomes with:', response.data.length, 'items');
+                    setOutcomes(response.data);
+
+                    if (response.data.length > 0 && !currentOutcome) {
+                        const activeOnes = response.data.filter(o => {
+                            if (!o.status) return true;
+                            return o.status.toUpperCase() === 'ACTIVE';
+                        }).slice(0, 3);
+
+                        console.log('Active outcomes found:', activeOnes.length);
+
+                        if (activeOnes.length > 0) {
+                            const first = activeOnes[0];
+                            console.log('Selecting first outcome:', first.title);
+                            setCurrentOutcome(first);
+                            setSelectedDriverIds(first.drivers?.length > 0 ? [first.drivers[0].id] : []);
+                        }
+                    }
+                } else {
+                    console.error('Invalid response structure:', response);
+                    setOutcomes([]);
+                }
+            } catch (error) {
+                console.error('Failed to fetch outcomes - Error:', error);
+                setOutcomes([]);
+            } finally {
+                console.log('Fetch complete, setting loading to false');
+                setLoading(false);
+            }
+        }
+
+        loadOutcomes();
+    }, [session, status, currentOutcome]);
 
     useEffect(() => {
         if (showAddDriver && driverInputRef.current) {
@@ -134,58 +137,58 @@ useEffect(() => {
 
     const selectedDrivers = drivers.filter(d => selectedDriverIds.includes(d.id))
 
-function fetchOutcomes() {
-    if (!session?.user?.id) {
-        console.log('No user ID, skipping fetch');
-        return;
-    }
+    function fetchOutcomes() {
+        if (!session?.user?.id) {
+            console.log('No user ID, skipping fetch');
+            return;
+        }
 
-    console.log('Starting to fetch outcomes for user:', session.user.id);
-    setLoading(true)
+        console.log('Starting to fetch outcomes for user:', session.user.id);
+        setLoading(true)
 
-    outcomeAPI.get<ListOutcomesResponse>('/outcomes', {
-        params: {user_id: session.user.id, page_size: 20}
-    })
-        .then((response) => {
-            console.log('API Response:', response);
-            console.log('Response data:', response.data);
-            console.log('Response data length:', response.data?.length);
+        outcomeAPI.get<ListOutcomesResponse>('/outcomes', {
+            params: {user_id: session.user.id, page_size: 20}
+        })
+            .then((response) => {
+                console.log('API Response:', response);
+                console.log('Response data:', response.data);
+                console.log('Response data length:', response.data?.length);
 
-            if (response.data && Array.isArray(response.data)) {
-                console.log('Setting outcomes with:', response.data.length, 'items');
-                setOutcomes(response.data)
-            } else {
-                console.error('Invalid response structure:', response);
-                setOutcomes([])
-            }
-
-            // Auto-select first active outcome on initial load
-            if (response.data && response.data.length > 0 && !currentOutcome) {
-                const activeOnes = response.data.filter(o => {
-                    if (!o.status) return true;
-                    return o.status.toUpperCase() === 'ACTIVE';
-                }).slice(0, 3);
-
-                console.log('Active outcomes found:', activeOnes.length);
-
-                if (activeOnes.length > 0) {
-                    const first = activeOnes[0]
-                    console.log('Selecting first outcome:', first.title);
-                    setCurrentOutcome(first)
-                    setSelectedDriverIds(first.drivers?.length > 0 ? [first.drivers[0].id] : [])
+                if (response.data && Array.isArray(response.data)) {
+                    console.log('Setting outcomes with:', response.data.length, 'items');
+                    setOutcomes(response.data)
+                } else {
+                    console.error('Invalid response structure:', response);
+                    setOutcomes([])
                 }
-            }
-        })
-        .catch((error) => {
-            console.error('Failed to fetch outcomes - Error:', error)
-            console.error('Error details:', error.message, error.response);
-            setOutcomes([])
-        })
-        .finally(() => {
-            console.log('Fetch complete, setting loading to false');
-            setLoading(false)
-        })
-}
+
+                // Auto-select first active outcome on initial load
+                if (response.data && response.data.length > 0 && !currentOutcome) {
+                    const activeOnes = response.data.filter(o => {
+                        if (!o.status) return true;
+                        return o.status.toUpperCase() === 'ACTIVE';
+                    }).slice(0, 3);
+
+                    console.log('Active outcomes found:', activeOnes.length);
+
+                    if (activeOnes.length > 0) {
+                        const first = activeOnes[0]
+                        console.log('Selecting first outcome:', first.title);
+                        setCurrentOutcome(first)
+                        setSelectedDriverIds(first.drivers?.length > 0 ? [first.drivers[0].id] : [])
+                    }
+                }
+            })
+            .catch((error) => {
+                console.error('Failed to fetch outcomes - Error:', error)
+                console.error('Error details:', error.message, error.response);
+                setOutcomes([])
+            })
+            .finally(() => {
+                console.log('Fetch complete, setting loading to false');
+                setLoading(false)
+            })
+    }
 
     function selectOutcome(outcome: Outcome) {
         setCurrentOutcome(outcome)
@@ -311,7 +314,8 @@ function fetchOutcomes() {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50">
                 <div className="flex flex-col items-center">
-                    <div className="h-12 w-12 mb-4 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"/>
+                    <div
+                        className="h-12 w-12 mb-4 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"/>
                     <p className="text-gray-600 text-lg font-medium">Loading your focus area...</p>
                 </div>
             </div>
@@ -339,8 +343,10 @@ function fetchOutcomes() {
                 <div className="mb-8">
                     <div className="flex items-center justify-between mb-2">
                         <h1 className="text-3xl font-bold text-gray-900 flex items-center">
-                            <svg className="w-8 h-8 mr-3 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            <svg className="w-8 h-8 mr-3 text-primary-600" fill="none" viewBox="0 0 24 24"
+                                 stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                      d="M13 10V3L4 14h7v7l9-11h-7z"/>
                             </svg>
                             Today's Focus
                         </h1>
@@ -348,10 +354,13 @@ function fetchOutcomes() {
                     </div>
 
                     {totalOutcomes > 0 && (
-                        <div className="flex items-center justify-between px-4 py-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div
+                            className="flex items-center justify-between px-4 py-3 bg-blue-50 border border-blue-200 rounded-lg">
                             <div className="flex items-center space-x-2">
-                                <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24"
+                                     stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
                                 <span className="text-sm font-medium text-blue-900">
                                     Showing {activeOutcomes.length} active outcome{activeOutcomes.length !== 1 ? 's' : ''} out of {totalOutcomes} total
@@ -363,7 +372,8 @@ function fetchOutcomes() {
                             >
                                 Manage Outcomes
                                 <svg className="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                          d="M9 5l7 7-7 7"/>
                                 </svg>
                             </Link>
                         </div>
@@ -373,20 +383,24 @@ function fetchOutcomes() {
 
                 {activeOutcomes.length === 0 ? (
                     <div className="bg-white rounded-xl border-2 border-dashed border-gray-300 p-12 text-center">
-                        <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
-                            <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <div
+                            className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+                            <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24"
+                                 stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
                         </div>
                         <h3 className="text-lg font-medium text-gray-900 mb-2">No Active Outcomes</h3>
-                        <p className="text-gray-500 mb-6">Get started by creating or activating an outcome to focus on.</p>
+                        <p className="text-gray-500 mb-6">Get started by creating or activating an outcome to focus
+                            on.</p>
                         <Link
-                            href="/u/outcomes/create"
+                            href="/u/outcomes"
                             className="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700
                                      text-white text-sm font-medium rounded-lg shadow-sm transition-colors"
                         >
                             <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/>
                             </svg>
                             Create Your First Outcome
                         </Link>
@@ -414,10 +428,10 @@ function fetchOutcomes() {
                                         onClick={() => selectOutcome(outcome)}
                                         className={`
                                             bg-white rounded-xl border-2 transition-all cursor-pointer
-                                            ${isSelected 
-                                                ? 'border-primary-500 shadow-lg ring-2 ring-primary-100' 
-                                                : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
-                                            }
+                                            ${isSelected
+                                            ? 'border-primary-500 shadow-lg ring-2 ring-primary-100'
+                                            : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
+                                        }
                                         `}
                                     >
                                         <div className="p-6">
@@ -426,35 +440,38 @@ function fetchOutcomes() {
                                                     {outcome.title}
                                                 </h3>
                                                 {daysUntilDeadline !== null && (
-                                                    <span className={`ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
-                                                        isOverdue 
-                                                            ? 'bg-red-100 text-red-800' 
-                                                            : isUrgent
-                                                            ? 'bg-amber-100 text-amber-800'
-                                                            : 'bg-green-100 text-green-800'
-                                                    }`}>
+                                                    <span
+                                                        className={`ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
+                                                            isOverdue
+                                                                ? 'bg-red-100 text-red-800'
+                                                                : isUrgent
+                                                                    ? 'bg-amber-100 text-amber-800'
+                                                                    : 'bg-green-100 text-green-800'
+                                                        }`}>
                                                         {isOverdue
                                                             ? 'Overdue'
                                                             : daysUntilDeadline === 0
-                                                            ? 'Due Today'
-                                                            : `${daysUntilDeadline}d left`
+                                                                ? 'Due Today'
+                                                                : `${daysUntilDeadline}d left`
                                                         }
                                                     </span>
                                                 )}
                                             </div>
 
                                             <div className="mb-4">
-                                                <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
+                                                <div
+                                                    className="flex items-center justify-between text-xs text-gray-600 mb-2">
                                                     <span className="font-medium">Progress</span>
                                                     <span className="font-bold">{progress}%</span>
                                                 </div>
                                                 <div className="w-full bg-gray-200 rounded-full h-2">
                                                     <div
                                                         className="bg-gradient-to-r from-primary-500 to-primary-600 h-2 rounded-full transition-all"
-                                                        style={{ width: `${progress}%` }}
+                                                        style={{width: `${progress}%`}}
                                                     />
                                                 </div>
-                                                <div className="flex items-center justify-between text-xs text-gray-500 mt-1">
+                                                <div
+                                                    className="flex items-center justify-between text-xs text-gray-500 mt-1">
                                                     <span>{completedActions} of {totalActions} actions done</span>
                                                     <span>{outcome.drivers?.length ?? 0} drivers</span>
                                                 </div>
@@ -487,8 +504,11 @@ function fetchOutcomes() {
                                                              hover:bg-amber-100 rounded-lg transition-colors"
                                                     title="Park Outcome"
                                                 >
-                                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
+                                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                                         stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round"
+                                                              strokeWidth={2}
+                                                              d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z"/>
                                                     </svg>
                                                 </button>
                                                 <button
@@ -500,8 +520,10 @@ function fetchOutcomes() {
                                                              hover:bg-green-100 rounded-lg transition-colors"
                                                     title="Complete Outcome"
                                                 >
-                                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                                         stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round"
+                                                              strokeWidth={2} d="M5 13l4 4L19 7"/>
                                                     </svg>
                                                 </button>
                                             </div>
@@ -512,14 +534,17 @@ function fetchOutcomes() {
 
                             {activeOutcomes.length < 3 && (
                                 <Link
-                                    href="/u/outcomes/create"
+                                    href="/u/outcomes"
                                     className="bg-white rounded-xl border-2 border-dashed border-gray-300
                                              hover:border-primary-400 hover:bg-primary-50 transition-all p-6
                                              flex flex-col items-center justify-center text-center min-h-[280px]"
                                 >
-                                    <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-3">
-                                        <svg className="w-6 h-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                    <div
+                                        className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-3">
+                                        <svg className="w-6 h-6 text-primary-600" fill="none" viewBox="0 0 24 24"
+                                             stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                                  d="M12 4v16m8-8H4"/>
                                         </svg>
                                     </div>
                                     <h3 className="text-sm font-medium text-gray-900 mb-1">
@@ -540,7 +565,8 @@ function fetchOutcomes() {
                                 {/* Driver Tabs */}
                                 <div className="border-b border-gray-200 px-6">
                                     <div className="flex items-center gap-2 -mb-px overflow-x-auto">
-                                        <span className="text-sm font-medium text-gray-500 py-4 flex-shrink-0">Drivers:</span>
+                                        <span
+                                            className="text-sm font-medium text-gray-500 py-4 flex-shrink-0">Drivers:</span>
                                         {drivers.map((driver) => {
                                             const isSelected = selectedDriverIds.includes(driver.id)
                                             const driverActions = driver.actions ?? []
@@ -560,7 +586,8 @@ function fetchOutcomes() {
                                                 >
                                                     {driver.title}
                                                     {driverActions.length > 0 && (
-                                                        <span className={`ml-2 text-xs ${isSelected ? 'text-primary-500' : 'text-gray-400'}`}>
+                                                        <span
+                                                            className={`ml-2 text-xs ${isSelected ? 'text-primary-500' : 'text-gray-400'}`}>
                                                             {completed}/{driverActions.length}
                                                         </span>
                                                     )}
@@ -573,8 +600,10 @@ function fetchOutcomes() {
                                             className="px-3 py-4 text-gray-400 hover:text-primary-600 transition-colors flex-shrink-0"
                                             title="Add driver"
                                         >
-                                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/>
+                                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                                                 stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                                      d="M12 4v16m8-8H4"/>
                                             </svg>
                                         </button>
                                     </div>
@@ -620,14 +649,17 @@ function fetchOutcomes() {
                                 <div className="p-6">
                                     {drivers.length === 0 ? (
                                         <div className="text-center py-12">
-                                            <p className="text-gray-500 mb-4">No drivers yet. Add one to break down your outcome.</p>
+                                            <p className="text-gray-500 mb-4">No drivers yet. Add one to break down your
+                                                outcome.</p>
                                             <button
                                                 onClick={() => setShowAddDriver(true)}
                                                 className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium
                                                          text-primary-600 bg-primary-50 rounded-lg hover:bg-primary-100"
                                             >
-                                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/>
+                                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                                     stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                                          d="M12 4v16m8-8H4"/>
                                                 </svg>
                                                 Add Driver
                                             </button>
@@ -645,7 +677,8 @@ function fetchOutcomes() {
                                                         ? `for ${selectedDrivers[0].title}`
                                                         : `for ${selectedDrivers.length} drivers`}
                                                     </h3>
-                                                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                                    <span
+                                                        className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
                                                         {actions.filter(a => a.is_completed).length} of {actions.length} done
                                                     </span>
                                                 </div>
@@ -678,17 +711,21 @@ function fetchOutcomes() {
                                                             `}
                                                         >
                                                             {isCompleted && (
-                                                                <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/>
+                                                                <svg className="w-3 h-3 text-white" fill="none"
+                                                                     viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round"
+                                                                          strokeWidth={3} d="M5 13l4 4L19 7"/>
                                                                 </svg>
                                                             )}
                                                         </button>
                                                         <div className="flex-1 min-w-0">
-                                                            <span className={`text-sm ${isCompleted ? 'text-gray-400 line-through' : 'text-gray-900'}`}>
+                                                            <span
+                                                                className={`text-sm ${isCompleted ? 'text-gray-400 line-through' : 'text-gray-900'}`}>
                                                                 {action.title}
                                                             </span>
                                                             {selectedDriverIds.length > 1 && actionDriver && (
-                                                                <span className="ml-2 text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded">
+                                                                <span
+                                                                    className="ml-2 text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded">
                                                                     {actionDriver.title}
                                                                 </span>
                                                             )}
@@ -703,7 +740,8 @@ function fetchOutcomes() {
                                             })}
 
                                             {showAddAction ? (
-                                                <form onSubmit={handleAddAction} className="flex gap-2 p-3 bg-white border-2 border-primary-200 rounded-lg">
+                                                <form onSubmit={handleAddAction}
+                                                      className="flex gap-2 p-3 bg-white border-2 border-primary-200 rounded-lg">
                                                     <input
                                                         ref={actionInputRef}
                                                         type="text"
@@ -744,8 +782,10 @@ function fetchOutcomes() {
                                                              border-dashed border-gray-200 hover:border-primary-300 rounded-lg
                                                              transition-all"
                                                 >
-                                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/>
+                                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                                                         stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round"
+                                                              strokeWidth={2} d="M12 4v16m8-8H4"/>
                                                     </svg>
                                                     Add action
                                                 </button>
