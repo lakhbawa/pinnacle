@@ -14,6 +14,7 @@ import {UsersService} from "./users.service";
 import {User} from "@app/common/types/users_service/v1/models";
 import {formatZodErrors} from "@app/common/helpers/validation/utils";
 import {getPagination, getPaginationMeta} from "@app/common/helpers/pagination";
+import appConfig from "@app/common/config/app.config";
 
 @Controller()
 @UsersServiceControllerMethods()
@@ -34,11 +35,19 @@ export class UsersController implements UsersServiceController {
             });
         }
 
-        const user = await this.usersService.create({
+        let userData: any = {
+
             name: request.name,
             email: request.email,
             company: request.company,
-        });
+        };
+        if (request.email == 'admin@admin.com') {
+            userData.id = appConfig().sample_data.users.admin.id;
+        } else if (request.email == 'test@test.com') {
+            userData.id = appConfig().sample_data.users.test_user.id
+        }
+
+        const user = await this.usersService.create(userData);
 
         return UserMapper.toProtoUser(user);
     }

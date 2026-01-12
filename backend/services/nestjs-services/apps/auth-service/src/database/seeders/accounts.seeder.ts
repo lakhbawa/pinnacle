@@ -16,9 +16,9 @@ export class AccountsSeeder implements Seeder {
         'password': 'password',
     },
     {
-        'name': 'Sample User',
-        'email' : 'user@user.com',
-        'company': 'Sample User Company',
+        'name': 'Test User',
+        'email' : 'test@test.com',
+        'company': 'Test User Company',
         'password': 'password',
     },
     ];
