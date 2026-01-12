@@ -120,26 +120,3 @@ seed-all-db: seed-auth-db seed-outcomes-db
 # Production reset and seed
 reset-and-seed-all: truncate-all-db seed-all-db
 	@echo "All databases reset and seeded in production!"
-
-
-# production
-
-
-seed-auth-db-prod:
-	@echo "🌱 Seeding auth database..."
-	cd backend/services/nestjs-services && \
-	DATABASE_URL="postgresql://postgres:postgres@72.61.224.50:4462/auth" \
-	npm run db:seed:auth
-	@echo "✅ Auth database seeded"
-
-
-seed-outcomes-db-prod:
-	@echo "🌱 Seeding outcomes database..."
-	cd backend/services/nestjs-services && \
-	DATABASE_URL="postgresql://postgres:postgres@72.61.224.50:4442/outcomes" \
-	npm run db:seed:outcomes
-	@echo "✅ Outcomes database seeded"
-
-
-seed-all-db-prod: seed-auth-db-prod seed-outcomes-db-prod
-	@echo "🎉 All databases seeded successfully!"
