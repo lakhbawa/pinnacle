@@ -258,8 +258,7 @@ export default function HomePage() {
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold leading-tight tracking-tight mb-6">
-            Stop tracking tasks.<br />
-            Start achieving outcomes.
+            Strategy. Execution. Results
           </h1>
 
           <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto mb-8 leading-relaxed">
