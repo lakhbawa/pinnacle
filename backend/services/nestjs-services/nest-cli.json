@@ -11,16 +11,6 @@
   "monorepo": true,
   "root": "apps/api-gateway",
   "projects": {
-    "api-gateway": {
-      "type": "application",
-      "root": "apps/api-gateway-deprecated",
-      "entryFile": "src/main",
-      "sourceRoot": "./",
-      "compilerOptions": {
-        "tsConfigPath": "apps/api-gateway/tsconfig.app.json",
-        "watchAssets": true
-      }
-    },
     "auth-service": {
       "type": "application",
       "root": "apps/auth-service",
@@ -30,16 +20,6 @@
         "tsConfigPath": "apps/auth-service/tsconfig.app.json"
       }
     },
-    "boards-service": {
-      "type": "application",
-      "root": "apps/boards-service",
-      "entryFile": "src/main",
-      "sourceRoot": "./",
-      "compilerOptions": {
-        "tsConfigPath": "apps/boards-service/tsconfig.app.json",
-        "watchAssets": true
-      }
-    },
     "common": {
       "type": "library",
       "root": "libs/common",
@@ -47,15 +27,6 @@
       "sourceRoot": "libs/common/src",
       "compilerOptions": {
         "tsConfigPath": "libs/common/tsconfig.lib.json"
-      }
-    },
-    "monolith": {
-      "type": "application",
-      "root": "apps/monolith-deprecated",
-      "entryFile": "src/main",
-      "sourceRoot": "./",
-      "compilerOptions": {
-        "tsConfigPath": "apps/monolith/tsconfig.app.json"
       }
     },
     "notifications-service": {
