@@ -53,7 +53,7 @@ start-observer:
 
 COMPOSE_PROJECT := $(shell basename $(CURDIR))
 
-truncate-outcomes-db-prod:
+truncate-outcomes-db:
 	docker compose exec pinnacle-outcomes-service-db psql -U postgres -d outcomes -c "\
 		DO \$$\$$ \
 		DECLARE \
@@ -65,7 +65,7 @@ truncate-outcomes-db-prod:
 		END \$$\$$;"
 	@echo "✅ All tables in outcomes database truncated"
 
-truncate-users-db-prod:
+truncate-users-db:
 	docker compose exec pinnacle-users-service-db psql -U postgres -d users -c "\
 		DO \$$\$$ \
 		DECLARE \
@@ -77,7 +77,7 @@ truncate-users-db-prod:
 		END \$$\$$;"
 	@echo "✅ All tables in users database truncated"
 
-truncate-auth-db-prod:
+truncate-auth-db:
 	docker compose exec pinnacle-auth-service-db psql -U postgres -d auth -c "\
 		DO \$$\$$ \
 		DECLARE \
@@ -89,7 +89,7 @@ truncate-auth-db-prod:
 		END \$$\$$;"
 	@echo "✅ All tables in auth database truncated"
 
-truncate-notifications-db-prod:
+truncate-notifications-db:
 	docker compose exec pinnacle-notifications-service-db psql -U postgres -d notifications -c "\
 		DO \$$\$$ \
 		DECLARE \
@@ -101,22 +101,45 @@ truncate-notifications-db-prod:
 		END \$$\$$;"
 	@echo "✅ All tables in notifications database truncated"
 
-truncate-all-db-prod: truncate-auth-db-prod truncate-users-db-prod truncate-outcomes-db-prod truncate-notifications-db-prod
+truncate-all-db: truncate-auth-db truncate-users-db truncate-outcomes-db truncate-notifications-db
 	@echo "🎉 All databases truncated successfully!"
 
-seed-auth-db-prod:
+seed-auth-db:
 	docker compose exec pinnacle-auth-service npm run db:seed:auth
 	@echo "✅ Auth database seeded"
 
 
-seed-outcomes-db-prod:
+seed-outcomes-db:
 	docker compose exec pinnacle-outcomes-service npm run db:seed:outcomes
+	@echo "✅ Outcomes database seeded"
+
+
+seed-all-db: seed-auth-db seed-outcomes-db
+	@echo "🎉 All databases seeded successfully!"
+
+# Production reset and seed
+reset-and-seed-all: truncate-all-db seed-all-db
+	@echo "All databases reset and seeded in production!"
+
+
+# production
+
+
+seed-auth-db-prod:
+	@echo "🌱 Seeding auth database..."
+	cd backend/services/nestjs-services && \
+	DATABASE_URL="postgresql://postgres:postgres@72.61.224.50:4462/auth" \
+	npm run db:seed:auth
+	@echo "✅ Auth database seeded"
+
+
+seed-outcomes-db-prod:
+	@echo "🌱 Seeding outcomes database..."
+	cd backend/services/nestjs-services && \
+	DATABASE_URL="postgresql://postgres:postgres@72.61.224.50:4442/outcomes" \
+	npm run db:seed:outcomes
 	@echo "✅ Outcomes database seeded"
 
 
 seed-all-db-prod: seed-auth-db-prod seed-outcomes-db-prod
 	@echo "🎉 All databases seeded successfully!"
-
-# Production reset and seed
-reset-and-seed-all-prod: truncate-all-db-prod seed-all-db-prod
-	@echo "All databases reset and seeded in production!"
