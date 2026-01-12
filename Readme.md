@@ -5,6 +5,7 @@ Pinnacle is outcome-driven project management software that keeps you focused on
 
 ![System Design](/architecture/system-design-v3.png)
 
+Test Suite: [Browstack Test Suite](https://test-management.browserstack.com/projects/3028932/test-runs/TR-20/folder/31413955?public_token=6b2ee05244cc3f7176d71a84ceb43fcb56b3d898db2829ead76c2993fa7331fe6c24233bf54e0d6efa380a1f1e72a4ff47aad50e58369669e864f140fd4670d4&public_token_id=12024)
 ### Tech Stack:
 **Fully Microservices based, Event Driven Project built using Typescript, Node, Go, React, Websockets and Kafka**
 
