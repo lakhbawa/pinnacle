@@ -1,7 +1,64 @@
 version: "3.8"
 
 services:
+  # KAFKA INFRASTRUCTURE
+  pinnacle-zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - zookeeper-data:/var/lib/zookeeper/data
+      - zookeeper-log:/var/lib/zookeeper/log
+    restart: always
+    networks: [pinnacle-network]
 
+  pinnacle-kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    depends_on:
+      - pinnacle-zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: pinnacle-zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://pinnacle-kafka:9092,PLAINTEXT_INTERNAL://pinnacle-kafka:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:29092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    restart: always
+    networks: [pinnacle-network]
+    healthcheck:
+      test: kafka-topics --bootstrap-server localhost:29092 --list
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  pinnacle-kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    environment:
+      KAFKA_CLUSTERS_0_NAME: pinnacle
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: pinnacle-kafka:29092
+      KAFKA_CLUSTERS_0_ZOOKEEPER: pinnacle-zookeeper:2181
+    depends_on:
+      - pinnacle-kafka
+    restart: always
+    networks:
+      - pinnacle-network
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.kafka-ui-pinnacle.rule=Host(`kafka.pinnacle.lakhveerbawa.com`)"
+      - "traefik.http.routers.kafka-ui-pinnacle.entrypoints=websecure"
+      - "traefik.http.routers.kafka-ui-pinnacle.tls=true"
+      - "traefik.http.routers.kafka-ui-pinnacle.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.kafka-ui-pinnacle.service=kafka-ui-pinnacle"
+      - "traefik.http.services.kafka-ui-pinnacle.loadbalancer.server.port=8080"
+
+  # FRONTEND
   pinnacle-frontend:
     build:
       context: ./frontend
@@ -28,6 +85,7 @@ services:
       - "traefik.http.routers.pinnacle-lakhveerbawa-com.service=pinnacle-lakhveerbawa-com"
       - "traefik.http.services.pinnacle-lakhveerbawa-com.loadbalancer.server.port=3000"
 
+  # GATEWAY (Go)
   pinnacle-gateway:
     build:
       context: ./backend/gateway
@@ -39,11 +97,12 @@ services:
       - AUTH_SERVICE_URL=pinnacle-auth-service:4460
       - USERS_SERVICE_URL=pinnacle-users-service:4450
       - OUTCOMES_SERVICE_URL=pinnacle-outcomes-service:4440
-      - BOARDS_SERVICE_URL=pinnacle-boards-service:4470
     depends_on:
       - pinnacle-redis
       - pinnacle-auth-service
       - pinnacle-users-service
+      - pinnacle-outcomes-service
+    restart: always
     networks:
       - pinnacle-network
       - observer
@@ -60,27 +119,24 @@ services:
       # Service
       - "traefik.http.services.api-pinnacle-lakhveerbawa-com.loadbalancer.server.port=8080"
 
-  # ===================
   # NESTJS MICROSERVICES (Internal gRPC)
-  # ===================
   pinnacle-auth-service:
     build:
       context: ./backend/services/nestjs-services
       dockerfile: Dockerfile.prod
       args:
         SERVICE_NAME: auth-service
-
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@pinnacle-auth-service-db:5432/auth
       - REDIS_HOST=pinnacle-redis
       - USERS_SERVICE_URL=pinnacle-users-service:4450
+      - KAFKA_CLIENT_ID='auth-service'
+      - KAFKA_BROKERS=pinnacle-kafka:9092
     restart: always
     depends_on:
       - pinnacle-auth-service-db
       - pinnacle-redis
     networks: [pinnacle-network, observer]
-    # No Traefik labels - internal only
-    # No port exposure - accessed via Docker network
 
   pinnacle-users-service:
     build:
@@ -91,6 +147,8 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@pinnacle-users-service-db:5432/users
       - REDIS_HOST=pinnacle-redis
+      - KAFKA_CLIENT_ID='users-service'
+      - KAFKA_BROKERS=pinnacle-kafka:9092
     restart: always
     depends_on:
       - pinnacle-users-service-db
@@ -106,23 +164,30 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@pinnacle-outcomes-service-db:5432/outcomes
       - REDIS_HOST=pinnacle-redis
+      - KAFKA_CLIENT_ID='outcomes-service'
+      - KAFKA_BROKERS=pinnacle-kafka:9092
     restart: always
     depends_on:
-      - pinnacle-outcomes-service-db
-      - pinnacle-redis
+      pinnacle-kafka:
+        condition: service_healthy
+      pinnacle-outcomes-service-db:
+        condition: service_started
+      pinnacle-redis:
+        condition: service_started
     networks: [pinnacle-network, observer]
+
   pinnacle-notifications-service:
     build:
       context: ./backend/services/nestjs-services
       dockerfile: Dockerfile.prod
       args:
         SERVICE_NAME: notifications-service
-    env_file:
-      - ./backend/services/nestjs-services/apps/notifications-service/.env
-    volumes:
-      - ./backend/services/nestjs-services:/app
-      - /app/node_modules
-      - /app/apps/notifications-service/node_modules
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@pinnacle-notifications-service-db:5432/notifications
+      - REDIS_HOST=pinnacle-redis
+      - KAFKA_CLIENT_ID='notifications-service'
+      - KAFKA_BROKERS=pinnacle-kafka:9092
+    restart: always
     depends_on:
       pinnacle-kafka:
         condition: service_healthy
@@ -143,9 +208,7 @@ services:
       - "traefik.http.routers.notifications-pinnacle.service=notifications-pinnacle"
       - "traefik.http.services.notifications-pinnacle.loadbalancer.server.port=4470"
 
-  # ===================
   # DATABASES
-  # ===================
 
   pinnacle-auth-service-db:
     image: postgres:16
@@ -155,6 +218,7 @@ services:
       POSTGRES_DB: auth
     volumes:
       - dbdata_auth_service:/var/lib/postgresql/data
+    restart: always
     networks:
       - pinnacle-network
 
@@ -166,6 +230,7 @@ services:
       POSTGRES_DB: users
     volumes:
       - dbdata_users_service:/var/lib/postgresql/data
+    restart: always
     networks:
       - pinnacle-network
 
@@ -177,26 +242,32 @@ services:
       POSTGRES_DB: outcomes
     volumes:
       - dbdata_outcomes_service:/var/lib/postgresql/data
+    restart: always
     networks:
       - pinnacle-network
+
   pinnacle-notifications-service-db:
     image: postgres:16
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
       POSTGRES_DB: notifications
     volumes:
       - dbdata_notifications_service:/var/lib/postgresql/data
       - ./docker/config/postgres/init-db.sql:/docker-entrypoint-initdb.d/init.sql
-    ports:
-      - "4472:5432"
-    networks: [pinnacle-network]
+    restart: always
+    networks:
+      - pinnacle-network
+
+
   pinnacle-redis:
     image: redis:7-alpine
     volumes:
       - redisdata:/data
+    restart: always
     networks:
       - pinnacle-network
+
 
 networks:
   pinnacle-network:
@@ -205,6 +276,8 @@ networks:
     external: true
   observer:
     external: true
+
+
 volumes:
   dbdata:
   dbdata_auth_service:
@@ -212,3 +285,6 @@ volumes:
   dbdata_outcomes_service:
   dbdata_notifications_service:
   redisdata:
+  zookeeper-data:
+  zookeeper-log:
+  kafka-data:
