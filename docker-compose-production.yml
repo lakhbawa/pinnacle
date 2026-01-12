@@ -267,7 +267,11 @@ services:
     restart: always
     networks:
       - pinnacle-network
-
+  pinnacle-adminer:
+    image: adminer:latest
+    ports:
+      - "4780:8080"
+    networks: [pinnacle-network]
 
 networks:
   pinnacle-network:
