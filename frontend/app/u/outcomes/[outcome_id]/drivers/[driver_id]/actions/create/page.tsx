@@ -63,7 +63,7 @@ export default function CreateAction({ params }: { params: Promise<{ outcome_id:
 
     try {
       await outcomeAPI.post<ApiResponse>('/actions', formData);
-      router.push(`/u/outcomes/${outcome_id}/drivers/${driver_id}/actions`);
+      router.push(`/u/outcomes/${outcome_id}/drivers/${driver_id}`);
       showToast.success("Action created successfully.");
     } catch (error) {
       if (error instanceof APIError) {
