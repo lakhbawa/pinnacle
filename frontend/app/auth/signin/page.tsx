@@ -130,7 +130,7 @@ export default function SignInPage() {
                 Sample Account
             </h2>
 
-            <div><strong>Email</strong>: user@user.com</div>
+            <div><strong>Email</strong>: test@test.com</div>
             <div><strong>Password</strong>: password</div>
         </div>
     </div>
