@@ -5,7 +5,25 @@ Pinnacle is outcome-driven project management software that keeps you focused on
 
 ![System Design](/architecture/system-design-v3.png)
 
-## Note: This is a Work-in-Progress Repository
+### Tech Stack:
+**Fully Microservices based, Event Driven Project built using Typescript, Node, Go, React, Websockets and Kafka**
+
+- **API / Microservices**: - NestJs + NodeJs + TypeScript
+- **Frontend**: NextJs / ReactJs + Typescript
+- **DB**: Postgres, Redis
+- **API Gateway**: Go, Gin
+- **Tools**: Kafka, Docker, Traefik
+
+## Screenshots:
+### Homepage
+![Home_Page](/screenshots/homepage.png)
+
+### Focus Screen
+![Focus_Screen](/screenshots/focus_block.png)
+
+### Outcomes Screen
+![Outcomes_Screen](/screenshots/outcomes.png)
+
 
 ## Stack Startup
 - Open 3-4 Terminal Tabs, run the following commands in separate terminal tabs
@@ -19,12 +37,7 @@ Pinnacle is outcome-driven project management software that keeps you focused on
 ### Request Chain:
 Client Request -> NextJs -> API Gateway (Go + Gin) -> NestJs microservices
 
-### Current Tech Stack:
-- **API / Microservices**: - NestJs + NodeJs + TypeScript
-- **Frontend**: NextJs / ReactJs + Typescript
-- **DB**: Postgres, Redis
-- **API Gateway**: Go, Gin
-- **Tools**: Kafka, Docker, Traefik
+
 
 ### Service Ports:
 - API Gateway: 8080
