@@ -49,7 +49,6 @@ start-observer:
 
 COMPOSE_PROJECT := $(shell basename $(CURDIR))
 
-# Production truncate commands (use docker compose exec instead of docker exec)
 truncate-outcomes-db-prod:
 	docker compose exec pinnacle-outcomes-service-db psql -U postgres -d outcomes -c "\
 		DO \$$\$$ \
@@ -101,26 +100,19 @@ truncate-notifications-db-prod:
 truncate-all-db-prod: truncate-auth-db-prod truncate-users-db-prod truncate-outcomes-db-prod truncate-notifications-db-prod
 	@echo "🎉 All databases truncated successfully!"
 
-# Production seed commands (run inside containers)
 seed-auth-db-prod:
-	docker compose exec pinnacle-auth-service npm run seed:auth
+	docker compose exec pinnacle-auth-service npm run db:seed:auth
 	@echo "✅ Auth database seeded"
 
-seed-users-db-prod:
-	docker compose exec pinnacle-users-service npm run seed:users
-	@echo "✅ Users database seeded"
 
 seed-outcomes-db-prod:
-	docker compose exec pinnacle-outcomes-service npm run seed:outcomes
+	docker compose exec pinnacle-outcomes-service npm run db:seed:outcomes
 	@echo "✅ Outcomes database seeded"
 
-seed-notifications-db-prod:
-	docker compose exec pinnacle-notifications-service npm run seed:notifications
-	@echo "✅ Notifications database seeded"
 
-seed-all-db-prod: seed-auth-db-prod seed-users-db-prod seed-outcomes-db-prod seed-notifications-db-prod
+seed-all-db-prod: seed-auth-db-prod seed-outcomes-db-prod
 	@echo "🎉 All databases seeded successfully!"
 
 # Production reset and seed
 reset-and-seed-all-prod: truncate-all-db-prod seed-all-db-prod
-	@echo "🎉 All databases reset and seeded in production!"
+	@echo "All databases reset and seeded in production!"
