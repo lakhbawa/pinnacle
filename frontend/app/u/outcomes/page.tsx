@@ -2,6 +2,9 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { outcomeAPI } from "@/utils/fetchWrapper";
+import {useSession} from "next-auth/react";
+import { Session } from 'next-auth';
+
 
 interface Outcome {
   id: string;
@@ -33,11 +36,24 @@ export default function Outcomes() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const username = 'lakhbawa'
+  const { data: session, status } = useSession();
+    const isLoggedIn = !!session;
+    if (!isLoggedIn) {
+        return (
+            <>
+            You must be logged into your account.
+            </>
+        )
+    }
+    let userId: string;
+    if (isLoggedIn) {
+        userId = session?.user?.id;
+    }
+
 
   useEffect(() => {
     outcomeAPI.get<ListOutcomesResponse>('/outcomes', {
-      params: {user_id: 'user-123', page_size: 20}
+      params: {user_id: userId, page_size: 20}
     })
         .then((response) => {
           console.log('response', response);

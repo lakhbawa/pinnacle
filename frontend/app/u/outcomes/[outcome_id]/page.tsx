@@ -14,7 +14,7 @@ export default function ViewOutcomePage({params}: { params: Promise<{ outcome_id
         async function fetchData() {
             try {
                 setLoading(true);
-                const data = await outcomeAPI.get<OutcomeResponse>(`/outcomes/${outcome_id}?include[]=lists&include[]=lists.issues`);
+                const data = await outcomeAPI.get<OutcomeResponse>(`/outcomes/${outcome_id}`);
                 setOutcomeData(data.data);
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Failed to load outcome');

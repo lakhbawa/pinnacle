@@ -1,7 +1,7 @@
 'use client'
 import {useState} from "react";
 import fetchWrapper from "@/utils/fetchWrapper";
-import {signIn} from "next-auth/react";
+import {signIn, useSession} from "next-auth/react";
 import {useRouter} from "next/navigation";
 import Link from "next/link";
 import {showToast} from "nextjs-toast-notify";
@@ -12,6 +12,10 @@ export default function SignInPage() {
         email: "",
         password: "",
     })
+
+    const { data: session, status } = useSession();
+    const isLoggedIn = !!session;
+
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const router = useRouter();
@@ -36,7 +40,8 @@ export default function SignInPage() {
                 showToast.error(result.error)
             } else {
                 // Sign in successful
-               window.location.href = "/u/dashboard";
+               // window.location.href = "/u/dashboard";
+                router.push("/");
                 router.refresh();
             }
         } catch (err: any) {

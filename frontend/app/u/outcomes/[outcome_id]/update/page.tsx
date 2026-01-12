@@ -5,12 +5,26 @@ import {useRouter} from "next/navigation";
 import FormErrors from "@/app/components/FormErrors";
 import Link from "next/link";
 import {OutcomeResponse} from "@/app/types/outcomeTypes";
+import {useSession} from "next-auth/react";
+import {showToast} from "nextjs-toast-notify";
 
 export default function UpdateOutcome({params}: { params: Promise<{ outcome_id: string }> }) {
     const {outcome_id} = use(params);
 
 
-    const userId = 'user-123'
+    const { data: session, status } = useSession();
+    const isLoggedIn = !!session;
+    if (!isLoggedIn) {
+        return (
+            <>
+            You must be logged into your account.
+            </>
+        )
+    }
+    let userId: string = '';
+    if (isLoggedIn) {
+        userId = session?.user?.id;
+    }
     const [formData, setFormData] = useState({
         title: '',
         why_it_matters: '',           // Changed
@@ -76,7 +90,8 @@ export default function UpdateOutcome({params}: { params: Promise<{ outcome_id: 
       deadline: new Date(formData.deadline)
     })
             console.log(response)
-            router.push('/u/lakhbawa/outcomes/');
+            router.push('/u/outcomes');
+            showToast.success(`Successfully updated outcome`, {})
             // TODO: Show success message or redirect
         } catch (err) {
             console.error('Update failed:', err)
@@ -124,7 +139,7 @@ export default function UpdateOutcome({params}: { params: Promise<{ outcome_id: 
             </p>
           </div>
           <Link
-            href="/u/lakhbawa/outcomes"
+            href="/u/outcomes"
             className="mt-4 md:mt-0 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700"
           >
             <svg className="mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -140,7 +155,6 @@ export default function UpdateOutcome({params}: { params: Promise<{ outcome_id: 
             <FormErrors errors={errors} />
 
             <form onSubmit={updateOutcome} className="space-y-8">
-              <input type="hidden" name="userId" value={userId} />
 
               {/* Title Field */}
               <div>

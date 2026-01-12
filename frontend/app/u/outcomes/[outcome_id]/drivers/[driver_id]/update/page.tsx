@@ -1,16 +1,30 @@
 'use client'
 import {use, useEffect, useState} from "react";
-import {outcomeAPI} from "@/utils/fetchWrapper";
+import {APIError, outcomeAPI} from "@/utils/fetchWrapper";
 import {useRouter} from "next/navigation";
 import FormErrors from "@/app/components/FormErrors";
 import Link from "next/link";
 import {DriverResponse} from "@/app/types/outcomeTypes";
+import {useSession} from "next-auth/react";
+import {showToast} from "nextjs-toast-notify";
 
 export default function UpdateDriver({params}: {
     params: Promise<{ outcome_id: string, driver_id: string }>
 }) {
     const {outcome_id, driver_id} = use(params);
-    const userId = 'user-123';
+    const { data: session, status } = useSession();
+    const isLoggedIn = !!session;
+    if (!isLoggedIn) {
+        return (
+            <>
+            You must be logged into your account.
+            </>
+        )
+    }
+    let userId: string = '';
+    if (isLoggedIn) {
+        userId = session?.user?.id;
+    }
     const [formData, setFormData] = useState({
         title: '',
         description: '', // Added description field
@@ -63,8 +77,13 @@ export default function UpdateDriver({params}: {
         try {
             await outcomeAPI.patch(`/drivers/${driver_id}`, formData);
             router.push(`/u/outcomes/${outcome_id}/drivers/${driver_id}`);
-        } catch (err) {
-            console.error('Update failed:', err);
+            showToast.success("Driver updated successfully.");
+        } catch (error) {
+            if (error instanceof APIError) {
+        const fieldErrors = error.getValidationErrors();
+        setErrors(fieldErrors ?? {});
+        showToast.error(error.message);
+      }
             setError('Failed to update driver');
         } finally {
             setIsSubmitting(false);
@@ -136,7 +155,6 @@ export default function UpdateDriver({params}: {
                         <FormErrors errors={errors}/>
 
                         <form onSubmit={updateDriver} className="space-y-6">
-                            <input type="hidden" name="userId" value={userId}/>
 
                             {/* Title Field */}
                             <div className="space-y-2">

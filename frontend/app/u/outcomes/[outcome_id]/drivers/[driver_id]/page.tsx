@@ -113,12 +113,14 @@ export default function ViewDriverPage({ params }: { params: Promise<{ outcome_i
         <div className="mb-8">
           <div className="md:flex md:items-center md:justify-between">
             <div className="flex-1 min-w-0">
-              <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
-                Outcome - {driverData.outcome?.title}
-              </h1>
-                <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+
+                <h1 className="text-xl font-bold text-gray-900 sm:text-3xl">
                 {driverData.title}
               </h1>
+
+              <h2 className="py-3 text-gray-900">
+                <strong>Outcome</strong>: {driverData.outcome?.title}
+              </h2>
               {driverData.description && (
                 <p className="mt-2 text-sm text-gray-500">
                   {driverData.description}

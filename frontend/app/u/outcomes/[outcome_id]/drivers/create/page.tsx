@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import FieldError from "@/app/components/FieldError";
 import FormErrors from "@/app/components/FormErrors";
 import Link from "next/link";
+import {useSession} from "next-auth/react";
+import {showToast} from "nextjs-toast-notify";
 
 interface ApiResponseError {
   message: string;
@@ -20,7 +22,19 @@ interface ApiResponse {
 
 export default function CreateDriver({ params }: { params: Promise<{ outcome_id: string }> }) {
   const { outcome_id, } = use(params);
-  const userId = 'sadfasdf';
+  const { data: session, status } = useSession();
+    const isLoggedIn = !!session;
+    if (!isLoggedIn) {
+        return (
+            <>
+            You must be logged into your account.
+            </>
+        )
+    }
+    let userId: string = '';
+    if (isLoggedIn) {
+        userId = session?.user?.id;
+    }
   const [formData, setFormData] = useState({
     title: '',
     description: '', // Added description field
@@ -48,10 +62,12 @@ export default function CreateDriver({ params }: { params: Promise<{ outcome_id:
     try {
       await outcomeAPI.post<ApiResponse>('/drivers', formData);
       router.push(`/u/outcomes/${outcome_id}`);
+      showToast.success(`Driver created successfully.`);
     } catch (error) {
       if (error instanceof APIError) {
         const fieldErrors = error.getValidationErrors();
         setErrors(fieldErrors ?? {});
+        showToast.error(error.message);
       }
     } finally {
       setIsSubmitting(false);

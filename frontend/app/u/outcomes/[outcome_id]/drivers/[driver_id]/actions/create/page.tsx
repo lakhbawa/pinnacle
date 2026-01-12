@@ -1,11 +1,12 @@
-
 'use client'
-import { use, useState } from "react";
+import { use, useState, useEffect } from "react";
 import { APIError, outcomeAPI } from "@/utils/fetchWrapper";
 import { useRouter } from "next/navigation";
 import FieldError from "@/app/components/FieldError";
 import FormErrors from "@/app/components/FormErrors";
 import Link from "next/link";
+import {useSession} from "next-auth/react";
+import {showToast} from "nextjs-toast-notify";
 
 interface ApiResponseError {
   message: string;
@@ -20,19 +21,32 @@ interface ApiResponse {
 
 export default function CreateAction({ params }: { params: Promise<{ outcome_id: string, driver_id: string, }> }) {
   const { outcome_id, driver_id } = use(params);
-  const userId = 'sadfasdf';
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     scheduled_for: '',
-    user_id: userId,
+    user_id: '',
     outcome_id: outcome_id,
     driver_id: driver_id,
   });
 
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
+
+  console.log(session)
+  // Update user_id when session loads
+  useEffect(() => {
+    if (session?.user?.id) {
+      setFormData(prev => ({
+        ...prev,
+        user_id: session.user.id
+      }));
+      console.log("User ID set:", session.user.id);
+    }
+  }, [session?.user?.id]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target;
@@ -50,15 +64,34 @@ export default function CreateAction({ params }: { params: Promise<{ outcome_id:
     try {
       await outcomeAPI.post<ApiResponse>('/actions', formData);
       router.push(`/u/outcomes/${outcome_id}/drivers/${driver_id}/actions`);
+      showToast.success("Action created successfully.");
     } catch (error) {
       if (error instanceof APIError) {
         const fieldErrors = error.getValidationErrors();
         setErrors(fieldErrors ?? {});
+        showToast.error(error.message);
       }
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  // Handle loading and auth states AFTER all hooks
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen bg-gray-50 py-12 flex items-center justify-center">
+        <div className="text-gray-600">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-12 flex items-center justify-center">
+        <div className="text-gray-600">You must be logged into your account.</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">

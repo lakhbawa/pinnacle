@@ -2,6 +2,7 @@
 import {useEffect, useState, useMemo, useRef} from "react";
 import {Action, Driver, Outcome} from "@/app/types/outcomeTypes";
 import {outcomeAPI} from "@/utils/fetchWrapper";
+import {useSession} from "next-auth/react";
 
 interface ListOutcomesResponse {
     success: boolean;
@@ -14,7 +15,21 @@ export default function FocusPage() {
     const [selectedDriverIds, setSelectedDriverIds] = useState<string[]>([])
     const [loading, setLoading] = useState(true)
 
-    // Quick-add states
+    const {data: session, status} = useSession();
+
+    const isLoggedIn = !!session;
+    if (!isLoggedIn) {
+        return (
+            <>
+                You must be logged into your account.
+            </>
+        )
+    }
+    let userId: string | undefined;
+    if (isLoggedIn) {
+        userId = session?.user?.id
+    }
+
     const [showAddDriver, setShowAddDriver] = useState(false)
     const [showAddAction, setShowAddAction] = useState(false)
     const [newDriverTitle, setNewDriverTitle] = useState('')
@@ -24,8 +39,6 @@ export default function FocusPage() {
     const driverInputRef = useRef<HTMLInputElement>(null)
     const actionInputRef = useRef<HTMLInputElement>(null)
 
-
-    const userId = '12345'
 
     const drivers = currentOutcome?.drivers ?? []
 
@@ -190,7 +203,8 @@ export default function FocusPage() {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="flex flex-col items-center gap-3">
-                    <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                    <div
+                        className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
                     <div className="text-gray-500 text-sm">Loading...</div>
                 </div>
             </div>
@@ -225,9 +239,9 @@ export default function FocusPage() {
                                 className={`
                                     px-4 py-2 rounded-lg text-sm font-medium transition-all
                                     ${currentOutcome?.id === outcome.id
-                                        ? 'bg-blue-600 text-white shadow-sm'
-                                        : 'bg-white border border-gray-200 text-gray-700 hover:border-gray-300'
-                                    }
+                                    ? 'bg-blue-600 text-white shadow-sm'
+                                    : 'bg-white border border-gray-200 text-gray-700 hover:border-gray-300'
+                                }
                                 `}
                             >
                                 {outcome.title}
@@ -292,14 +306,15 @@ export default function FocusPage() {
                                         className={`
                                             px-4 py-3 text-sm font-medium transition-all relative
                                             ${isSelected
-                                                ? 'text-blue-600 border-b-2 border-blue-600 -mb-px bg-blue-50'
-                                                : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-                                            }
+                                            ? 'text-blue-600 border-b-2 border-blue-600 -mb-px bg-blue-50'
+                                            : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                                        }
                                         `}
                                     >
                                         {driver.title}
                                         {driverActions.length > 0 && (
-                                            <span className={`ml-2 text-xs ${isSelected ? 'text-blue-500' : 'text-gray-400'}`}>
+                                            <span
+                                                className={`ml-2 text-xs ${isSelected ? 'text-blue-500' : 'text-gray-400'}`}>
                                                 {completed}/{driverActions.length}
                                             </span>
                                         )}
@@ -314,7 +329,8 @@ export default function FocusPage() {
                                 title="Add driver"
                             >
                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                          d="M12 4v16m8-8H4"/>
                                 </svg>
                             </button>
                         </div>
@@ -371,7 +387,8 @@ export default function FocusPage() {
                                 className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100"
                             >
                                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                          d="M12 4v16m8-8H4"/>
                                 </svg>
                                 Add Driver
                             </button>
@@ -386,8 +403,8 @@ export default function FocusPage() {
                                 <div className="flex items-center justify-between mb-3">
                                     <h3 className="text-sm font-medium text-gray-700">
                                         Actions {selectedDrivers.length === 1
-                                            ? `for ${selectedDrivers[0].title}`
-                                            : `for ${selectedDrivers.length} drivers`}
+                                        ? `for ${selectedDrivers[0].title}`
+                                        : `for ${selectedDrivers.length} drivers`}
                                     </h3>
                                     <span className="text-xs text-gray-500">
                                         {actions.filter(a => a.completed_at).length} of {actions.length} done
@@ -404,10 +421,10 @@ export default function FocusPage() {
                                         key={action.id}
                                         className={`
                                             flex items-start gap-3 p-4 bg-white border rounded-lg transition-all
-                                            ${isCompleted 
-                                                ? 'border-gray-100 bg-gray-50' 
-                                                : 'border-gray-200 hover:border-gray-300'
-                                            }
+                                            ${isCompleted
+                                            ? 'border-gray-100 bg-gray-50'
+                                            : 'border-gray-200 hover:border-gray-300'
+                                        }
                                         `}
                                     >
                                         <button
@@ -415,23 +432,27 @@ export default function FocusPage() {
                                             className={`
                                                 w-5 h-5 rounded border-2 flex-shrink-0 mt-0.5 transition-all flex items-center justify-center
                                                 ${isCompleted
-                                                    ? 'bg-green-500 border-green-500'
-                                                    : 'border-gray-300 hover:border-blue-500'
-                                                }
+                                                ? 'bg-green-500 border-green-500'
+                                                : 'border-gray-300 hover:border-blue-500'
+                                            }
                                             `}
                                         >
                                             {isCompleted && (
-                                                <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                                <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24"
+                                                     stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3}
+                                                          d="M5 13l4 4L19 7"/>
                                                 </svg>
                                             )}
                                         </button>
                                         <div className="flex-1 min-w-0">
-                                            <span className={`text-sm ${isCompleted ? 'text-gray-400 line-through' : 'text-gray-900'}`}>
+                                            <span
+                                                className={`text-sm ${isCompleted ? 'text-gray-400 line-through' : 'text-gray-900'}`}>
                                                 {action.title}
                                             </span>
                                             {selectedDriverIds.length > 1 && actionDriver && (
-                                                <span className="ml-2 text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded">
+                                                <span
+                                                    className="ml-2 text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded">
                                                     {actionDriver.title}
                                                 </span>
                                             )}
@@ -447,7 +468,8 @@ export default function FocusPage() {
 
                             {/* Add Action */}
                             {showAddAction ? (
-                                <form onSubmit={handleAddAction} className="flex gap-2 p-2 bg-white border border-blue-200 rounded-lg">
+                                <form onSubmit={handleAddAction}
+                                      className="flex gap-2 p-2 bg-white border border-blue-200 rounded-lg">
                                     <input
                                         ref={actionInputRef}
                                         type="text"
@@ -485,7 +507,8 @@ export default function FocusPage() {
                                     className="w-full flex items-center gap-2 p-3 text-sm text-gray-500 hover:text-blue-600 hover:bg-blue-50 border border-dashed border-gray-200 hover:border-blue-300 rounded-lg transition-all"
                                 >
                                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                              d="M12 4v16m8-8H4"/>
                                     </svg>
                                     Add action
                                 </button>

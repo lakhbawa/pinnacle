@@ -1,7 +1,7 @@
 'use client'
 import {useState} from "react";
 import {authAPI} from "@/utils/fetchWrapper";
-import {signIn} from "next-auth/react";
+import {signIn, useSession} from "next-auth/react";
 import {useRouter} from "next/navigation";
 import {AuthResponse} from "@/app/types/outcomeTypes";
 import Link from "next/link";
@@ -9,6 +9,7 @@ import {showToast} from "nextjs-toast-notify";
 
 export default function SignUpPage() {
     const router = useRouter();
+    const {data: session, update} = useSession();
 
     const [formData, setFormData] = useState({
         name: "",
@@ -18,9 +19,11 @@ export default function SignUpPage() {
     })
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+
     const onChange = (e: any) => {
         setFormData({...formData, [e.target.name]: e.target.value})
     }
+
     const signUp = async (e: any) => {
         e.preventDefault();
         setError("");
@@ -29,12 +32,11 @@ export default function SignUpPage() {
         try {
             const res = await authAPI.post<AuthResponse>("/auth/signup", formData);
 
-            // Check if signup was successful - adjust based on your API response structure
             if (!res.success) {
                 setError("Signup failed");
+                setLoading(false);
                 return;
             }
-
 
             const result = await signIn("credentials", {
                 redirect: false,
@@ -42,16 +44,24 @@ export default function SignUpPage() {
                 password: formData.password,
             });
 
-
             if (result?.error) {
                 setError(result.error);
-            } else {
+                showToast.error(result.error);
+                setLoading(false);
+            } else if (result?.ok) {
                 showToast.success("Signed up successfully");
-                window.location.href = "/u/dashboard";
+
+                // Force session update by triggering a refetch
+                // Wait a bit for the session cookie to be set
+                setTimeout(async () => {
+                    await update(); // Manually trigger session refetch
+                    router.push("/u/dashboard");
+                    router.refresh();
+                }, 500);
             }
         } catch (err: any) {
             setError(err.message || "Something went wrong");
-        } finally {
+            showToast.error(err.message || "Something went wrong");
             setLoading(false);
         }
     }
@@ -124,20 +134,20 @@ export default function SignUpPage() {
                 <div>
 
                     <button
-                            type="submit"
-                            disabled={loading}
-                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            {loading ? (
-                                <span>Signing up...</span>
-                            ) : (
-                                <span>Sign up</span>
-                            )}
-                        </button>
+                        type="submit"
+                        disabled={loading}
+                        className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {loading ? (
+                            <span>Signing up...</span>
+                        ) : (
+                            <span>Sign up</span>
+                        )}
+                    </button>
                 </div>
             </form>
 
-             <div className="mt-6 text-center">
+            <div className="mt-6 text-center">
 
                 <Link href="/auth/signin" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
                     Already have account ? Sign in instead

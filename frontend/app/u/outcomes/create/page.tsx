@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import FieldError from "@/app/components/FieldError";
 import FormErrors from "@/app/components/FormErrors";
 import Link from "next/link";
+import {useSession} from "next-auth/react";
+import {showToast} from "nextjs-toast-notify";
 
 interface ApiResponseError {
   message: string;
@@ -18,10 +20,23 @@ interface ApiResponse {
 }
 
 export default function CreateOutcome() {
-  const user_id = 'user-123'
+const { data: session, status } = useSession();
+    const isLoggedIn = !!session;
+    if (!isLoggedIn) {
+        return (
+            <>
+            You must be logged into your account.
+            </>
+        )
+    }
+    let userId: string = '';
+    if (isLoggedIn) {
+        userId = session?.user?.id;
+    }
+
   const [formData, setFormData] = useState({
     title: '',
-    user_id: user_id,
+    user_id: userId,
     why_it_matters: '',
     success_metric_unit: '',
     success_metric_value: 0,
@@ -52,12 +67,13 @@ export default function CreateOutcome() {
       deadline: new Date(formData.deadline)
     }).then(res => {
       console.log('Creating Outcome...');
-      console.log(res)
-      router.push('/u/lakhbawa/outcomes');
+      router.push('/u/outcomes');
+      showToast.success(` Outcome: ${formData.title} created successfully.`);
     }).catch(error => {
       if (error instanceof APIError) {
         const fieldErrors = error.getValidationErrors();
         setErrors(fieldErrors ?? {})
+        showToast.error("Validation Failed, Please check input and try again.")
       }
     })
   }
@@ -72,7 +88,7 @@ export default function CreateOutcome() {
             <FormErrors errors={errors} />
 
             <form onSubmit={createOutcome} className="space-y-8">
-              <input type="hidden" name="user_id" value={user_id} />
+              <input type="hidden" name="user_id" value={userId} />
 
               {/* Title Field - Improved */}
               <div className="space-y-2">

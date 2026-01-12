@@ -42,36 +42,40 @@ export const authOptions = {
 
                     return null;
                 } catch (e: any) {
-
-                    // Use getFirstError() for clean user-facing message
                     if (e.getFirstError) {
                         throw new Error(e.getFirstError());
                     }
-
                     throw new Error(e.message || "Authentication failed");
                 }
             },
         })
     ],
     callbacks: {
-        async jwt({token, user}: { user: any; token: JWT }) {
+        async jwt({token, user, account}: { user: any; token: JWT; account: any }) {
+            // Initial sign in
             if (user) {
-                token.accessToken = user.accessToken;  // ✓ Fixed: use user.accessToken
+                token.accessToken = user.accessToken;
                 token.id = user.id;
+                token.company = user.company;
             }
             return token;
         },
         async session({session, token}: { session: any; token: JWT }) {
-            session.user.id = token.id as string;
-            session.accessToken = token.accessToken as string;
-            return session;
-        }
+    console.log("Session callback - token:", token);
+    if (token) {
+        session.user.id = token.id;
+        session.user.company = token.company;
+        session.accessToken = token.accessToken;
+    }
+    console.log("Session callback - session:", session);
+    return session;
+}
     },
     pages: {
-        signIn: "/auth/signin",  // ✓ Fixed typo: signIn (capital I)
+        signIn: "/auth/signin",
     },
     session: {
-        strategy: "jwt" as const,  // ✓ Added 'as const' for TypeScript
+        strategy: "jwt" as const,
     },
     secret: process.env.NEXTAUTH_SECRET,
 };
