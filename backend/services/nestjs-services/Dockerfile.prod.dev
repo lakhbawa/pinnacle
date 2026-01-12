@@ -50,7 +50,7 @@ COPY --from=builder /app/apps/${SERVICE_NAME}/prisma ./prisma/
 COPY --from=builder /app/apps/${SERVICE_NAME}/prisma.config.ts ./prisma.config.ts
 
 # Copy source files (needed for seeding with ts-node)
-COPY --from=builder /app/apps/${SERVICE_NAME}/src ./apps/${SERVICE_NAME}/src/
+COPY --from=builder /app/apps/${SERVICE_NAME} ./apps/${SERVICE_NAME}/
 COPY --from=builder /app/libs ./libs/
 
 # Set environment
