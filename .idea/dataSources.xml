@@ -1,32 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="Users Service" uuid="39b2cce2-4c63-4b69-9ca3-7812048ecbc7">
+    <data-source source="LOCAL" name="Local - Users Service" uuid="39b2cce2-4c63-4b69-9ca3-7812048ecbc7">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://localhost:4452/users</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="Auth Service" uuid="f18dd5c2-a165-42af-9768-f2c9b0a8133d">
+    <data-source source="LOCAL" name="Local - Auth Service" uuid="f18dd5c2-a165-42af-9768-f2c9b0a8133d">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://localhost:4462/auth</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="Outcome Service" uuid="6b759b8e-846b-44df-83e5-18678552edf5">
+    <data-source source="LOCAL" name="Local - Outcome Service" uuid="6b759b8e-846b-44df-83e5-18678552edf5">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://localhost:4442/outcomes</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="Notifications" uuid="74c065e6-2ad5-4ec1-9f57-c7e2eb2e0aae">
+    <data-source source="LOCAL" name="Local - Notifications" uuid="74c065e6-2ad5-4ec1-9f57-c7e2eb2e0aae">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://localhost:4472/notifications</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="Production - Auth Service" uuid="4bf093f1-d511-4883-add1-1452a1516d58">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://72.61.224.50:4462/auth</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="Production - Users Service" uuid="9d9c3d9d-5437-4fbe-b083-3c077f61e44e">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://72.61.224.50:4452/users</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="Production - Outcome Service" uuid="c7c2a668-0549-461c-8922-4ccd1092ff16">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://72.61.224.50:4442/outcomes</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="Production - Notifications" uuid="a2549bbc-7d4f-4d7c-972e-72ec5763147b">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://72.61.224.50:4472/notifications</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>
