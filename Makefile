@@ -47,8 +47,11 @@ start-frontend:
 start-observer:
 	docker compose -f docker-compose-observability.yml up -d --remove-orphans
 
-truncate-outcomes-db:
-	docker exec -it pinnacle-outcomes-service-db psql -U postgres -d outcomes -c "\
+COMPOSE_PROJECT := $(shell basename $(CURDIR))
+
+# Production truncate commands (use docker compose exec instead of docker exec)
+truncate-outcomes-db-prod:
+	docker compose exec pinnacle-outcomes-service-db psql -U postgres -d outcomes -c "\
 		DO \$$\$$ \
 		DECLARE \
 			r RECORD; \
@@ -59,8 +62,8 @@ truncate-outcomes-db:
 		END \$$\$$;"
 	@echo "✅ All tables in outcomes database truncated"
 
-truncate-users-db:
-	docker exec -it pinnacle-users-service-db psql -U postgres -d users -c "\
+truncate-users-db-prod:
+	docker compose exec pinnacle-users-service-db psql -U postgres -d users -c "\
 		DO \$$\$$ \
 		DECLARE \
 			r RECORD; \
@@ -71,8 +74,8 @@ truncate-users-db:
 		END \$$\$$;"
 	@echo "✅ All tables in users database truncated"
 
-truncate-auth-db:
-	docker exec -it pinnacle-auth-service-db psql -U postgres -d auth -c "\
+truncate-auth-db-prod:
+	docker compose exec pinnacle-auth-service-db psql -U postgres -d auth -c "\
 		DO \$$\$$ \
 		DECLARE \
 			r RECORD; \
@@ -83,8 +86,8 @@ truncate-auth-db:
 		END \$$\$$;"
 	@echo "✅ All tables in auth database truncated"
 
-truncate-notifications-db:
-	docker exec -it pinnacle-notifications-service-db psql -U postgres -d notifications -c "\
+truncate-notifications-db-prod:
+	docker compose exec pinnacle-notifications-service-db psql -U postgres -d notifications -c "\
 		DO \$$\$$ \
 		DECLARE \
 			r RECORD; \
@@ -95,18 +98,29 @@ truncate-notifications-db:
 		END \$$\$$;"
 	@echo "✅ All tables in notifications database truncated"
 
-truncate-all-db: truncate-auth-db truncate-users-db truncate-outcomes-db truncate-notifications-db
-	@echo "All databases truncated successfully!"
+truncate-all-db-prod: truncate-auth-db-prod truncate-users-db-prod truncate-outcomes-db-prod truncate-notifications-db-prod
+	@echo "🎉 All databases truncated successfully!"
 
-# Seed commands
-seed-auth-db:
-	cd backend/services/nestjs-services && npm run db:seed:auth
+# Production seed commands (run inside containers)
+seed-auth-db-prod:
+	docker compose exec pinnacle-auth-service npm run seed:auth
+	@echo "✅ Auth database seeded"
 
+seed-users-db-prod:
+	docker compose exec pinnacle-users-service npm run seed:users
+	@echo "✅ Users database seeded"
 
-seed-outcomes-db:
-	cd backend/services/nestjs-services && npm run db:seed:outcomes
+seed-outcomes-db-prod:
+	docker compose exec pinnacle-outcomes-service npm run seed:outcomes
+	@echo "✅ Outcomes database seeded"
 
+seed-notifications-db-prod:
+	docker compose exec pinnacle-notifications-service npm run seed:notifications
+	@echo "✅ Notifications database seeded"
 
-seed-all-db: seed-auth-db seed-outcomes-db
+seed-all-db-prod: seed-auth-db-prod seed-users-db-prod seed-outcomes-db-prod seed-notifications-db-prod
+	@echo "🎉 All databases seeded successfully!"
 
-reset-and-seed-all: truncate-all-db seed-all-db
+# Production reset and seed
+reset-and-seed-all-prod: truncate-all-db-prod seed-all-db-prod
+	@echo "🎉 All databases reset and seeded in production!"
