@@ -137,11 +137,9 @@ const architectureHighlights = [
 export default function HomePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { data: session } = useSession()
-  const username = 'lakhbawa'
 
   useEffect(() => {
 
-  showToast.info("Welcome to Pinnacle")
   })
 
   return (
@@ -229,7 +227,7 @@ export default function HomePage() {
                 {session ? (
                   <>
                     <button onClick={() => signOut()} className="block text-gray-600 text-sm">Sign out</button>
-                    <Link href={`/u/${username}/focus`} className="block w-full bg-gray-900 text-white text-center px-4 py-3 rounded-lg text-sm font-medium">
+                    <Link href={`/u/focus`} className="block w-full bg-gray-900 text-white text-center px-4 py-3 rounded-lg text-sm font-medium">
                       Open App
                     </Link>
                   </>
