@@ -3,6 +3,7 @@ import {useEffect, useState, useMemo, useRef} from "react";
 import {Action, Driver, Outcome} from "@/app/types/outcomeTypes";
 import {outcomeAPI} from "@/utils/fetchWrapper";
 import {useSession} from "next-auth/react";
+import Link from "next/link";
 
 interface ListOutcomesResponse {
     success: boolean;
@@ -13,22 +14,9 @@ export default function FocusPage() {
     const [outcomes, setOutcomes] = useState<Outcome[]>([])
     const [currentOutcome, setCurrentOutcome] = useState<Outcome | undefined>()
     const [selectedDriverIds, setSelectedDriverIds] = useState<string[]>([])
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
 
     const {data: session, status} = useSession();
-
-    const isLoggedIn = !!session;
-    if (!isLoggedIn) {
-        return (
-            <>
-                You must be logged into your account.
-            </>
-        )
-    }
-    let userId: string | undefined;
-    if (isLoggedIn) {
-        userId = session?.user?.id
-    }
 
     const [showAddDriver, setShowAddDriver] = useState(false)
     const [showAddAction, setShowAddAction] = useState(false)
@@ -39,6 +27,99 @@ export default function FocusPage() {
     const driverInputRef = useRef<HTMLInputElement>(null)
     const actionInputRef = useRef<HTMLInputElement>(null)
 
+    const { activeOutcomes, parkedOutcomes, totalOutcomes } = useMemo(() => {
+        const active = outcomes.filter(o => {
+            if (!o.status) return true;
+            return o.status.toUpperCase() === 'ACTIVE';
+        }).slice(0, 3);
+
+        const parked = outcomes.filter(o => o.status && o.status.toUpperCase() === 'PARKED');
+
+        return {
+            activeOutcomes: active,
+            parkedOutcomes: parked,
+            totalOutcomes: outcomes.length
+        };
+    }, [outcomes]);
+
+useEffect(() => {
+    console.log('useEffect triggered - status:', status, 'session:', session, 'user_id:', session?.user?.id);
+
+    async function loadOutcomes() {
+        if (status === 'loading') {
+            console.log('Session still loading, waiting...');
+            return;
+        }
+
+        if (status === 'unauthenticated') {
+            console.log('User not authenticated');
+            setLoading(false);
+            return;
+        }
+
+        if (!session || !session.user || !session.user.id) {
+            console.log('Incomplete session data, waiting...', { session, user: session?.user, id: session?.user?.id });
+            return;
+        }
+
+        console.log('Starting to fetch outcomes for user:', session.user.id);
+        setLoading(true);
+
+        try {
+            const response = await outcomeAPI.get<ListOutcomesResponse>('/outcomes', {
+                params: {user_id: session.user.id, page_size: 20}
+            });
+
+            console.log('API Response:', response);
+            console.log('Response data:', response.data);
+            console.log('Response data length:', response.data?.length);
+
+            if (response.data && Array.isArray(response.data)) {
+                console.log('Setting outcomes with:', response.data.length, 'items');
+                setOutcomes(response.data);
+
+                if (response.data.length > 0 && !currentOutcome) {
+                    const activeOnes = response.data.filter(o => {
+                        if (!o.status) return true;
+                        return o.status.toUpperCase() === 'ACTIVE';
+                    }).slice(0, 3);
+
+                    console.log('Active outcomes found:', activeOnes.length);
+
+                    if (activeOnes.length > 0) {
+                        const first = activeOnes[0];
+                        console.log('Selecting first outcome:', first.title);
+                        setCurrentOutcome(first);
+                        setSelectedDriverIds(first.drivers?.length > 0 ? [first.drivers[0].id] : []);
+                    }
+                }
+            } else {
+                console.error('Invalid response structure:', response);
+                setOutcomes([]);
+            }
+        } catch (error) {
+            console.error('Failed to fetch outcomes - Error:', error);
+            setOutcomes([]);
+        } finally {
+            console.log('Fetch complete, setting loading to false');
+            setLoading(false);
+        }
+    }
+
+    loadOutcomes();
+}, [session, status, currentOutcome]);
+
+    useEffect(() => {
+        if (showAddDriver && driverInputRef.current) {
+            driverInputRef.current.focus()
+        }
+    }, [showAddDriver])
+
+    useEffect(() => {
+        if (showAddAction && actionInputRef.current) {
+            actionInputRef.current.focus()
+        }
+    }, [showAddAction])
 
     const drivers = currentOutcome?.drivers ?? []
 
@@ -53,65 +134,62 @@ export default function FocusPage() {
 
     const selectedDrivers = drivers.filter(d => selectedDriverIds.includes(d.id))
 
-    useEffect(() => {
-        fetchOutcomes()
-    }, [])
-
-    // Auto-focus inputs when forms open
-    useEffect(() => {
-        if (showAddDriver && driverInputRef.current) {
-            driverInputRef.current.focus()
-        }
-    }, [showAddDriver])
-
-    useEffect(() => {
-        if (showAddAction && actionInputRef.current) {
-            actionInputRef.current.focus()
-        }
-    }, [showAddAction])
-
-    function fetchOutcomes() {
-        setLoading(true)
-        outcomeAPI.get<ListOutcomesResponse>('/focus/' + userId, {
-            params: {user_id: 'user-123', page_size: 20}
-        })
-            .then((response) => {
-                setOutcomes(response.data)
-
-                if (currentOutcome) {
-                    // Preserve selection if possible
-                    const updated = response.data.find(o => o.id === currentOutcome.id)
-                    if (updated) {
-                        setCurrentOutcome(updated)
-                        // Keep only valid driver selections
-                        const validIds = selectedDriverIds.filter(id =>
-                            updated.drivers.find(d => d.id === id)
-                        )
-                        if (validIds.length > 0) {
-                            setSelectedDriverIds(validIds)
-                        } else if (updated.drivers.length > 0) {
-                            setSelectedDriverIds([updated.drivers[0].id])
-                        }
-                    }
-                } else if (response.data.length > 0) {
-                    // Auto-select first outcome on initial load
-                    const first = response.data[0]
-                    setCurrentOutcome(first)
-                    setSelectedDriverIds(first.drivers.length > 0 ? [first.drivers[0].id] : [])
-                }
-            })
-            .catch((error) => {
-                console.error('Failed to fetch outcomes:', error)
-            })
-            .finally(() => {
-                setLoading(false)
-            })
+function fetchOutcomes() {
+    if (!session?.user?.id) {
+        console.log('No user ID, skipping fetch');
+        return;
     }
 
-    function selectOutcome(id: string) {
-        const outcome = outcomes.find(o => o.id === id)
+    console.log('Starting to fetch outcomes for user:', session.user.id);
+    setLoading(true)
+
+    outcomeAPI.get<ListOutcomesResponse>('/outcomes', {
+        params: {user_id: session.user.id, page_size: 20}
+    })
+        .then((response) => {
+            console.log('API Response:', response);
+            console.log('Response data:', response.data);
+            console.log('Response data length:', response.data?.length);
+
+            if (response.data && Array.isArray(response.data)) {
+                console.log('Setting outcomes with:', response.data.length, 'items');
+                setOutcomes(response.data)
+            } else {
+                console.error('Invalid response structure:', response);
+                setOutcomes([])
+            }
+
+            // Auto-select first active outcome on initial load
+            if (response.data && response.data.length > 0 && !currentOutcome) {
+                const activeOnes = response.data.filter(o => {
+                    if (!o.status) return true;
+                    return o.status.toUpperCase() === 'ACTIVE';
+                }).slice(0, 3);
+
+                console.log('Active outcomes found:', activeOnes.length);
+
+                if (activeOnes.length > 0) {
+                    const first = activeOnes[0]
+                    console.log('Selecting first outcome:', first.title);
+                    setCurrentOutcome(first)
+                    setSelectedDriverIds(first.drivers?.length > 0 ? [first.drivers[0].id] : [])
+                }
+            }
+        })
+        .catch((error) => {
+            console.error('Failed to fetch outcomes - Error:', error)
+            console.error('Error details:', error.message, error.response);
+            setOutcomes([])
+        })
+        .finally(() => {
+            console.log('Fetch complete, setting loading to false');
+            setLoading(false)
+        })
+}
+
+    function selectOutcome(outcome: Outcome) {
         setCurrentOutcome(outcome)
-        setSelectedDriverIds(outcome?.drivers.length ? [outcome.drivers[0].id] : [])
+        setSelectedDriverIds(outcome?.drivers?.length ? [outcome.drivers[0].id] : [])
         setShowAddDriver(false)
         setShowAddAction(false)
     }
@@ -119,7 +197,6 @@ export default function FocusPage() {
     function toggleDriver(id: string) {
         setSelectedDriverIds(prev => {
             if (prev.includes(id)) {
-                // Don't allow deselecting the last driver
                 if (prev.length === 1) return prev
                 return prev.filter(dId => dId !== id)
             }
@@ -127,25 +204,47 @@ export default function FocusPage() {
         })
     }
 
-    const formatDate = () => {
-        return new Date().toLocaleDateString('en-US', {
-            weekday: 'short',
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric'
-        })
+    async function handleParkOutcome(outcomeId: string) {
+        try {
+            await outcomeAPI.patch(`/outcomes/${outcomeId}`, {
+                status: 'PARKED'
+            })
+            fetchOutcomes()
+            if (currentOutcome?.id === outcomeId) {
+                setCurrentOutcome(undefined)
+            }
+        } catch (error) {
+            console.error('Failed to park outcome:', error)
+        }
+    }
+
+    async function handleCompleteOutcome(outcomeId: string) {
+        const confirmed = confirm("Mark this outcome as completed?")
+        if (!confirmed) return
+
+        try {
+            await outcomeAPI.patch(`/outcomes/${outcomeId}`, {
+                status: 'COMPLETED'
+            })
+            fetchOutcomes()
+            if (currentOutcome?.id === outcomeId) {
+                setCurrentOutcome(undefined)
+            }
+        } catch (error) {
+            console.error('Failed to complete outcome:', error)
+        }
     }
 
     async function handleAddDriver(e: React.FormEvent) {
         e.preventDefault()
-        if (!newDriverTitle.trim() || !currentOutcome) return
+        if (!newDriverTitle.trim() || !currentOutcome || !session?.user?.id) return
 
         setIsSubmitting(true)
         try {
             await outcomeAPI.post(`/drivers`, {
                 title: newDriverTitle.trim(),
                 outcome_id: currentOutcome.id,
-                user_id: userId
+                user_id: session.user.id
             })
             setNewDriverTitle('')
             setShowAddDriver(false)
@@ -159,9 +258,8 @@ export default function FocusPage() {
 
     async function handleAddAction(e: React.FormEvent) {
         e.preventDefault()
-        if (!newActionTitle.trim() || selectedDriverIds.length === 0) return
+        if (!newActionTitle.trim() || selectedDriverIds.length === 0 || !session?.user?.id) return
 
-        // Add to the first selected driver
         const targetDriverId = selectedDriverIds[0]
 
         setIsSubmitting(true)
@@ -170,7 +268,7 @@ export default function FocusPage() {
                 title: newActionTitle.trim(),
                 driver_id: targetDriverId,
                 outcome_id: currentOutcome?.id,
-                user_id: userId
+                user_id: session.user.id
             })
             setNewActionTitle('')
             setShowAddAction(false)
@@ -185,7 +283,7 @@ export default function FocusPage() {
     async function toggleActionCompletion(action: Action) {
         try {
             await outcomeAPI.patch(`/actions/${action.id}`, {
-                completed_at: action.completed_at ? null : new Date().toISOString()
+                is_completed: !action.is_completed
             })
             fetchOutcomes()
         } catch (error) {
@@ -199,323 +297,466 @@ export default function FocusPage() {
         }
     }
 
-    if (loading && outcomes.length === 0) {
-        return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="flex flex-col items-center gap-3">
-                    <div
-                        className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                    <div className="text-gray-500 text-sm">Loading...</div>
-                </div>
-            </div>
-        )
+    const formatDate = () => {
+        return new Date().toLocaleDateString('en-US', {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        })
     }
 
-    const totalActions = drivers.reduce((sum, driver) => sum + (driver.actions?.length ?? 0), 0)
-    const completedActions = drivers.reduce((sum, driver) =>
-        sum + (driver.actions?.filter(a => a.completed_at !== null).length ?? 0), 0
-    )
-    const progressPercentage = totalActions > 0 ? Math.round((completedActions / totalActions) * 100) : 0
+    // Handle loading and auth states
+    if (status === 'loading' || loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="flex flex-col items-center">
+                    <div className="h-12 w-12 mb-4 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"/>
+                    <p className="text-gray-600 text-lg font-medium">Loading your focus area...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!session) {
+        return (
+            <div className="min-h-screen bg-gray-50 py-12 flex items-center justify-center">
+                <div className="text-center">
+                    <p className="text-gray-900 font-medium text-lg">Authentication Required</p>
+                    <p className="text-gray-600 mt-2">You must be logged into your account.</p>
+                </div>
+            </div>
+        );
+    }
+
+    console.log('Rendering - Total outcomes:', totalOutcomes);
+    console.log('Rendering - Active outcomes:', activeOutcomes.length);
+    console.log('Rendering - Active outcomes data:', activeOutcomes);
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <main className="max-w-4xl mx-auto px-6 py-8">
-                {/* Header */}
-                <div className="flex items-baseline justify-between mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900">Today's Focus</h1>
-                    <span className="text-sm text-gray-500">{formatDate()}</span>
-                </div>
-
-                {/* Outcome Selector */}
-                <section className="mb-6">
-                    <label className="text-xs font-semibold text-gray-500 tracking-wider uppercase block mb-3">
-                        Outcome
-                    </label>
-                    <div className="flex flex-wrap gap-2">
-                        {outcomes.map((outcome) => (
-                            <button
-                                key={outcome.id}
-                                onClick={() => selectOutcome(outcome.id)}
-                                className={`
-                                    px-4 py-2 rounded-lg text-sm font-medium transition-all
-                                    ${currentOutcome?.id === outcome.id
-                                    ? 'bg-blue-600 text-white shadow-sm'
-                                    : 'bg-white border border-gray-200 text-gray-700 hover:border-gray-300'
-                                }
-                                `}
-                            >
-                                {outcome.title}
-                            </button>
-                        ))}
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="mb-8">
+                    <div className="flex items-center justify-between mb-2">
+                        <h1 className="text-3xl font-bold text-gray-900 flex items-center">
+                            <svg className="w-8 h-8 mr-3 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                            Today's Focus
+                        </h1>
+                        <span className="text-sm text-gray-500 font-medium">{formatDate()}</span>
                     </div>
-                </section>
 
-                {/* Current Outcome Details */}
-                {currentOutcome && (
-                    <section className="bg-white border border-gray-200 rounded-xl p-5 mb-6">
-                        <div className="flex items-start justify-between mb-3">
-                            <div>
-                                <h2 className="text-xl font-semibold text-gray-900">
-                                    {currentOutcome.title}
-                                </h2>
-                                {currentOutcome.why_it_matters && (
-                                    <p className="text-gray-500 text-sm mt-1">
-                                        {currentOutcome.why_it_matters}
-                                    </p>
-                                )}
-                            </div>
-                            {currentOutcome.success_metric_value && (
-                                <div className="text-right text-sm">
-                                    <span className="text-gray-500">Target:</span>
-                                    <span className="ml-1 font-semibold text-gray-900">
-                                        {currentOutcome.success_metric_value} {currentOutcome.success_metric_unit}
-                                    </span>
-                                </div>
-                            )}
-                        </div>
-
-                        {totalActions > 0 && (
-                            <div className="flex items-center gap-3 mt-4 pt-4 border-t border-gray-100">
-                                <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full bg-blue-500 rounded-full transition-all duration-300"
-                                        style={{width: `${progressPercentage}%`}}
-                                    />
-                                </div>
-                                <span className="text-sm text-gray-600 tabular-nums">
-                                    {completedActions}/{totalActions}
+                    {totalOutcomes > 0 && (
+                        <div className="flex items-center justify-between px-4 py-3 bg-blue-50 border border-blue-200 rounded-lg">
+                            <div className="flex items-center space-x-2">
+                                <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span className="text-sm font-medium text-blue-900">
+                                    Showing {activeOutcomes.length} active outcome{activeOutcomes.length !== 1 ? 's' : ''} out of {totalOutcomes} total
                                 </span>
                             </div>
-                        )}
-                    </section>
-                )}
-
-                {/* Driver Tabs */}
-                {currentOutcome && (
-                    <section className="mb-6">
-                        <div className="flex items-center gap-2 border-b border-gray-200">
-                            {drivers.map((driver) => {
-                                const isSelected = selectedDriverIds.includes(driver.id)
-                                const driverActions = driver.actions ?? []
-                                const completed = driverActions.filter(a => a.completed_at !== null).length
-
-                                return (
-                                    <button
-                                        key={driver.id}
-                                        onClick={() => toggleDriver(driver.id)}
-                                        className={`
-                                            px-4 py-3 text-sm font-medium transition-all relative
-                                            ${isSelected
-                                            ? 'text-blue-600 border-b-2 border-blue-600 -mb-px bg-blue-50'
-                                            : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-                                        }
-                                        `}
-                                    >
-                                        {driver.title}
-                                        {driverActions.length > 0 && (
-                                            <span
-                                                className={`ml-2 text-xs ${isSelected ? 'text-blue-500' : 'text-gray-400'}`}>
-                                                {completed}/{driverActions.length}
-                                            </span>
-                                        )}
-                                    </button>
-                                )
-                            })}
-
-                            {/* Add Driver Button */}
-                            <button
-                                onClick={() => setShowAddDriver(true)}
-                                className="px-3 py-3 text-gray-400 hover:text-blue-600 transition-colors"
-                                title="Add driver"
+                            <Link
+                                href="/u/outcomes"
+                                className="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center"
                             >
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                                          d="M12 4v16m8-8H4"/>
+                                Manage Outcomes
+                                <svg className="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                 </svg>
-                            </button>
+                            </Link>
                         </div>
+                    )}
+                </div>
 
-                        {/* Add Driver Form */}
-                        {showAddDriver && (
-                            <form onSubmit={handleAddDriver} className="mt-3 flex gap-2">
-                                <input
-                                    ref={driverInputRef}
-                                    type="text"
-                                    value={newDriverTitle}
-                                    onChange={(e) => setNewDriverTitle(e.target.value)}
-                                    onKeyDown={(e) => handleKeyDown(e, () => {
-                                        setShowAddDriver(false)
-                                        setNewDriverTitle('')
-                                    })}
-                                    placeholder="Driver name..."
-                                    className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    disabled={isSubmitting}
-                                />
-                                <button
-                                    type="submit"
-                                    disabled={!newDriverTitle.trim() || isSubmitting}
-                                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {isSubmitting ? 'Adding...' : 'Add'}
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setShowAddDriver(false)
-                                        setNewDriverTitle('')
-                                    }}
-                                    className="px-3 py-2 text-sm text-gray-500 hover:text-gray-700"
-                                >
-                                    Cancel
-                                </button>
-                            </form>
-                        )}
-                    </section>
-                )}
 
-                {/* Actions List */}
-                <section>
-                    {!currentOutcome ? (
-                        <div className="text-center py-12 text-gray-500">
-                            Select an outcome to get started
+                {activeOutcomes.length === 0 ? (
+                    <div className="bg-white rounded-xl border-2 border-dashed border-gray-300 p-12 text-center">
+                        <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+                            <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
                         </div>
-                    ) : drivers.length === 0 ? (
-                        <div className="text-center py-12">
-                            <p className="text-gray-500 mb-4">No drivers yet. Add one to break down your outcome.</p>
-                            <button
-                                onClick={() => setShowAddDriver(true)}
-                                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100"
-                            >
-                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                                          d="M12 4v16m8-8H4"/>
-                                </svg>
-                                Add Driver
-                            </button>
-                        </div>
-                    ) : selectedDriverIds.length === 0 ? (
-                        <div className="text-center py-12 text-gray-500">
-                            Select a driver to see actions
-                        </div>
-                    ) : (
-                        <div className="space-y-2">
-                            {actions.length > 0 && (
-                                <div className="flex items-center justify-between mb-3">
-                                    <h3 className="text-sm font-medium text-gray-700">
-                                        Actions {selectedDrivers.length === 1
-                                        ? `for ${selectedDrivers[0].title}`
-                                        : `for ${selectedDrivers.length} drivers`}
-                                    </h3>
-                                    <span className="text-xs text-gray-500">
-                                        {actions.filter(a => a.completed_at).length} of {actions.length} done
-                                    </span>
-                                </div>
-                            )}
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">No Active Outcomes</h3>
+                        <p className="text-gray-500 mb-6">Get started by creating or activating an outcome to focus on.</p>
+                        <Link
+                            href="/u/outcomes/create"
+                            className="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700
+                                     text-white text-sm font-medium rounded-lg shadow-sm transition-colors"
+                        >
+                            <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                            Create Your First Outcome
+                        </Link>
+                    </div>
+                ) : (
+                    <>
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                            {activeOutcomes.map((outcome) => {
+                                const totalActions = outcome.drivers?.reduce((sum, d) => sum + (d.actions?.length ?? 0), 0) ?? 0
+                                const completedActions = outcome.drivers?.reduce((sum, d) =>
+                                    sum + (d.actions?.filter(a => a.is_completed).length ?? 0), 0
+                                ) ?? 0
+                                const progress = totalActions > 0 ? Math.round((completedActions / totalActions) * 100) : 0
+                                const isSelected = currentOutcome?.id === outcome.id
 
-                            {actions.map((action) => {
-                                const isCompleted = action.completed_at !== null
-                                const actionDriver = drivers.find(d => d.id === action.driver_id)
+                                const daysUntilDeadline = outcome.deadline
+                                    ? Math.ceil((new Date(outcome.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+                                    : null
+                                const isOverdue = daysUntilDeadline !== null && daysUntilDeadline < 0
+                                const isUrgent = daysUntilDeadline !== null && daysUntilDeadline <= 7 && daysUntilDeadline >= 0
 
                                 return (
                                     <div
-                                        key={action.id}
+                                        key={outcome.id}
+                                        onClick={() => selectOutcome(outcome)}
                                         className={`
-                                            flex items-start gap-3 p-4 bg-white border rounded-lg transition-all
-                                            ${isCompleted
-                                            ? 'border-gray-100 bg-gray-50'
-                                            : 'border-gray-200 hover:border-gray-300'
-                                        }
+                                            bg-white rounded-xl border-2 transition-all cursor-pointer
+                                            ${isSelected 
+                                                ? 'border-primary-500 shadow-lg ring-2 ring-primary-100' 
+                                                : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
+                                            }
                                         `}
                                     >
-                                        <button
-                                            onClick={() => toggleActionCompletion(action)}
-                                            className={`
-                                                w-5 h-5 rounded border-2 flex-shrink-0 mt-0.5 transition-all flex items-center justify-center
-                                                ${isCompleted
-                                                ? 'bg-green-500 border-green-500'
-                                                : 'border-gray-300 hover:border-blue-500'
-                                            }
-                                            `}
-                                        >
-                                            {isCompleted && (
-                                                <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24"
-                                                     stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3}
-                                                          d="M5 13l4 4L19 7"/>
-                                                </svg>
+                                        <div className="p-6">
+                                            <div className="flex items-start justify-between mb-3">
+                                                <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 flex-1">
+                                                    {outcome.title}
+                                                </h3>
+                                                {daysUntilDeadline !== null && (
+                                                    <span className={`ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
+                                                        isOverdue 
+                                                            ? 'bg-red-100 text-red-800' 
+                                                            : isUrgent
+                                                            ? 'bg-amber-100 text-amber-800'
+                                                            : 'bg-green-100 text-green-800'
+                                                    }`}>
+                                                        {isOverdue
+                                                            ? 'Overdue'
+                                                            : daysUntilDeadline === 0
+                                                            ? 'Due Today'
+                                                            : `${daysUntilDeadline}d left`
+                                                        }
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            <div className="mb-4">
+                                                <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
+                                                    <span className="font-medium">Progress</span>
+                                                    <span className="font-bold">{progress}%</span>
+                                                </div>
+                                                <div className="w-full bg-gray-200 rounded-full h-2">
+                                                    <div
+                                                        className="bg-gradient-to-r from-primary-500 to-primary-600 h-2 rounded-full transition-all"
+                                                        style={{ width: `${progress}%` }}
+                                                    />
+                                                </div>
+                                                <div className="flex items-center justify-between text-xs text-gray-500 mt-1">
+                                                    <span>{completedActions} of {totalActions} actions done</span>
+                                                    <span>{outcome.drivers?.length ?? 0} drivers</span>
+                                                </div>
+                                            </div>
+
+                                            {outcome.success_metric_value && (
+                                                <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                                                    <div className="text-xs text-gray-500 mb-1">Success Target</div>
+                                                    <div className="text-sm font-semibold text-gray-900">
+                                                        {outcome.success_metric_value} {outcome.success_metric_unit}
+                                                    </div>
+                                                </div>
                                             )}
-                                        </button>
-                                        <div className="flex-1 min-w-0">
-                                            <span
-                                                className={`text-sm ${isCompleted ? 'text-gray-400 line-through' : 'text-gray-900'}`}>
-                                                {action.title}
-                                            </span>
-                                            {selectedDriverIds.length > 1 && actionDriver && (
-                                                <span
-                                                    className="ml-2 text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded">
-                                                    {actionDriver.title}
-                                                </span>
-                                            )}
+
+                                            <div className="flex gap-2 pt-4 border-t border-gray-100">
+                                                <Link
+                                                    href={`/u/outcomes/${outcome.id}`}
+                                                    onClick={(e) => e.stopPropagation()}
+                                                    className="flex-1 px-3 py-2 text-xs font-medium text-gray-700 bg-gray-100
+                                                             hover:bg-gray-200 rounded-lg transition-colors text-center"
+                                                >
+                                                    View Details
+                                                </Link>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation()
+                                                        handleParkOutcome(outcome.id)
+                                                    }}
+                                                    className="px-3 py-2 text-xs font-medium text-amber-700 bg-amber-50
+                                                             hover:bg-amber-100 rounded-lg transition-colors"
+                                                    title="Park Outcome"
+                                                >
+                                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
+                                                    </svg>
+                                                </button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation()
+                                                        handleCompleteOutcome(outcome.id)
+                                                    }}
+                                                    className="px-3 py-2 text-xs font-medium text-green-700 bg-green-50
+                                                             hover:bg-green-100 rounded-lg transition-colors"
+                                                    title="Complete Outcome"
+                                                >
+                                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                    </svg>
+                                                </button>
+                                            </div>
                                         </div>
-                                        {action.scheduled_for && !isCompleted && (
-                                            <span className="text-xs text-gray-400 flex-shrink-0">
-                                                {new Date(action.scheduled_for).toLocaleDateString()}
-                                            </span>
-                                        )}
                                     </div>
                                 )
                             })}
 
-                            {/* Add Action */}
-                            {showAddAction ? (
-                                <form onSubmit={handleAddAction}
-                                      className="flex gap-2 p-2 bg-white border border-blue-200 rounded-lg">
-                                    <input
-                                        ref={actionInputRef}
-                                        type="text"
-                                        value={newActionTitle}
-                                        onChange={(e) => setNewActionTitle(e.target.value)}
-                                        onKeyDown={(e) => handleKeyDown(e, () => {
-                                            setShowAddAction(false)
-                                            setNewActionTitle('')
-                                        })}
-                                        placeholder="What needs to be done?"
-                                        className="flex-1 px-3 py-2 text-sm border-0 focus:outline-none focus:ring-0"
-                                        disabled={isSubmitting}
-                                    />
-                                    <button
-                                        type="submit"
-                                        disabled={!newActionTitle.trim() || isSubmitting}
-                                        className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        {isSubmitting ? 'Adding...' : 'Add'}
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setShowAddAction(false)
-                                            setNewActionTitle('')
-                                        }}
-                                        className="px-3 py-2 text-sm text-gray-500 hover:text-gray-700"
-                                    >
-                                        Cancel
-                                    </button>
-                                </form>
-                            ) : (
-                                <button
-                                    onClick={() => setShowAddAction(true)}
-                                    className="w-full flex items-center gap-2 p-3 text-sm text-gray-500 hover:text-blue-600 hover:bg-blue-50 border border-dashed border-gray-200 hover:border-blue-300 rounded-lg transition-all"
+                            {activeOutcomes.length < 3 && (
+                                <Link
+                                    href="/u/outcomes/create"
+                                    className="bg-white rounded-xl border-2 border-dashed border-gray-300
+                                             hover:border-primary-400 hover:bg-primary-50 transition-all p-6
+                                             flex flex-col items-center justify-center text-center min-h-[280px]"
                                 >
-                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                                              d="M12 4v16m8-8H4"/>
-                                    </svg>
-                                    Add action
-                                </button>
+                                    <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-3">
+                                        <svg className="w-6 h-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                        </svg>
+                                    </div>
+                                    <h3 className="text-sm font-medium text-gray-900 mb-1">
+                                        {parkedOutcomes.length > 0 ? 'Activate Parked Outcome' : 'Create New Outcome'}
+                                    </h3>
+                                    <p className="text-xs text-gray-500">
+                                        {parkedOutcomes.length > 0
+                                            ? `${parkedOutcomes.length} parked outcome${parkedOutcomes.length !== 1 ? 's' : ''} available`
+                                            : 'Add another goal to focus on'
+                                        }
+                                    </p>
+                                </Link>
                             )}
                         </div>
-                    )}
-                </section>
+
+                        {currentOutcome && (
+                            <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+                                {/* Driver Tabs */}
+                                <div className="border-b border-gray-200 px-6">
+                                    <div className="flex items-center gap-2 -mb-px overflow-x-auto">
+                                        <span className="text-sm font-medium text-gray-500 py-4 flex-shrink-0">Drivers:</span>
+                                        {drivers.map((driver) => {
+                                            const isSelected = selectedDriverIds.includes(driver.id)
+                                            const driverActions = driver.actions ?? []
+                                            const completed = driverActions.filter(a => a.is_completed).length
+
+                                            return (
+                                                <button
+                                                    key={driver.id}
+                                                    onClick={() => toggleDriver(driver.id)}
+                                                    className={`
+                                                        px-4 py-4 text-sm font-medium transition-all relative flex-shrink-0
+                                                        ${isSelected
+                                                        ? 'text-primary-600 border-b-2 border-primary-600 bg-primary-50'
+                                                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                                                    }
+                                                    `}
+                                                >
+                                                    {driver.title}
+                                                    {driverActions.length > 0 && (
+                                                        <span className={`ml-2 text-xs ${isSelected ? 'text-primary-500' : 'text-gray-400'}`}>
+                                                            {completed}/{driverActions.length}
+                                                        </span>
+                                                    )}
+                                                </button>
+                                            )
+                                        })}
+
+                                        <button
+                                            onClick={() => setShowAddDriver(true)}
+                                            className="px-3 py-4 text-gray-400 hover:text-primary-600 transition-colors flex-shrink-0"
+                                            title="Add driver"
+                                        >
+                                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    {showAddDriver && (
+                                        <form onSubmit={handleAddDriver} className="py-3 flex gap-2">
+                                            <input
+                                                ref={driverInputRef}
+                                                type="text"
+                                                value={newDriverTitle}
+                                                onChange={(e) => setNewDriverTitle(e.target.value)}
+                                                onKeyDown={(e) => handleKeyDown(e, () => {
+                                                    setShowAddDriver(false)
+                                                    setNewDriverTitle('')
+                                                })}
+                                                placeholder="Driver name..."
+                                                className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg
+                                                         focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                                disabled={isSubmitting}
+                                            />
+                                            <button
+                                                type="submit"
+                                                disabled={!newDriverTitle.trim() || isSubmitting}
+                                                className="px-4 py-2 text-sm font-medium text-white bg-primary-600
+                                                         rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            >
+                                                {isSubmitting ? 'Adding...' : 'Add'}
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setShowAddDriver(false)
+                                                    setNewDriverTitle('')
+                                                }}
+                                                className="px-3 py-2 text-sm text-gray-500 hover:text-gray-700"
+                                            >
+                                                Cancel
+                                            </button>
+                                        </form>
+                                    )}
+                                </div>
+
+                                <div className="p-6">
+                                    {drivers.length === 0 ? (
+                                        <div className="text-center py-12">
+                                            <p className="text-gray-500 mb-4">No drivers yet. Add one to break down your outcome.</p>
+                                            <button
+                                                onClick={() => setShowAddDriver(true)}
+                                                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium
+                                                         text-primary-600 bg-primary-50 rounded-lg hover:bg-primary-100"
+                                            >
+                                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/>
+                                                </svg>
+                                                Add Driver
+                                            </button>
+                                        </div>
+                                    ) : selectedDriverIds.length === 0 ? (
+                                        <div className="text-center py-12 text-gray-500">
+                                            Select a driver to see actions
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-2">
+                                            {actions.length > 0 && (
+                                                <div className="flex items-center justify-between mb-4">
+                                                    <h3 className="text-sm font-semibold text-gray-900">
+                                                        Actions {selectedDrivers.length === 1
+                                                        ? `for ${selectedDrivers[0].title}`
+                                                        : `for ${selectedDrivers.length} drivers`}
+                                                    </h3>
+                                                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                                        {actions.filter(a => a.is_completed).length} of {actions.length} done
+                                                    </span>
+                                                </div>
+                                            )}
+
+                                            {actions.map((action) => {
+                                                const isCompleted = action.is_completed
+                                                const actionDriver = drivers.find(d => d.id === action.driver_id)
+
+                                                return (
+                                                    <div
+                                                        key={action.id}
+                                                        className={`
+                                                            flex items-start gap-3 p-4 bg-white border rounded-lg transition-all
+                                                            ${isCompleted
+                                                            ? 'border-gray-100 bg-gray-50'
+                                                            : 'border-gray-200 hover:border-primary-300 hover:shadow-sm'
+                                                        }
+                                                        `}
+                                                    >
+                                                        <button
+                                                            onClick={() => toggleActionCompletion(action)}
+                                                            className={`
+                                                                w-5 h-5 rounded border-2 flex-shrink-0 mt-0.5 transition-all 
+                                                                flex items-center justify-center
+                                                                ${isCompleted
+                                                                ? 'bg-green-500 border-green-500'
+                                                                : 'border-gray-300 hover:border-primary-500'
+                                                            }
+                                                            `}
+                                                        >
+                                                            {isCompleted && (
+                                                                <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/>
+                                                                </svg>
+                                                            )}
+                                                        </button>
+                                                        <div className="flex-1 min-w-0">
+                                                            <span className={`text-sm ${isCompleted ? 'text-gray-400 line-through' : 'text-gray-900'}`}>
+                                                                {action.title}
+                                                            </span>
+                                                            {selectedDriverIds.length > 1 && actionDriver && (
+                                                                <span className="ml-2 text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded">
+                                                                    {actionDriver.title}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        {action.scheduled_for && !isCompleted && (
+                                                            <span className="text-xs text-gray-400 flex-shrink-0">
+                                                                {new Date(action.scheduled_for).toLocaleDateString()}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                )
+                                            })}
+
+                                            {showAddAction ? (
+                                                <form onSubmit={handleAddAction} className="flex gap-2 p-3 bg-white border-2 border-primary-200 rounded-lg">
+                                                    <input
+                                                        ref={actionInputRef}
+                                                        type="text"
+                                                        value={newActionTitle}
+                                                        onChange={(e) => setNewActionTitle(e.target.value)}
+                                                        onKeyDown={(e) => handleKeyDown(e, () => {
+                                                            setShowAddAction(false)
+                                                            setNewActionTitle('')
+                                                        })}
+                                                        placeholder="What needs to be done?"
+                                                        className="flex-1 px-3 py-2 text-sm border-0 focus:outline-none focus:ring-0"
+                                                        disabled={isSubmitting}
+                                                    />
+                                                    <button
+                                                        type="submit"
+                                                        disabled={!newActionTitle.trim() || isSubmitting}
+                                                        className="px-4 py-2 text-sm font-medium text-white bg-primary-600
+                                                                 rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    >
+                                                        {isSubmitting ? 'Adding...' : 'Add'}
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            setShowAddAction(false)
+                                                            setNewActionTitle('')
+                                                        }}
+                                                        className="px-3 py-2 text-sm text-gray-500 hover:text-gray-700"
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                </form>
+                                            ) : (
+                                                <button
+                                                    onClick={() => setShowAddAction(true)}
+                                                    className="w-full flex items-center justify-center gap-2 p-4 text-sm font-medium
+                                                             text-gray-600 hover:text-primary-600 hover:bg-primary-50 border-2
+                                                             border-dashed border-gray-200 hover:border-primary-300 rounded-lg
+                                                             transition-all"
+                                                >
+                                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/>
+                                                    </svg>
+                                                    Add action
+                                                </button>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </>
+                )}
             </main>
         </div>
     )

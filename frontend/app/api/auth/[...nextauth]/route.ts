@@ -1,11 +1,11 @@
-import NextAuth from "next-auth";
+import NextAuth, {NextAuthOptions} from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import {authAPI} from "@/utils/fetchWrapper";
 import {JWT} from "next-auth/jwt";
 import {AuthResponse} from "@/app/types/outcomeTypes";
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
     providers: [
         GitHubProvider({
             clientId: process.env.GITHUB_ID ?? "",
@@ -17,7 +17,7 @@ export const authOptions = {
                 email: {label: "Email", type: "email"},
                 password: {label: "Password", type: "password"},
             },
-            authorize: async function (credentials: any) {
+            async authorize(credentials) {
                 if (!credentials || !credentials.email || !credentials.password) {
                     throw new Error("Invalid Credentials");
                 }
@@ -51,33 +51,38 @@ export const authOptions = {
         })
     ],
     callbacks: {
-        async jwt({token, user, account}: { user: any; token: JWT; account: any }) {
-            // Initial sign in
+        async jwt({token, user}) {
             if (user) {
-                token.accessToken = user.accessToken;
                 token.id = user.id;
                 token.company = user.company;
+                token.accessToken = user.accessToken;
             }
+
+            if (!token.id && token.sub) {
+                token.id = token.sub;
+            }
+
             return token;
         },
-        async session({session, token}: { session: any; token: JWT }) {
-    console.log("Session callback - token:", token);
-    if (token) {
-        session.user.id = token.id;
-        session.user.company = token.company;
-        session.accessToken = token.accessToken;
-    }
-    console.log("Session callback - session:", session);
-    return session;
-}
+
+        async session({session, token}) {
+            if (session.user) {
+                session.user.id = token.id as string;
+                session.user.company = token.company as string;
+            }
+            session.accessToken = token.accessToken as string;
+            return session;
+        }
+
     },
     pages: {
         signIn: "/auth/signin",
     },
     session: {
-        strategy: "jwt" as const,
+        strategy: "jwt",
     },
     secret: process.env.NEXTAUTH_SECRET,
+    debug: true, // Enable debug mode to see more logs
 };
 
 export const handler = NextAuth(authOptions);
