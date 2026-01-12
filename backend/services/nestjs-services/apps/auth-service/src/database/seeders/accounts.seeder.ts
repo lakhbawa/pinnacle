@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Seeder } from './seeder.interface';
 import {PrismaService} from "../../prisma.service";
-import {md5} from "../../../utils/misc";
 import {AuthenticationService} from "../../authentication/authentication.service";
 
 @Injectable()
