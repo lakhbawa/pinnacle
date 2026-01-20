@@ -49,6 +49,25 @@ services:
       - pinnacle-kafka
     networks: [pinnacle-network]
 
+  pinnacle-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      # Mount source code for live updates
+      - ./frontend:/app
+      # Prevent node_modules from being overwritten
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NEXT_PUBLIC_API_URL=http://127.0.0.1:4700/api/v1
+      - NEXT_INTERNAL_API_URL=http://pinnacle-gateway:8080/api/v1
+    command: npm run dev
+    networks: [pinnacle-network]
+    depends_on:
+      - pinnacle-gateway
   # GATEWAY (Go)
   pinnacle-gateway:
     build:
@@ -137,7 +156,7 @@ services:
       pinnacle-redis:
         condition: service_started
 
-    networks: [pinnacle-network, observer]
+    networks: [pinnacle-network]
 
   pinnacle-notifications-service:
     build:
@@ -161,7 +180,7 @@ services:
       pinnacle-redis:
         condition: service_started
 
-    networks: [pinnacle-network, observer]
+    networks: [pinnacle-network]
   # DATABASES
 
 
