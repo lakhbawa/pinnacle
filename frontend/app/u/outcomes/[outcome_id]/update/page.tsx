@@ -27,9 +27,7 @@ export default function UpdateOutcome({params}: { params: Promise<{ outcome_id: 
     }
     const [formData, setFormData] = useState({
         title: '',
-        why_it_matters: '',           // Changed
-        success_metric_unit: '',      // Changed
-        success_metric_value: 0,      // Changed
+        why_it_matters: '',
         deadline: '',
     })
     const [loading, setLoading] = useState(true)
@@ -61,8 +59,6 @@ export default function UpdateOutcome({params}: { params: Promise<{ outcome_id: 
                         ...formData,
                         title: outcomeData.title,
                         why_it_matters: outcomeData.why_it_matters,
-                        success_metric_unit: outcomeData.success_metric_unit,
-                        success_metric_value: outcomeData.success_metric_value,
                         deadline: toDateTimeLocal(outcomeData.deadline),
                     })
                 }
@@ -187,43 +183,6 @@ export default function UpdateOutcome({params}: { params: Promise<{ outcome_id: 
                   value={formData.why_it_matters}
                   onChange={handleChange}
                 />
-              </div>
-
-              {/* Success Metrics */}
-              <div>
-                <h3 className="text-sm font-medium text-gray-900 mb-3">Success Metrics</h3>
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                  <div>
-                    <label htmlFor="success_metric_value" className="block text-sm font-medium text-gray-700 mb-1">
-                      Target Value
-                    </label>
-                    <input
-                      type="number"
-                      id="success_metric_value"
-                      name="success_metric_value"
-                      required
-                      className="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm
-                               focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-                      value={formData.success_metric_value}
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="success_metric_unit" className="block text-sm font-medium text-gray-700 mb-1">
-                      Unit of Measurement
-                    </label>
-                    <input
-                      type="text"
-                      id="success_metric_unit"
-                      name="success_metric_unit"
-                      required
-                      className="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm
-                               focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-                      value={formData.success_metric_unit}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
               </div>
 
               {/* Deadline */}

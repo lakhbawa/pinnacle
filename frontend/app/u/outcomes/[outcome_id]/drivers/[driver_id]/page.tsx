@@ -18,7 +18,7 @@ export default function ViewDriverPage({ params }: { params: Promise<{ outcome_i
         setDriverData(data.data);
         console.log(data.data)
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load driver');
+        setError(err instanceof Error ? err.message : 'Failed to load initiative');
       } finally {
         setLoading(false);
       }
@@ -34,7 +34,7 @@ export default function ViewDriverPage({ params }: { params: Promise<{ outcome_i
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="animate-pulse flex flex-col items-center">
           <div className="h-8 w-8 mb-4 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
-          <p className="text-gray-600">Loading driver...</p>
+          <p className="text-gray-600">Loading initiative...</p>
         </div>
       </div>
     );
@@ -44,7 +44,7 @@ export default function ViewDriverPage({ params }: { params: Promise<{ outcome_i
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
         <div className="bg-red-50 border-l-4 border-red-500 rounded-lg p-6 max-w-md shadow-sm">
-          <h3 className="text-red-800 font-semibold text-lg mb-2">Error Loading Driver</h3>
+          <h3 className="text-red-800 font-semibold text-lg mb-2">Error Loading Initiative</h3>
           <p className="text-red-600">{error}</p>
           <button
             onClick={() => window.location.reload()}
@@ -68,7 +68,7 @@ export default function ViewDriverPage({ params }: { params: Promise<{ outcome_i
           <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          <p className="mt-4 text-gray-600 font-medium">No driver found</p>
+          <p className="mt-4 text-gray-600 font-medium">No initiative found</p>
           <Link
             href={`/u/outcomes/${outcome_id}`}
             className="mt-4 inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md
@@ -117,7 +117,7 @@ export default function ViewDriverPage({ params }: { params: Promise<{ outcome_i
               <svg className="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
               </svg>
-              <span className="text-gray-900 font-medium">Driver Details</span>
+              <span className="text-gray-900 font-medium">Initiative Details</span>
             </li>
           </ol>
         </nav>
@@ -188,7 +188,7 @@ export default function ViewDriverPage({ params }: { params: Promise<{ outcome_i
                   <svg className="mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                   </svg>
-                  Edit Driver
+                  Edit Initiative
                 </Link>
               </div>
             </div>
@@ -212,7 +212,7 @@ export default function ViewDriverPage({ params }: { params: Promise<{ outcome_i
                   )}
                 </h2>
                 <p className="mt-1 text-sm text-gray-600">
-                  Track and manage specific actions for this driver
+                  Track and manage specific actions for this initiative
                 </p>
               </div>
               <div className="mt-4 sm:mt-0">
@@ -240,7 +240,7 @@ export default function ViewDriverPage({ params }: { params: Promise<{ outcome_i
                   </svg>
                 </div>
                 <h3 className="text-lg font-medium text-gray-900 mb-1">No actions yet</h3>
-                <p className="text-sm text-gray-500 mb-6">Get started by creating your first action for this driver.</p>
+                <p className="text-sm text-gray-500 mb-6">Get started by creating your first action for this initiative.</p>
                 <Link
                   href={`/u/outcomes/${outcome_id}/drivers/${driver_id}/actions/create`}
                   className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm

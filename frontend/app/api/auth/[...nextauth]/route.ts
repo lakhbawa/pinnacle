@@ -1,7 +1,7 @@
 import NextAuth, {NextAuthOptions} from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
-import {authAPI} from "@/utils/fetchWrapper";
+import {authAPIInternal} from "@/utils/fetchWrapper";
 import {JWT} from "next-auth/jwt";
 import {AuthResponse} from "@/app/types/outcomeTypes";
 
@@ -23,7 +23,7 @@ export const authOptions: NextAuthOptions = {
                 }
 
                 try {
-                    const res = await authAPI.post<AuthResponse>("/auth/signin", {
+                    const res = await authAPIInternal.post<AuthResponse>("/auth/signin", {
                         email: credentials.email,
                         password: credentials.password,
                     });

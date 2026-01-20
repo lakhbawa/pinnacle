@@ -7,14 +7,12 @@ export interface Outcome {
     updatedAt: string;
     drivers: Driver[];
     why_it_matters: string,
-    success_metric_value: number,
-    success_metric_unit: string,
     deadline: string,
     status: string,
     created_at: string,
     completed_at: string,
     archived_at: string,
-
+    success_metrics?: SuccessMetric[];
 }
 
 export type Driver = {
@@ -94,3 +92,30 @@ export type OutcomeListResponse = {
     success: boolean,
     data?: Outcome[]
 }
+
+export type SuccessMetric = {
+    id: string;
+    outcome_id: string;
+    metric_name: string;
+    target_value: number;
+    current_value: number;
+    unit: string;
+    description?: string;
+    created_at: string;
+    updated_at: string;
+    outcome?: Outcome;
+}
+
+export type SuccessMetricResponse = {
+    success: boolean;
+    data?: SuccessMetric;
+}
+
+export type SuccessMetricListResponse = {
+    success: boolean;
+    data?: SuccessMetric[];
+}
+
+export type Initiative = Driver;
+export type InitiativeResponse = DriverResponse;
+export type InitiativeListResponse = DriverListResponse;

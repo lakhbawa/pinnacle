@@ -52,12 +52,12 @@ export default function Drivers({params}: { params: Promise<{ outcome_id: string
 
   const deleteDriver = (id: string) => async () => {
     console.log("deleting driver", id);
-    const confirmed = confirm("Are you sure you want to delete this driver?")
+    const confirmed = confirm("Are you sure you want to delete this initiative?")
     if (confirmed) {
       try {
         await outcomeAPI.delete(`/drivers/${id}`)
         setDrivers(drivers.filter(p => p.id !== id))
-        console.log('Driver deleted successfully')
+        console.log('Initiative deleted successfully')
       } catch (error) {
         console.error('Failed to delete outcome:', error)
         alert('Failed to delete outcome')
@@ -65,24 +65,24 @@ export default function Drivers({params}: { params: Promise<{ outcome_id: string
     }
   }
 
-  if (loading) return <div className="p-4">Loading drivers...</div>
+  if (loading) return <div className="p-4">Loading initiatives...</div>
 
   return (
     <>
       <section className="container mx-auto p-4">
 
-        <h1 className="p-4 font-bold bg-primary-600 text-white">Your Drivers</h1>
+        <h1 className="p-4 font-bold bg-primary-600 text-white">Your Initiatives</h1>
 
         {meta && (
           <p className="text-sm text-gray-600 p-2">
-            Showing {drivers.length} of {meta.total} drivers
+            Showing {drivers.length} of {meta.total} initiatives
           </p>
         )}
 
         <section className="bg-gray-200 p-3">
           <section className="grid overflow-x-auto gap-3 grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
             {drivers.length === 0 ? (
-              <div className="p-4 text-gray-500">No drivers yet. Create your first one!</div>
+              <div className="p-4 text-gray-500">No initiatives yet. Create your first one!</div>
             ) : (
               drivers.map((driver) => (
                 <div
@@ -122,7 +122,7 @@ export default function Drivers({params}: { params: Promise<{ outcome_id: string
 
         <Link href={`/u/outcomes/${outcome_id}/drivers/create`}
               className="font-medium bg-blue-500 p-3 my-3 inline-block shadow-2xl text-white rounded">
-          Create Driver
+          Create Initiative
         </Link>
       </section>
     </>

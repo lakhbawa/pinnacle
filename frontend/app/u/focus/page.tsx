@@ -56,6 +56,7 @@ export default function FocusPage() {
                 return;
             }
 
+
             if (!session || !session.user || !session.user.id) {
                 console.log('Incomplete session data, waiting...', {
                     session,
@@ -473,7 +474,7 @@ export default function FocusPage() {
                                                 <div
                                                     className="flex items-center justify-between text-xs text-gray-500 mt-1">
                                                     <span>{completedActions} of {totalActions} actions done</span>
-                                                    <span>{outcome.drivers?.length ?? 0} drivers</span>
+                                                    <span>{outcome.drivers?.length ?? 0} initiatives</span>
                                                 </div>
                                             </div>
 
@@ -562,11 +563,11 @@ export default function FocusPage() {
 
                         {currentOutcome && (
                             <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
-                                {/* Driver Tabs */}
+                                {/* Initiative Tabs */}
                                 <div className="border-b border-gray-200 px-6">
                                     <div className="flex items-center gap-2 -mb-px overflow-x-auto">
                                         <span
-                                            className="text-sm font-medium text-gray-500 py-4 flex-shrink-0">Drivers:</span>
+                                            className="text-sm font-medium text-gray-500 py-4 flex-shrink-0">Initiatives:</span>
                                         {drivers.map((driver) => {
                                             const isSelected = selectedDriverIds.includes(driver.id)
                                             const driverActions = driver.actions ?? []
@@ -598,7 +599,7 @@ export default function FocusPage() {
                                         <button
                                             onClick={() => setShowAddDriver(true)}
                                             className="px-3 py-4 text-gray-400 hover:text-primary-600 transition-colors flex-shrink-0"
-                                            title="Add driver"
+                                            title="Add initiative"
                                         >
                                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24"
                                                  stroke="currentColor">
@@ -619,7 +620,7 @@ export default function FocusPage() {
                                                     setShowAddDriver(false)
                                                     setNewDriverTitle('')
                                                 })}
-                                                placeholder="Driver name..."
+                                                placeholder="Initiative name..."
                                                 className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg
                                                          focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                                 disabled={isSubmitting}
@@ -649,7 +650,7 @@ export default function FocusPage() {
                                 <div className="p-6">
                                     {drivers.length === 0 ? (
                                         <div className="text-center py-12">
-                                            <p className="text-gray-500 mb-4">No drivers yet. Add one to break down your
+                                            <p className="text-gray-500 mb-4">No initiatives yet. Add one to break down your
                                                 outcome.</p>
                                             <button
                                                 onClick={() => setShowAddDriver(true)}
@@ -661,12 +662,12 @@ export default function FocusPage() {
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                                                           d="M12 4v16m8-8H4"/>
                                                 </svg>
-                                                Add Driver
+                                                Add Initiative
                                             </button>
                                         </div>
                                     ) : selectedDriverIds.length === 0 ? (
                                         <div className="text-center py-12 text-gray-500">
-                                            Select a driver to see actions
+                                            Select an initiative to see actions
                                         </div>
                                     ) : (
                                         <div className="space-y-2">
@@ -675,7 +676,7 @@ export default function FocusPage() {
                                                     <h3 className="text-sm font-semibold text-gray-900">
                                                         Actions {selectedDrivers.length === 1
                                                         ? `for ${selectedDrivers[0].title}`
-                                                        : `for ${selectedDrivers.length} drivers`}
+                                                        : `for ${selectedDrivers.length} initiatives`}
                                                     </h3>
                                                     <span
                                                         className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">

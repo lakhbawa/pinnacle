@@ -28,6 +28,11 @@ export type Driver = $Result.DefaultSelection<Prisma.$DriverPayload>
  * 
  */
 export type Action = $Result.DefaultSelection<Prisma.$ActionPayload>
+/**
+ * Model SuccessMetric
+ * 
+ */
+export type SuccessMetric = $Result.DefaultSelection<Prisma.$SuccessMetricPayload>
 
 /**
  * Enums
@@ -195,6 +200,16 @@ export class PrismaClient<
     * ```
     */
   get action(): Prisma.ActionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.successMetric`: Exposes CRUD operations for the **SuccessMetric** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SuccessMetrics
+    * const successMetrics = await prisma.successMetric.findMany()
+    * ```
+    */
+  get successMetric(): Prisma.SuccessMetricDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -631,7 +646,8 @@ export namespace Prisma {
   export const ModelName: {
     Outcome: 'Outcome',
     Driver: 'Driver',
-    Action: 'Action'
+    Action: 'Action',
+    SuccessMetric: 'SuccessMetric'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -647,7 +663,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "outcome" | "driver" | "action"
+      modelProps: "outcome" | "driver" | "action" | "successMetric"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -873,6 +889,80 @@ export namespace Prisma {
           }
         }
       }
+      SuccessMetric: {
+        payload: Prisma.$SuccessMetricPayload<ExtArgs>
+        fields: Prisma.SuccessMetricFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SuccessMetricFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuccessMetricPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SuccessMetricFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuccessMetricPayload>
+          }
+          findFirst: {
+            args: Prisma.SuccessMetricFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuccessMetricPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SuccessMetricFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuccessMetricPayload>
+          }
+          findMany: {
+            args: Prisma.SuccessMetricFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuccessMetricPayload>[]
+          }
+          create: {
+            args: Prisma.SuccessMetricCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuccessMetricPayload>
+          }
+          createMany: {
+            args: Prisma.SuccessMetricCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SuccessMetricCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuccessMetricPayload>[]
+          }
+          delete: {
+            args: Prisma.SuccessMetricDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuccessMetricPayload>
+          }
+          update: {
+            args: Prisma.SuccessMetricUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuccessMetricPayload>
+          }
+          deleteMany: {
+            args: Prisma.SuccessMetricDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SuccessMetricUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SuccessMetricUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuccessMetricPayload>[]
+          }
+          upsert: {
+            args: Prisma.SuccessMetricUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuccessMetricPayload>
+          }
+          aggregate: {
+            args: Prisma.SuccessMetricAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSuccessMetric>
+          }
+          groupBy: {
+            args: Prisma.SuccessMetricGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SuccessMetricGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SuccessMetricCountArgs<ExtArgs>
+            result: $Utils.Optional<SuccessMetricCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -984,6 +1074,7 @@ export namespace Prisma {
     outcome?: OutcomeOmit
     driver?: DriverOmit
     action?: ActionOmit
+    successMetric?: SuccessMetricOmit
   }
 
   /* Types for Logging */
@@ -1066,11 +1157,13 @@ export namespace Prisma {
   export type OutcomeCountOutputType = {
     drivers: number
     actions: number
+    success_metrics: number
   }
 
   export type OutcomeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     drivers?: boolean | OutcomeCountOutputTypeCountDriversArgs
     actions?: boolean | OutcomeCountOutputTypeCountActionsArgs
+    success_metrics?: boolean | OutcomeCountOutputTypeCountSuccess_metricsArgs
   }
 
   // Custom InputTypes
@@ -1096,6 +1189,13 @@ export namespace Prisma {
    */
   export type OutcomeCountOutputTypeCountActionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ActionWhereInput
+  }
+
+  /**
+   * OutcomeCountOutputType without action
+   */
+  export type OutcomeCountOutputTypeCountSuccess_metricsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SuccessMetricWhereInput
   }
 
 
@@ -1140,18 +1240,8 @@ export namespace Prisma {
 
   export type AggregateOutcome = {
     _count: OutcomeCountAggregateOutputType | null
-    _avg: OutcomeAvgAggregateOutputType | null
-    _sum: OutcomeSumAggregateOutputType | null
     _min: OutcomeMinAggregateOutputType | null
     _max: OutcomeMaxAggregateOutputType | null
-  }
-
-  export type OutcomeAvgAggregateOutputType = {
-    success_metric_value: number | null
-  }
-
-  export type OutcomeSumAggregateOutputType = {
-    success_metric_value: number | null
   }
 
   export type OutcomeMinAggregateOutputType = {
@@ -1159,8 +1249,6 @@ export namespace Prisma {
     user_id: string | null
     title: string | null
     why_it_matters: string | null
-    success_metric_value: number | null
-    success_metric_unit: string | null
     deadline: Date | null
     status: $Enums.OutcomeStatus | null
     created_at: Date | null
@@ -1173,8 +1261,6 @@ export namespace Prisma {
     user_id: string | null
     title: string | null
     why_it_matters: string | null
-    success_metric_value: number | null
-    success_metric_unit: string | null
     deadline: Date | null
     status: $Enums.OutcomeStatus | null
     created_at: Date | null
@@ -1187,8 +1273,6 @@ export namespace Prisma {
     user_id: number
     title: number
     why_it_matters: number
-    success_metric_value: number
-    success_metric_unit: number
     deadline: number
     status: number
     created_at: number
@@ -1198,21 +1282,11 @@ export namespace Prisma {
   }
 
 
-  export type OutcomeAvgAggregateInputType = {
-    success_metric_value?: true
-  }
-
-  export type OutcomeSumAggregateInputType = {
-    success_metric_value?: true
-  }
-
   export type OutcomeMinAggregateInputType = {
     id?: true
     user_id?: true
     title?: true
     why_it_matters?: true
-    success_metric_value?: true
-    success_metric_unit?: true
     deadline?: true
     status?: true
     created_at?: true
@@ -1225,8 +1299,6 @@ export namespace Prisma {
     user_id?: true
     title?: true
     why_it_matters?: true
-    success_metric_value?: true
-    success_metric_unit?: true
     deadline?: true
     status?: true
     created_at?: true
@@ -1239,8 +1311,6 @@ export namespace Prisma {
     user_id?: true
     title?: true
     why_it_matters?: true
-    success_metric_value?: true
-    success_metric_unit?: true
     deadline?: true
     status?: true
     created_at?: true
@@ -1287,18 +1357,6 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Select which fields to average
-    **/
-    _avg?: OutcomeAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: OutcomeSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
      * Select which fields to find the minimum value
     **/
     _min?: OutcomeMinAggregateInputType
@@ -1329,8 +1387,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: OutcomeCountAggregateInputType | true
-    _avg?: OutcomeAvgAggregateInputType
-    _sum?: OutcomeSumAggregateInputType
     _min?: OutcomeMinAggregateInputType
     _max?: OutcomeMaxAggregateInputType
   }
@@ -1340,16 +1396,12 @@ export namespace Prisma {
     user_id: string
     title: string
     why_it_matters: string
-    success_metric_value: number
-    success_metric_unit: string
     deadline: Date
     status: $Enums.OutcomeStatus
     created_at: Date
     completed_at: Date | null
     archived_at: Date | null
     _count: OutcomeCountAggregateOutputType | null
-    _avg: OutcomeAvgAggregateOutputType | null
-    _sum: OutcomeSumAggregateOutputType | null
     _min: OutcomeMinAggregateOutputType | null
     _max: OutcomeMaxAggregateOutputType | null
   }
@@ -1373,8 +1425,6 @@ export namespace Prisma {
     user_id?: boolean
     title?: boolean
     why_it_matters?: boolean
-    success_metric_value?: boolean
-    success_metric_unit?: boolean
     deadline?: boolean
     status?: boolean
     created_at?: boolean
@@ -1382,6 +1432,7 @@ export namespace Prisma {
     archived_at?: boolean
     drivers?: boolean | Outcome$driversArgs<ExtArgs>
     actions?: boolean | Outcome$actionsArgs<ExtArgs>
+    success_metrics?: boolean | Outcome$success_metricsArgs<ExtArgs>
     _count?: boolean | OutcomeCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["outcome"]>
 
@@ -1390,8 +1441,6 @@ export namespace Prisma {
     user_id?: boolean
     title?: boolean
     why_it_matters?: boolean
-    success_metric_value?: boolean
-    success_metric_unit?: boolean
     deadline?: boolean
     status?: boolean
     created_at?: boolean
@@ -1404,8 +1453,6 @@ export namespace Prisma {
     user_id?: boolean
     title?: boolean
     why_it_matters?: boolean
-    success_metric_value?: boolean
-    success_metric_unit?: boolean
     deadline?: boolean
     status?: boolean
     created_at?: boolean
@@ -1418,8 +1465,6 @@ export namespace Prisma {
     user_id?: boolean
     title?: boolean
     why_it_matters?: boolean
-    success_metric_value?: boolean
-    success_metric_unit?: boolean
     deadline?: boolean
     status?: boolean
     created_at?: boolean
@@ -1427,10 +1472,11 @@ export namespace Prisma {
     archived_at?: boolean
   }
 
-  export type OutcomeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "title" | "why_it_matters" | "success_metric_value" | "success_metric_unit" | "deadline" | "status" | "created_at" | "completed_at" | "archived_at", ExtArgs["result"]["outcome"]>
+  export type OutcomeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "title" | "why_it_matters" | "deadline" | "status" | "created_at" | "completed_at" | "archived_at", ExtArgs["result"]["outcome"]>
   export type OutcomeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     drivers?: boolean | Outcome$driversArgs<ExtArgs>
     actions?: boolean | Outcome$actionsArgs<ExtArgs>
+    success_metrics?: boolean | Outcome$success_metricsArgs<ExtArgs>
     _count?: boolean | OutcomeCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OutcomeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1441,14 +1487,13 @@ export namespace Prisma {
     objects: {
       drivers: Prisma.$DriverPayload<ExtArgs>[]
       actions: Prisma.$ActionPayload<ExtArgs>[]
+      success_metrics: Prisma.$SuccessMetricPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       user_id: string
       title: string
       why_it_matters: string
-      success_metric_value: number
-      success_metric_unit: string
       deadline: Date
       status: $Enums.OutcomeStatus
       created_at: Date
@@ -1850,6 +1895,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     drivers<T extends Outcome$driversArgs<ExtArgs> = {}>(args?: Subset<T, Outcome$driversArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DriverPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     actions<T extends Outcome$actionsArgs<ExtArgs> = {}>(args?: Subset<T, Outcome$actionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ActionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    success_metrics<T extends Outcome$success_metricsArgs<ExtArgs> = {}>(args?: Subset<T, Outcome$success_metricsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SuccessMetricPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1883,8 +1929,6 @@ export namespace Prisma {
     readonly user_id: FieldRef<"Outcome", 'String'>
     readonly title: FieldRef<"Outcome", 'String'>
     readonly why_it_matters: FieldRef<"Outcome", 'String'>
-    readonly success_metric_value: FieldRef<"Outcome", 'Float'>
-    readonly success_metric_unit: FieldRef<"Outcome", 'String'>
     readonly deadline: FieldRef<"Outcome", 'DateTime'>
     readonly status: FieldRef<"Outcome", 'OutcomeStatus'>
     readonly created_at: FieldRef<"Outcome", 'DateTime'>
@@ -2323,6 +2367,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ActionScalarFieldEnum | ActionScalarFieldEnum[]
+  }
+
+  /**
+   * Outcome.success_metrics
+   */
+  export type Outcome$success_metricsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuccessMetric
+     */
+    select?: SuccessMetricSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuccessMetric
+     */
+    omit?: SuccessMetricOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuccessMetricInclude<ExtArgs> | null
+    where?: SuccessMetricWhereInput
+    orderBy?: SuccessMetricOrderByWithRelationInput | SuccessMetricOrderByWithRelationInput[]
+    cursor?: SuccessMetricWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SuccessMetricScalarFieldEnum | SuccessMetricScalarFieldEnum[]
   }
 
   /**
@@ -4697,6 +4765,1154 @@ export namespace Prisma {
 
 
   /**
+   * Model SuccessMetric
+   */
+
+  export type AggregateSuccessMetric = {
+    _count: SuccessMetricCountAggregateOutputType | null
+    _avg: SuccessMetricAvgAggregateOutputType | null
+    _sum: SuccessMetricSumAggregateOutputType | null
+    _min: SuccessMetricMinAggregateOutputType | null
+    _max: SuccessMetricMaxAggregateOutputType | null
+  }
+
+  export type SuccessMetricAvgAggregateOutputType = {
+    target_value: number | null
+    current_value: number | null
+  }
+
+  export type SuccessMetricSumAggregateOutputType = {
+    target_value: number | null
+    current_value: number | null
+  }
+
+  export type SuccessMetricMinAggregateOutputType = {
+    id: string | null
+    outcome_id: string | null
+    metric_name: string | null
+    target_value: number | null
+    current_value: number | null
+    unit: string | null
+    description: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type SuccessMetricMaxAggregateOutputType = {
+    id: string | null
+    outcome_id: string | null
+    metric_name: string | null
+    target_value: number | null
+    current_value: number | null
+    unit: string | null
+    description: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type SuccessMetricCountAggregateOutputType = {
+    id: number
+    outcome_id: number
+    metric_name: number
+    target_value: number
+    current_value: number
+    unit: number
+    description: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type SuccessMetricAvgAggregateInputType = {
+    target_value?: true
+    current_value?: true
+  }
+
+  export type SuccessMetricSumAggregateInputType = {
+    target_value?: true
+    current_value?: true
+  }
+
+  export type SuccessMetricMinAggregateInputType = {
+    id?: true
+    outcome_id?: true
+    metric_name?: true
+    target_value?: true
+    current_value?: true
+    unit?: true
+    description?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type SuccessMetricMaxAggregateInputType = {
+    id?: true
+    outcome_id?: true
+    metric_name?: true
+    target_value?: true
+    current_value?: true
+    unit?: true
+    description?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type SuccessMetricCountAggregateInputType = {
+    id?: true
+    outcome_id?: true
+    metric_name?: true
+    target_value?: true
+    current_value?: true
+    unit?: true
+    description?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type SuccessMetricAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SuccessMetric to aggregate.
+     */
+    where?: SuccessMetricWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SuccessMetrics to fetch.
+     */
+    orderBy?: SuccessMetricOrderByWithRelationInput | SuccessMetricOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SuccessMetricWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SuccessMetrics from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SuccessMetrics.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SuccessMetrics
+    **/
+    _count?: true | SuccessMetricCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SuccessMetricAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SuccessMetricSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SuccessMetricMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SuccessMetricMaxAggregateInputType
+  }
+
+  export type GetSuccessMetricAggregateType<T extends SuccessMetricAggregateArgs> = {
+        [P in keyof T & keyof AggregateSuccessMetric]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSuccessMetric[P]>
+      : GetScalarType<T[P], AggregateSuccessMetric[P]>
+  }
+
+
+
+
+  export type SuccessMetricGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SuccessMetricWhereInput
+    orderBy?: SuccessMetricOrderByWithAggregationInput | SuccessMetricOrderByWithAggregationInput[]
+    by: SuccessMetricScalarFieldEnum[] | SuccessMetricScalarFieldEnum
+    having?: SuccessMetricScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SuccessMetricCountAggregateInputType | true
+    _avg?: SuccessMetricAvgAggregateInputType
+    _sum?: SuccessMetricSumAggregateInputType
+    _min?: SuccessMetricMinAggregateInputType
+    _max?: SuccessMetricMaxAggregateInputType
+  }
+
+  export type SuccessMetricGroupByOutputType = {
+    id: string
+    outcome_id: string
+    metric_name: string
+    target_value: number
+    current_value: number
+    unit: string
+    description: string | null
+    created_at: Date
+    updated_at: Date
+    _count: SuccessMetricCountAggregateOutputType | null
+    _avg: SuccessMetricAvgAggregateOutputType | null
+    _sum: SuccessMetricSumAggregateOutputType | null
+    _min: SuccessMetricMinAggregateOutputType | null
+    _max: SuccessMetricMaxAggregateOutputType | null
+  }
+
+  type GetSuccessMetricGroupByPayload<T extends SuccessMetricGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SuccessMetricGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SuccessMetricGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SuccessMetricGroupByOutputType[P]>
+            : GetScalarType<T[P], SuccessMetricGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SuccessMetricSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outcome_id?: boolean
+    metric_name?: boolean
+    target_value?: boolean
+    current_value?: boolean
+    unit?: boolean
+    description?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    outcome?: boolean | OutcomeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["successMetric"]>
+
+  export type SuccessMetricSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outcome_id?: boolean
+    metric_name?: boolean
+    target_value?: boolean
+    current_value?: boolean
+    unit?: boolean
+    description?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    outcome?: boolean | OutcomeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["successMetric"]>
+
+  export type SuccessMetricSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    outcome_id?: boolean
+    metric_name?: boolean
+    target_value?: boolean
+    current_value?: boolean
+    unit?: boolean
+    description?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    outcome?: boolean | OutcomeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["successMetric"]>
+
+  export type SuccessMetricSelectScalar = {
+    id?: boolean
+    outcome_id?: boolean
+    metric_name?: boolean
+    target_value?: boolean
+    current_value?: boolean
+    unit?: boolean
+    description?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type SuccessMetricOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "outcome_id" | "metric_name" | "target_value" | "current_value" | "unit" | "description" | "created_at" | "updated_at", ExtArgs["result"]["successMetric"]>
+  export type SuccessMetricInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outcome?: boolean | OutcomeDefaultArgs<ExtArgs>
+  }
+  export type SuccessMetricIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outcome?: boolean | OutcomeDefaultArgs<ExtArgs>
+  }
+  export type SuccessMetricIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    outcome?: boolean | OutcomeDefaultArgs<ExtArgs>
+  }
+
+  export type $SuccessMetricPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SuccessMetric"
+    objects: {
+      outcome: Prisma.$OutcomePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      outcome_id: string
+      metric_name: string
+      target_value: number
+      current_value: number
+      unit: string
+      description: string | null
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["successMetric"]>
+    composites: {}
+  }
+
+  type SuccessMetricGetPayload<S extends boolean | null | undefined | SuccessMetricDefaultArgs> = $Result.GetResult<Prisma.$SuccessMetricPayload, S>
+
+  type SuccessMetricCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SuccessMetricFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SuccessMetricCountAggregateInputType | true
+    }
+
+  export interface SuccessMetricDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SuccessMetric'], meta: { name: 'SuccessMetric' } }
+    /**
+     * Find zero or one SuccessMetric that matches the filter.
+     * @param {SuccessMetricFindUniqueArgs} args - Arguments to find a SuccessMetric
+     * @example
+     * // Get one SuccessMetric
+     * const successMetric = await prisma.successMetric.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SuccessMetricFindUniqueArgs>(args: SelectSubset<T, SuccessMetricFindUniqueArgs<ExtArgs>>): Prisma__SuccessMetricClient<$Result.GetResult<Prisma.$SuccessMetricPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SuccessMetric that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SuccessMetricFindUniqueOrThrowArgs} args - Arguments to find a SuccessMetric
+     * @example
+     * // Get one SuccessMetric
+     * const successMetric = await prisma.successMetric.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SuccessMetricFindUniqueOrThrowArgs>(args: SelectSubset<T, SuccessMetricFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SuccessMetricClient<$Result.GetResult<Prisma.$SuccessMetricPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SuccessMetric that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuccessMetricFindFirstArgs} args - Arguments to find a SuccessMetric
+     * @example
+     * // Get one SuccessMetric
+     * const successMetric = await prisma.successMetric.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SuccessMetricFindFirstArgs>(args?: SelectSubset<T, SuccessMetricFindFirstArgs<ExtArgs>>): Prisma__SuccessMetricClient<$Result.GetResult<Prisma.$SuccessMetricPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SuccessMetric that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuccessMetricFindFirstOrThrowArgs} args - Arguments to find a SuccessMetric
+     * @example
+     * // Get one SuccessMetric
+     * const successMetric = await prisma.successMetric.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SuccessMetricFindFirstOrThrowArgs>(args?: SelectSubset<T, SuccessMetricFindFirstOrThrowArgs<ExtArgs>>): Prisma__SuccessMetricClient<$Result.GetResult<Prisma.$SuccessMetricPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SuccessMetrics that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuccessMetricFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SuccessMetrics
+     * const successMetrics = await prisma.successMetric.findMany()
+     * 
+     * // Get first 10 SuccessMetrics
+     * const successMetrics = await prisma.successMetric.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const successMetricWithIdOnly = await prisma.successMetric.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SuccessMetricFindManyArgs>(args?: SelectSubset<T, SuccessMetricFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SuccessMetricPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SuccessMetric.
+     * @param {SuccessMetricCreateArgs} args - Arguments to create a SuccessMetric.
+     * @example
+     * // Create one SuccessMetric
+     * const SuccessMetric = await prisma.successMetric.create({
+     *   data: {
+     *     // ... data to create a SuccessMetric
+     *   }
+     * })
+     * 
+     */
+    create<T extends SuccessMetricCreateArgs>(args: SelectSubset<T, SuccessMetricCreateArgs<ExtArgs>>): Prisma__SuccessMetricClient<$Result.GetResult<Prisma.$SuccessMetricPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SuccessMetrics.
+     * @param {SuccessMetricCreateManyArgs} args - Arguments to create many SuccessMetrics.
+     * @example
+     * // Create many SuccessMetrics
+     * const successMetric = await prisma.successMetric.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SuccessMetricCreateManyArgs>(args?: SelectSubset<T, SuccessMetricCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SuccessMetrics and returns the data saved in the database.
+     * @param {SuccessMetricCreateManyAndReturnArgs} args - Arguments to create many SuccessMetrics.
+     * @example
+     * // Create many SuccessMetrics
+     * const successMetric = await prisma.successMetric.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SuccessMetrics and only return the `id`
+     * const successMetricWithIdOnly = await prisma.successMetric.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SuccessMetricCreateManyAndReturnArgs>(args?: SelectSubset<T, SuccessMetricCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SuccessMetricPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SuccessMetric.
+     * @param {SuccessMetricDeleteArgs} args - Arguments to delete one SuccessMetric.
+     * @example
+     * // Delete one SuccessMetric
+     * const SuccessMetric = await prisma.successMetric.delete({
+     *   where: {
+     *     // ... filter to delete one SuccessMetric
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SuccessMetricDeleteArgs>(args: SelectSubset<T, SuccessMetricDeleteArgs<ExtArgs>>): Prisma__SuccessMetricClient<$Result.GetResult<Prisma.$SuccessMetricPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SuccessMetric.
+     * @param {SuccessMetricUpdateArgs} args - Arguments to update one SuccessMetric.
+     * @example
+     * // Update one SuccessMetric
+     * const successMetric = await prisma.successMetric.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SuccessMetricUpdateArgs>(args: SelectSubset<T, SuccessMetricUpdateArgs<ExtArgs>>): Prisma__SuccessMetricClient<$Result.GetResult<Prisma.$SuccessMetricPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SuccessMetrics.
+     * @param {SuccessMetricDeleteManyArgs} args - Arguments to filter SuccessMetrics to delete.
+     * @example
+     * // Delete a few SuccessMetrics
+     * const { count } = await prisma.successMetric.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SuccessMetricDeleteManyArgs>(args?: SelectSubset<T, SuccessMetricDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SuccessMetrics.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuccessMetricUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SuccessMetrics
+     * const successMetric = await prisma.successMetric.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SuccessMetricUpdateManyArgs>(args: SelectSubset<T, SuccessMetricUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SuccessMetrics and returns the data updated in the database.
+     * @param {SuccessMetricUpdateManyAndReturnArgs} args - Arguments to update many SuccessMetrics.
+     * @example
+     * // Update many SuccessMetrics
+     * const successMetric = await prisma.successMetric.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SuccessMetrics and only return the `id`
+     * const successMetricWithIdOnly = await prisma.successMetric.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SuccessMetricUpdateManyAndReturnArgs>(args: SelectSubset<T, SuccessMetricUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SuccessMetricPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SuccessMetric.
+     * @param {SuccessMetricUpsertArgs} args - Arguments to update or create a SuccessMetric.
+     * @example
+     * // Update or create a SuccessMetric
+     * const successMetric = await prisma.successMetric.upsert({
+     *   create: {
+     *     // ... data to create a SuccessMetric
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SuccessMetric we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SuccessMetricUpsertArgs>(args: SelectSubset<T, SuccessMetricUpsertArgs<ExtArgs>>): Prisma__SuccessMetricClient<$Result.GetResult<Prisma.$SuccessMetricPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SuccessMetrics.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuccessMetricCountArgs} args - Arguments to filter SuccessMetrics to count.
+     * @example
+     * // Count the number of SuccessMetrics
+     * const count = await prisma.successMetric.count({
+     *   where: {
+     *     // ... the filter for the SuccessMetrics we want to count
+     *   }
+     * })
+    **/
+    count<T extends SuccessMetricCountArgs>(
+      args?: Subset<T, SuccessMetricCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SuccessMetricCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SuccessMetric.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuccessMetricAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SuccessMetricAggregateArgs>(args: Subset<T, SuccessMetricAggregateArgs>): Prisma.PrismaPromise<GetSuccessMetricAggregateType<T>>
+
+    /**
+     * Group by SuccessMetric.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuccessMetricGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SuccessMetricGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SuccessMetricGroupByArgs['orderBy'] }
+        : { orderBy?: SuccessMetricGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SuccessMetricGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSuccessMetricGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SuccessMetric model
+   */
+  readonly fields: SuccessMetricFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SuccessMetric.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SuccessMetricClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    outcome<T extends OutcomeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OutcomeDefaultArgs<ExtArgs>>): Prisma__OutcomeClient<$Result.GetResult<Prisma.$OutcomePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SuccessMetric model
+   */
+  interface SuccessMetricFieldRefs {
+    readonly id: FieldRef<"SuccessMetric", 'String'>
+    readonly outcome_id: FieldRef<"SuccessMetric", 'String'>
+    readonly metric_name: FieldRef<"SuccessMetric", 'String'>
+    readonly target_value: FieldRef<"SuccessMetric", 'Float'>
+    readonly current_value: FieldRef<"SuccessMetric", 'Float'>
+    readonly unit: FieldRef<"SuccessMetric", 'String'>
+    readonly description: FieldRef<"SuccessMetric", 'String'>
+    readonly created_at: FieldRef<"SuccessMetric", 'DateTime'>
+    readonly updated_at: FieldRef<"SuccessMetric", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SuccessMetric findUnique
+   */
+  export type SuccessMetricFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuccessMetric
+     */
+    select?: SuccessMetricSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuccessMetric
+     */
+    omit?: SuccessMetricOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuccessMetricInclude<ExtArgs> | null
+    /**
+     * Filter, which SuccessMetric to fetch.
+     */
+    where: SuccessMetricWhereUniqueInput
+  }
+
+  /**
+   * SuccessMetric findUniqueOrThrow
+   */
+  export type SuccessMetricFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuccessMetric
+     */
+    select?: SuccessMetricSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuccessMetric
+     */
+    omit?: SuccessMetricOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuccessMetricInclude<ExtArgs> | null
+    /**
+     * Filter, which SuccessMetric to fetch.
+     */
+    where: SuccessMetricWhereUniqueInput
+  }
+
+  /**
+   * SuccessMetric findFirst
+   */
+  export type SuccessMetricFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuccessMetric
+     */
+    select?: SuccessMetricSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuccessMetric
+     */
+    omit?: SuccessMetricOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuccessMetricInclude<ExtArgs> | null
+    /**
+     * Filter, which SuccessMetric to fetch.
+     */
+    where?: SuccessMetricWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SuccessMetrics to fetch.
+     */
+    orderBy?: SuccessMetricOrderByWithRelationInput | SuccessMetricOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SuccessMetrics.
+     */
+    cursor?: SuccessMetricWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SuccessMetrics from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SuccessMetrics.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SuccessMetrics.
+     */
+    distinct?: SuccessMetricScalarFieldEnum | SuccessMetricScalarFieldEnum[]
+  }
+
+  /**
+   * SuccessMetric findFirstOrThrow
+   */
+  export type SuccessMetricFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuccessMetric
+     */
+    select?: SuccessMetricSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuccessMetric
+     */
+    omit?: SuccessMetricOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuccessMetricInclude<ExtArgs> | null
+    /**
+     * Filter, which SuccessMetric to fetch.
+     */
+    where?: SuccessMetricWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SuccessMetrics to fetch.
+     */
+    orderBy?: SuccessMetricOrderByWithRelationInput | SuccessMetricOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SuccessMetrics.
+     */
+    cursor?: SuccessMetricWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SuccessMetrics from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SuccessMetrics.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SuccessMetrics.
+     */
+    distinct?: SuccessMetricScalarFieldEnum | SuccessMetricScalarFieldEnum[]
+  }
+
+  /**
+   * SuccessMetric findMany
+   */
+  export type SuccessMetricFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuccessMetric
+     */
+    select?: SuccessMetricSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuccessMetric
+     */
+    omit?: SuccessMetricOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuccessMetricInclude<ExtArgs> | null
+    /**
+     * Filter, which SuccessMetrics to fetch.
+     */
+    where?: SuccessMetricWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SuccessMetrics to fetch.
+     */
+    orderBy?: SuccessMetricOrderByWithRelationInput | SuccessMetricOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SuccessMetrics.
+     */
+    cursor?: SuccessMetricWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SuccessMetrics from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SuccessMetrics.
+     */
+    skip?: number
+    distinct?: SuccessMetricScalarFieldEnum | SuccessMetricScalarFieldEnum[]
+  }
+
+  /**
+   * SuccessMetric create
+   */
+  export type SuccessMetricCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuccessMetric
+     */
+    select?: SuccessMetricSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuccessMetric
+     */
+    omit?: SuccessMetricOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuccessMetricInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SuccessMetric.
+     */
+    data: XOR<SuccessMetricCreateInput, SuccessMetricUncheckedCreateInput>
+  }
+
+  /**
+   * SuccessMetric createMany
+   */
+  export type SuccessMetricCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SuccessMetrics.
+     */
+    data: SuccessMetricCreateManyInput | SuccessMetricCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SuccessMetric createManyAndReturn
+   */
+  export type SuccessMetricCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuccessMetric
+     */
+    select?: SuccessMetricSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuccessMetric
+     */
+    omit?: SuccessMetricOmit<ExtArgs> | null
+    /**
+     * The data used to create many SuccessMetrics.
+     */
+    data: SuccessMetricCreateManyInput | SuccessMetricCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuccessMetricIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SuccessMetric update
+   */
+  export type SuccessMetricUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuccessMetric
+     */
+    select?: SuccessMetricSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuccessMetric
+     */
+    omit?: SuccessMetricOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuccessMetricInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SuccessMetric.
+     */
+    data: XOR<SuccessMetricUpdateInput, SuccessMetricUncheckedUpdateInput>
+    /**
+     * Choose, which SuccessMetric to update.
+     */
+    where: SuccessMetricWhereUniqueInput
+  }
+
+  /**
+   * SuccessMetric updateMany
+   */
+  export type SuccessMetricUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SuccessMetrics.
+     */
+    data: XOR<SuccessMetricUpdateManyMutationInput, SuccessMetricUncheckedUpdateManyInput>
+    /**
+     * Filter which SuccessMetrics to update
+     */
+    where?: SuccessMetricWhereInput
+    /**
+     * Limit how many SuccessMetrics to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SuccessMetric updateManyAndReturn
+   */
+  export type SuccessMetricUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuccessMetric
+     */
+    select?: SuccessMetricSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuccessMetric
+     */
+    omit?: SuccessMetricOmit<ExtArgs> | null
+    /**
+     * The data used to update SuccessMetrics.
+     */
+    data: XOR<SuccessMetricUpdateManyMutationInput, SuccessMetricUncheckedUpdateManyInput>
+    /**
+     * Filter which SuccessMetrics to update
+     */
+    where?: SuccessMetricWhereInput
+    /**
+     * Limit how many SuccessMetrics to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuccessMetricIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SuccessMetric upsert
+   */
+  export type SuccessMetricUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuccessMetric
+     */
+    select?: SuccessMetricSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuccessMetric
+     */
+    omit?: SuccessMetricOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuccessMetricInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SuccessMetric to update in case it exists.
+     */
+    where: SuccessMetricWhereUniqueInput
+    /**
+     * In case the SuccessMetric found by the `where` argument doesn't exist, create a new SuccessMetric with this data.
+     */
+    create: XOR<SuccessMetricCreateInput, SuccessMetricUncheckedCreateInput>
+    /**
+     * In case the SuccessMetric was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SuccessMetricUpdateInput, SuccessMetricUncheckedUpdateInput>
+  }
+
+  /**
+   * SuccessMetric delete
+   */
+  export type SuccessMetricDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuccessMetric
+     */
+    select?: SuccessMetricSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuccessMetric
+     */
+    omit?: SuccessMetricOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuccessMetricInclude<ExtArgs> | null
+    /**
+     * Filter which SuccessMetric to delete.
+     */
+    where: SuccessMetricWhereUniqueInput
+  }
+
+  /**
+   * SuccessMetric deleteMany
+   */
+  export type SuccessMetricDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SuccessMetrics to delete
+     */
+    where?: SuccessMetricWhereInput
+    /**
+     * Limit how many SuccessMetrics to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SuccessMetric without action
+   */
+  export type SuccessMetricDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuccessMetric
+     */
+    select?: SuccessMetricSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuccessMetric
+     */
+    omit?: SuccessMetricOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SuccessMetricInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -4715,8 +5931,6 @@ export namespace Prisma {
     user_id: 'user_id',
     title: 'title',
     why_it_matters: 'why_it_matters',
-    success_metric_value: 'success_metric_value',
-    success_metric_unit: 'success_metric_unit',
     deadline: 'deadline',
     status: 'status',
     created_at: 'created_at',
@@ -4757,6 +5971,21 @@ export namespace Prisma {
   };
 
   export type ActionScalarFieldEnum = (typeof ActionScalarFieldEnum)[keyof typeof ActionScalarFieldEnum]
+
+
+  export const SuccessMetricScalarFieldEnum: {
+    id: 'id',
+    outcome_id: 'outcome_id',
+    metric_name: 'metric_name',
+    target_value: 'target_value',
+    current_value: 'current_value',
+    unit: 'unit',
+    description: 'description',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type SuccessMetricScalarFieldEnum = (typeof SuccessMetricScalarFieldEnum)[keyof typeof SuccessMetricScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -4803,20 +6032,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Float'
-   */
-  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
-
-
-  /**
-   * Reference to a field of type 'Float[]'
-   */
-  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
-    
-
-
-  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -4841,6 +6056,20 @@ export namespace Prisma {
    * Reference to a field of type 'OutcomeStatus[]'
    */
   export type ListEnumOutcomeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OutcomeStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 
@@ -4876,8 +6105,6 @@ export namespace Prisma {
     user_id?: StringFilter<"Outcome"> | string
     title?: StringFilter<"Outcome"> | string
     why_it_matters?: StringFilter<"Outcome"> | string
-    success_metric_value?: FloatFilter<"Outcome"> | number
-    success_metric_unit?: StringFilter<"Outcome"> | string
     deadline?: DateTimeFilter<"Outcome"> | Date | string
     status?: EnumOutcomeStatusFilter<"Outcome"> | $Enums.OutcomeStatus
     created_at?: DateTimeFilter<"Outcome"> | Date | string
@@ -4885,6 +6112,7 @@ export namespace Prisma {
     archived_at?: DateTimeNullableFilter<"Outcome"> | Date | string | null
     drivers?: DriverListRelationFilter
     actions?: ActionListRelationFilter
+    success_metrics?: SuccessMetricListRelationFilter
   }
 
   export type OutcomeOrderByWithRelationInput = {
@@ -4892,8 +6120,6 @@ export namespace Prisma {
     user_id?: SortOrder
     title?: SortOrder
     why_it_matters?: SortOrder
-    success_metric_value?: SortOrder
-    success_metric_unit?: SortOrder
     deadline?: SortOrder
     status?: SortOrder
     created_at?: SortOrder
@@ -4901,6 +6127,7 @@ export namespace Prisma {
     archived_at?: SortOrderInput | SortOrder
     drivers?: DriverOrderByRelationAggregateInput
     actions?: ActionOrderByRelationAggregateInput
+    success_metrics?: SuccessMetricOrderByRelationAggregateInput
   }
 
   export type OutcomeWhereUniqueInput = Prisma.AtLeast<{
@@ -4911,8 +6138,6 @@ export namespace Prisma {
     user_id?: StringFilter<"Outcome"> | string
     title?: StringFilter<"Outcome"> | string
     why_it_matters?: StringFilter<"Outcome"> | string
-    success_metric_value?: FloatFilter<"Outcome"> | number
-    success_metric_unit?: StringFilter<"Outcome"> | string
     deadline?: DateTimeFilter<"Outcome"> | Date | string
     status?: EnumOutcomeStatusFilter<"Outcome"> | $Enums.OutcomeStatus
     created_at?: DateTimeFilter<"Outcome"> | Date | string
@@ -4920,6 +6145,7 @@ export namespace Prisma {
     archived_at?: DateTimeNullableFilter<"Outcome"> | Date | string | null
     drivers?: DriverListRelationFilter
     actions?: ActionListRelationFilter
+    success_metrics?: SuccessMetricListRelationFilter
   }, "id">
 
   export type OutcomeOrderByWithAggregationInput = {
@@ -4927,18 +6153,14 @@ export namespace Prisma {
     user_id?: SortOrder
     title?: SortOrder
     why_it_matters?: SortOrder
-    success_metric_value?: SortOrder
-    success_metric_unit?: SortOrder
     deadline?: SortOrder
     status?: SortOrder
     created_at?: SortOrder
     completed_at?: SortOrderInput | SortOrder
     archived_at?: SortOrderInput | SortOrder
     _count?: OutcomeCountOrderByAggregateInput
-    _avg?: OutcomeAvgOrderByAggregateInput
     _max?: OutcomeMaxOrderByAggregateInput
     _min?: OutcomeMinOrderByAggregateInput
-    _sum?: OutcomeSumOrderByAggregateInput
   }
 
   export type OutcomeScalarWhereWithAggregatesInput = {
@@ -4949,8 +6171,6 @@ export namespace Prisma {
     user_id?: StringWithAggregatesFilter<"Outcome"> | string
     title?: StringWithAggregatesFilter<"Outcome"> | string
     why_it_matters?: StringWithAggregatesFilter<"Outcome"> | string
-    success_metric_value?: FloatWithAggregatesFilter<"Outcome"> | number
-    success_metric_unit?: StringWithAggregatesFilter<"Outcome"> | string
     deadline?: DateTimeWithAggregatesFilter<"Outcome"> | Date | string
     status?: EnumOutcomeStatusWithAggregatesFilter<"Outcome"> | $Enums.OutcomeStatus
     created_at?: DateTimeWithAggregatesFilter<"Outcome"> | Date | string
@@ -5128,13 +6348,88 @@ export namespace Prisma {
     updated_at?: DateTimeWithAggregatesFilter<"Action"> | Date | string
   }
 
+  export type SuccessMetricWhereInput = {
+    AND?: SuccessMetricWhereInput | SuccessMetricWhereInput[]
+    OR?: SuccessMetricWhereInput[]
+    NOT?: SuccessMetricWhereInput | SuccessMetricWhereInput[]
+    id?: StringFilter<"SuccessMetric"> | string
+    outcome_id?: StringFilter<"SuccessMetric"> | string
+    metric_name?: StringFilter<"SuccessMetric"> | string
+    target_value?: FloatFilter<"SuccessMetric"> | number
+    current_value?: FloatFilter<"SuccessMetric"> | number
+    unit?: StringFilter<"SuccessMetric"> | string
+    description?: StringNullableFilter<"SuccessMetric"> | string | null
+    created_at?: DateTimeFilter<"SuccessMetric"> | Date | string
+    updated_at?: DateTimeFilter<"SuccessMetric"> | Date | string
+    outcome?: XOR<OutcomeScalarRelationFilter, OutcomeWhereInput>
+  }
+
+  export type SuccessMetricOrderByWithRelationInput = {
+    id?: SortOrder
+    outcome_id?: SortOrder
+    metric_name?: SortOrder
+    target_value?: SortOrder
+    current_value?: SortOrder
+    unit?: SortOrder
+    description?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    outcome?: OutcomeOrderByWithRelationInput
+  }
+
+  export type SuccessMetricWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: SuccessMetricWhereInput | SuccessMetricWhereInput[]
+    OR?: SuccessMetricWhereInput[]
+    NOT?: SuccessMetricWhereInput | SuccessMetricWhereInput[]
+    outcome_id?: StringFilter<"SuccessMetric"> | string
+    metric_name?: StringFilter<"SuccessMetric"> | string
+    target_value?: FloatFilter<"SuccessMetric"> | number
+    current_value?: FloatFilter<"SuccessMetric"> | number
+    unit?: StringFilter<"SuccessMetric"> | string
+    description?: StringNullableFilter<"SuccessMetric"> | string | null
+    created_at?: DateTimeFilter<"SuccessMetric"> | Date | string
+    updated_at?: DateTimeFilter<"SuccessMetric"> | Date | string
+    outcome?: XOR<OutcomeScalarRelationFilter, OutcomeWhereInput>
+  }, "id">
+
+  export type SuccessMetricOrderByWithAggregationInput = {
+    id?: SortOrder
+    outcome_id?: SortOrder
+    metric_name?: SortOrder
+    target_value?: SortOrder
+    current_value?: SortOrder
+    unit?: SortOrder
+    description?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: SuccessMetricCountOrderByAggregateInput
+    _avg?: SuccessMetricAvgOrderByAggregateInput
+    _max?: SuccessMetricMaxOrderByAggregateInput
+    _min?: SuccessMetricMinOrderByAggregateInput
+    _sum?: SuccessMetricSumOrderByAggregateInput
+  }
+
+  export type SuccessMetricScalarWhereWithAggregatesInput = {
+    AND?: SuccessMetricScalarWhereWithAggregatesInput | SuccessMetricScalarWhereWithAggregatesInput[]
+    OR?: SuccessMetricScalarWhereWithAggregatesInput[]
+    NOT?: SuccessMetricScalarWhereWithAggregatesInput | SuccessMetricScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SuccessMetric"> | string
+    outcome_id?: StringWithAggregatesFilter<"SuccessMetric"> | string
+    metric_name?: StringWithAggregatesFilter<"SuccessMetric"> | string
+    target_value?: FloatWithAggregatesFilter<"SuccessMetric"> | number
+    current_value?: FloatWithAggregatesFilter<"SuccessMetric"> | number
+    unit?: StringWithAggregatesFilter<"SuccessMetric"> | string
+    description?: StringNullableWithAggregatesFilter<"SuccessMetric"> | string | null
+    created_at?: DateTimeWithAggregatesFilter<"SuccessMetric"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"SuccessMetric"> | Date | string
+  }
+
   export type OutcomeCreateInput = {
     id?: string
     user_id: string
     title: string
     why_it_matters: string
-    success_metric_value: number
-    success_metric_unit: string
     deadline: Date | string
     status?: $Enums.OutcomeStatus
     created_at?: Date | string
@@ -5142,6 +6437,7 @@ export namespace Prisma {
     archived_at?: Date | string | null
     drivers?: DriverCreateNestedManyWithoutOutcomeInput
     actions?: ActionCreateNestedManyWithoutOutcomeInput
+    success_metrics?: SuccessMetricCreateNestedManyWithoutOutcomeInput
   }
 
   export type OutcomeUncheckedCreateInput = {
@@ -5149,8 +6445,6 @@ export namespace Prisma {
     user_id: string
     title: string
     why_it_matters: string
-    success_metric_value: number
-    success_metric_unit: string
     deadline: Date | string
     status?: $Enums.OutcomeStatus
     created_at?: Date | string
@@ -5158,6 +6452,7 @@ export namespace Prisma {
     archived_at?: Date | string | null
     drivers?: DriverUncheckedCreateNestedManyWithoutOutcomeInput
     actions?: ActionUncheckedCreateNestedManyWithoutOutcomeInput
+    success_metrics?: SuccessMetricUncheckedCreateNestedManyWithoutOutcomeInput
   }
 
   export type OutcomeUpdateInput = {
@@ -5165,8 +6460,6 @@ export namespace Prisma {
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     why_it_matters?: StringFieldUpdateOperationsInput | string
-    success_metric_value?: FloatFieldUpdateOperationsInput | number
-    success_metric_unit?: StringFieldUpdateOperationsInput | string
     deadline?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumOutcomeStatusFieldUpdateOperationsInput | $Enums.OutcomeStatus
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -5174,6 +6467,7 @@ export namespace Prisma {
     archived_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     drivers?: DriverUpdateManyWithoutOutcomeNestedInput
     actions?: ActionUpdateManyWithoutOutcomeNestedInput
+    success_metrics?: SuccessMetricUpdateManyWithoutOutcomeNestedInput
   }
 
   export type OutcomeUncheckedUpdateInput = {
@@ -5181,8 +6475,6 @@ export namespace Prisma {
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     why_it_matters?: StringFieldUpdateOperationsInput | string
-    success_metric_value?: FloatFieldUpdateOperationsInput | number
-    success_metric_unit?: StringFieldUpdateOperationsInput | string
     deadline?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumOutcomeStatusFieldUpdateOperationsInput | $Enums.OutcomeStatus
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -5190,6 +6482,7 @@ export namespace Prisma {
     archived_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     drivers?: DriverUncheckedUpdateManyWithoutOutcomeNestedInput
     actions?: ActionUncheckedUpdateManyWithoutOutcomeNestedInput
+    success_metrics?: SuccessMetricUncheckedUpdateManyWithoutOutcomeNestedInput
   }
 
   export type OutcomeCreateManyInput = {
@@ -5197,8 +6490,6 @@ export namespace Prisma {
     user_id: string
     title: string
     why_it_matters: string
-    success_metric_value: number
-    success_metric_unit: string
     deadline: Date | string
     status?: $Enums.OutcomeStatus
     created_at?: Date | string
@@ -5211,8 +6502,6 @@ export namespace Prisma {
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     why_it_matters?: StringFieldUpdateOperationsInput | string
-    success_metric_value?: FloatFieldUpdateOperationsInput | number
-    success_metric_unit?: StringFieldUpdateOperationsInput | string
     deadline?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumOutcomeStatusFieldUpdateOperationsInput | $Enums.OutcomeStatus
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -5225,8 +6514,6 @@ export namespace Prisma {
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     why_it_matters?: StringFieldUpdateOperationsInput | string
-    success_metric_value?: FloatFieldUpdateOperationsInput | number
-    success_metric_unit?: StringFieldUpdateOperationsInput | string
     deadline?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumOutcomeStatusFieldUpdateOperationsInput | $Enums.OutcomeStatus
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -5417,6 +6704,89 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SuccessMetricCreateInput = {
+    id?: string
+    metric_name: string
+    target_value: number
+    current_value?: number
+    unit: string
+    description?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    outcome: OutcomeCreateNestedOneWithoutSuccess_metricsInput
+  }
+
+  export type SuccessMetricUncheckedCreateInput = {
+    id?: string
+    outcome_id: string
+    metric_name: string
+    target_value: number
+    current_value?: number
+    unit: string
+    description?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type SuccessMetricUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    metric_name?: StringFieldUpdateOperationsInput | string
+    target_value?: FloatFieldUpdateOperationsInput | number
+    current_value?: FloatFieldUpdateOperationsInput | number
+    unit?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    outcome?: OutcomeUpdateOneRequiredWithoutSuccess_metricsNestedInput
+  }
+
+  export type SuccessMetricUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outcome_id?: StringFieldUpdateOperationsInput | string
+    metric_name?: StringFieldUpdateOperationsInput | string
+    target_value?: FloatFieldUpdateOperationsInput | number
+    current_value?: FloatFieldUpdateOperationsInput | number
+    unit?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SuccessMetricCreateManyInput = {
+    id?: string
+    outcome_id: string
+    metric_name: string
+    target_value: number
+    current_value?: number
+    unit: string
+    description?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type SuccessMetricUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    metric_name?: StringFieldUpdateOperationsInput | string
+    target_value?: FloatFieldUpdateOperationsInput | number
+    current_value?: FloatFieldUpdateOperationsInput | number
+    unit?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SuccessMetricUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    outcome_id?: StringFieldUpdateOperationsInput | string
+    metric_name?: StringFieldUpdateOperationsInput | string
+    target_value?: FloatFieldUpdateOperationsInput | number
+    current_value?: FloatFieldUpdateOperationsInput | number
+    unit?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -5430,17 +6800,6 @@ export namespace Prisma {
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     mode?: QueryMode
     not?: NestedStringFilter<$PrismaModel> | string
-  }
-
-  export type FloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type DateTimeFilter<$PrismaModel = never> = {
@@ -5484,6 +6843,12 @@ export namespace Prisma {
     none?: ActionWhereInput
   }
 
+  export type SuccessMetricListRelationFilter = {
+    every?: SuccessMetricWhereInput
+    some?: SuccessMetricWhereInput
+    none?: SuccessMetricWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -5497,13 +6862,15 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type SuccessMetricOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type OutcomeCountOrderByAggregateInput = {
     id?: SortOrder
     user_id?: SortOrder
     title?: SortOrder
     why_it_matters?: SortOrder
-    success_metric_value?: SortOrder
-    success_metric_unit?: SortOrder
     deadline?: SortOrder
     status?: SortOrder
     created_at?: SortOrder
@@ -5511,17 +6878,11 @@ export namespace Prisma {
     archived_at?: SortOrder
   }
 
-  export type OutcomeAvgOrderByAggregateInput = {
-    success_metric_value?: SortOrder
-  }
-
   export type OutcomeMaxOrderByAggregateInput = {
     id?: SortOrder
     user_id?: SortOrder
     title?: SortOrder
     why_it_matters?: SortOrder
-    success_metric_value?: SortOrder
-    success_metric_unit?: SortOrder
     deadline?: SortOrder
     status?: SortOrder
     created_at?: SortOrder
@@ -5534,17 +6895,11 @@ export namespace Prisma {
     user_id?: SortOrder
     title?: SortOrder
     why_it_matters?: SortOrder
-    success_metric_value?: SortOrder
-    success_metric_unit?: SortOrder
     deadline?: SortOrder
     status?: SortOrder
     created_at?: SortOrder
     completed_at?: SortOrder
     archived_at?: SortOrder
-  }
-
-  export type OutcomeSumOrderByAggregateInput = {
-    success_metric_value?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -5563,22 +6918,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
-  }
-
-  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -5796,6 +7135,79 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type SuccessMetricCountOrderByAggregateInput = {
+    id?: SortOrder
+    outcome_id?: SortOrder
+    metric_name?: SortOrder
+    target_value?: SortOrder
+    current_value?: SortOrder
+    unit?: SortOrder
+    description?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type SuccessMetricAvgOrderByAggregateInput = {
+    target_value?: SortOrder
+    current_value?: SortOrder
+  }
+
+  export type SuccessMetricMaxOrderByAggregateInput = {
+    id?: SortOrder
+    outcome_id?: SortOrder
+    metric_name?: SortOrder
+    target_value?: SortOrder
+    current_value?: SortOrder
+    unit?: SortOrder
+    description?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type SuccessMetricMinOrderByAggregateInput = {
+    id?: SortOrder
+    outcome_id?: SortOrder
+    metric_name?: SortOrder
+    target_value?: SortOrder
+    current_value?: SortOrder
+    unit?: SortOrder
+    description?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type SuccessMetricSumOrderByAggregateInput = {
+    target_value?: SortOrder
+    current_value?: SortOrder
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type DriverCreateNestedManyWithoutOutcomeInput = {
     create?: XOR<DriverCreateWithoutOutcomeInput, DriverUncheckedCreateWithoutOutcomeInput> | DriverCreateWithoutOutcomeInput[] | DriverUncheckedCreateWithoutOutcomeInput[]
     connectOrCreate?: DriverCreateOrConnectWithoutOutcomeInput | DriverCreateOrConnectWithoutOutcomeInput[]
@@ -5808,6 +7220,13 @@ export namespace Prisma {
     connectOrCreate?: ActionCreateOrConnectWithoutOutcomeInput | ActionCreateOrConnectWithoutOutcomeInput[]
     createMany?: ActionCreateManyOutcomeInputEnvelope
     connect?: ActionWhereUniqueInput | ActionWhereUniqueInput[]
+  }
+
+  export type SuccessMetricCreateNestedManyWithoutOutcomeInput = {
+    create?: XOR<SuccessMetricCreateWithoutOutcomeInput, SuccessMetricUncheckedCreateWithoutOutcomeInput> | SuccessMetricCreateWithoutOutcomeInput[] | SuccessMetricUncheckedCreateWithoutOutcomeInput[]
+    connectOrCreate?: SuccessMetricCreateOrConnectWithoutOutcomeInput | SuccessMetricCreateOrConnectWithoutOutcomeInput[]
+    createMany?: SuccessMetricCreateManyOutcomeInputEnvelope
+    connect?: SuccessMetricWhereUniqueInput | SuccessMetricWhereUniqueInput[]
   }
 
   export type DriverUncheckedCreateNestedManyWithoutOutcomeInput = {
@@ -5824,16 +7243,15 @@ export namespace Prisma {
     connect?: ActionWhereUniqueInput | ActionWhereUniqueInput[]
   }
 
-  export type StringFieldUpdateOperationsInput = {
-    set?: string
+  export type SuccessMetricUncheckedCreateNestedManyWithoutOutcomeInput = {
+    create?: XOR<SuccessMetricCreateWithoutOutcomeInput, SuccessMetricUncheckedCreateWithoutOutcomeInput> | SuccessMetricCreateWithoutOutcomeInput[] | SuccessMetricUncheckedCreateWithoutOutcomeInput[]
+    connectOrCreate?: SuccessMetricCreateOrConnectWithoutOutcomeInput | SuccessMetricCreateOrConnectWithoutOutcomeInput[]
+    createMany?: SuccessMetricCreateManyOutcomeInputEnvelope
+    connect?: SuccessMetricWhereUniqueInput | SuccessMetricWhereUniqueInput[]
   }
 
-  export type FloatFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
+  export type StringFieldUpdateOperationsInput = {
+    set?: string
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -5876,6 +7294,20 @@ export namespace Prisma {
     deleteMany?: ActionScalarWhereInput | ActionScalarWhereInput[]
   }
 
+  export type SuccessMetricUpdateManyWithoutOutcomeNestedInput = {
+    create?: XOR<SuccessMetricCreateWithoutOutcomeInput, SuccessMetricUncheckedCreateWithoutOutcomeInput> | SuccessMetricCreateWithoutOutcomeInput[] | SuccessMetricUncheckedCreateWithoutOutcomeInput[]
+    connectOrCreate?: SuccessMetricCreateOrConnectWithoutOutcomeInput | SuccessMetricCreateOrConnectWithoutOutcomeInput[]
+    upsert?: SuccessMetricUpsertWithWhereUniqueWithoutOutcomeInput | SuccessMetricUpsertWithWhereUniqueWithoutOutcomeInput[]
+    createMany?: SuccessMetricCreateManyOutcomeInputEnvelope
+    set?: SuccessMetricWhereUniqueInput | SuccessMetricWhereUniqueInput[]
+    disconnect?: SuccessMetricWhereUniqueInput | SuccessMetricWhereUniqueInput[]
+    delete?: SuccessMetricWhereUniqueInput | SuccessMetricWhereUniqueInput[]
+    connect?: SuccessMetricWhereUniqueInput | SuccessMetricWhereUniqueInput[]
+    update?: SuccessMetricUpdateWithWhereUniqueWithoutOutcomeInput | SuccessMetricUpdateWithWhereUniqueWithoutOutcomeInput[]
+    updateMany?: SuccessMetricUpdateManyWithWhereWithoutOutcomeInput | SuccessMetricUpdateManyWithWhereWithoutOutcomeInput[]
+    deleteMany?: SuccessMetricScalarWhereInput | SuccessMetricScalarWhereInput[]
+  }
+
   export type DriverUncheckedUpdateManyWithoutOutcomeNestedInput = {
     create?: XOR<DriverCreateWithoutOutcomeInput, DriverUncheckedCreateWithoutOutcomeInput> | DriverCreateWithoutOutcomeInput[] | DriverUncheckedCreateWithoutOutcomeInput[]
     connectOrCreate?: DriverCreateOrConnectWithoutOutcomeInput | DriverCreateOrConnectWithoutOutcomeInput[]
@@ -5902,6 +7334,20 @@ export namespace Prisma {
     update?: ActionUpdateWithWhereUniqueWithoutOutcomeInput | ActionUpdateWithWhereUniqueWithoutOutcomeInput[]
     updateMany?: ActionUpdateManyWithWhereWithoutOutcomeInput | ActionUpdateManyWithWhereWithoutOutcomeInput[]
     deleteMany?: ActionScalarWhereInput | ActionScalarWhereInput[]
+  }
+
+  export type SuccessMetricUncheckedUpdateManyWithoutOutcomeNestedInput = {
+    create?: XOR<SuccessMetricCreateWithoutOutcomeInput, SuccessMetricUncheckedCreateWithoutOutcomeInput> | SuccessMetricCreateWithoutOutcomeInput[] | SuccessMetricUncheckedCreateWithoutOutcomeInput[]
+    connectOrCreate?: SuccessMetricCreateOrConnectWithoutOutcomeInput | SuccessMetricCreateOrConnectWithoutOutcomeInput[]
+    upsert?: SuccessMetricUpsertWithWhereUniqueWithoutOutcomeInput | SuccessMetricUpsertWithWhereUniqueWithoutOutcomeInput[]
+    createMany?: SuccessMetricCreateManyOutcomeInputEnvelope
+    set?: SuccessMetricWhereUniqueInput | SuccessMetricWhereUniqueInput[]
+    disconnect?: SuccessMetricWhereUniqueInput | SuccessMetricWhereUniqueInput[]
+    delete?: SuccessMetricWhereUniqueInput | SuccessMetricWhereUniqueInput[]
+    connect?: SuccessMetricWhereUniqueInput | SuccessMetricWhereUniqueInput[]
+    update?: SuccessMetricUpdateWithWhereUniqueWithoutOutcomeInput | SuccessMetricUpdateWithWhereUniqueWithoutOutcomeInput[]
+    updateMany?: SuccessMetricUpdateManyWithWhereWithoutOutcomeInput | SuccessMetricUpdateManyWithWhereWithoutOutcomeInput[]
+    deleteMany?: SuccessMetricScalarWhereInput | SuccessMetricScalarWhereInput[]
   }
 
   export type OutcomeCreateNestedOneWithoutDriversInput = {
@@ -6004,6 +7450,28 @@ export namespace Prisma {
     update?: XOR<XOR<OutcomeUpdateToOneWithWhereWithoutActionsInput, OutcomeUpdateWithoutActionsInput>, OutcomeUncheckedUpdateWithoutActionsInput>
   }
 
+  export type OutcomeCreateNestedOneWithoutSuccess_metricsInput = {
+    create?: XOR<OutcomeCreateWithoutSuccess_metricsInput, OutcomeUncheckedCreateWithoutSuccess_metricsInput>
+    connectOrCreate?: OutcomeCreateOrConnectWithoutSuccess_metricsInput
+    connect?: OutcomeWhereUniqueInput
+  }
+
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type OutcomeUpdateOneRequiredWithoutSuccess_metricsNestedInput = {
+    create?: XOR<OutcomeCreateWithoutSuccess_metricsInput, OutcomeUncheckedCreateWithoutSuccess_metricsInput>
+    connectOrCreate?: OutcomeCreateOrConnectWithoutSuccess_metricsInput
+    upsert?: OutcomeUpsertWithoutSuccess_metricsInput
+    connect?: OutcomeWhereUniqueInput
+    update?: XOR<XOR<OutcomeUpdateToOneWithWhereWithoutSuccess_metricsInput, OutcomeUpdateWithoutSuccess_metricsInput>, OutcomeUncheckedUpdateWithoutSuccess_metricsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -6016,17 +7484,6 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringFilter<$PrismaModel> | string
-  }
-
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type NestedDateTimeFilter<$PrismaModel = never> = {
@@ -6084,22 +7541,6 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntFilter<$PrismaModel> | number
-  }
-
-  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -6222,6 +7663,33 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type DriverCreateWithoutOutcomeInput = {
     id?: string
     user_id: string
@@ -6292,6 +7760,38 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type SuccessMetricCreateWithoutOutcomeInput = {
+    id?: string
+    metric_name: string
+    target_value: number
+    current_value?: number
+    unit: string
+    description?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type SuccessMetricUncheckedCreateWithoutOutcomeInput = {
+    id?: string
+    metric_name: string
+    target_value: number
+    current_value?: number
+    unit: string
+    description?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type SuccessMetricCreateOrConnectWithoutOutcomeInput = {
+    where: SuccessMetricWhereUniqueInput
+    create: XOR<SuccessMetricCreateWithoutOutcomeInput, SuccessMetricUncheckedCreateWithoutOutcomeInput>
+  }
+
+  export type SuccessMetricCreateManyOutcomeInputEnvelope = {
+    data: SuccessMetricCreateManyOutcomeInput | SuccessMetricCreateManyOutcomeInput[]
+    skipDuplicates?: boolean
+  }
+
   export type DriverUpsertWithWhereUniqueWithoutOutcomeInput = {
     where: DriverWhereUniqueInput
     update: XOR<DriverUpdateWithoutOutcomeInput, DriverUncheckedUpdateWithoutOutcomeInput>
@@ -6356,19 +7856,49 @@ export namespace Prisma {
     updated_at?: DateTimeFilter<"Action"> | Date | string
   }
 
+  export type SuccessMetricUpsertWithWhereUniqueWithoutOutcomeInput = {
+    where: SuccessMetricWhereUniqueInput
+    update: XOR<SuccessMetricUpdateWithoutOutcomeInput, SuccessMetricUncheckedUpdateWithoutOutcomeInput>
+    create: XOR<SuccessMetricCreateWithoutOutcomeInput, SuccessMetricUncheckedCreateWithoutOutcomeInput>
+  }
+
+  export type SuccessMetricUpdateWithWhereUniqueWithoutOutcomeInput = {
+    where: SuccessMetricWhereUniqueInput
+    data: XOR<SuccessMetricUpdateWithoutOutcomeInput, SuccessMetricUncheckedUpdateWithoutOutcomeInput>
+  }
+
+  export type SuccessMetricUpdateManyWithWhereWithoutOutcomeInput = {
+    where: SuccessMetricScalarWhereInput
+    data: XOR<SuccessMetricUpdateManyMutationInput, SuccessMetricUncheckedUpdateManyWithoutOutcomeInput>
+  }
+
+  export type SuccessMetricScalarWhereInput = {
+    AND?: SuccessMetricScalarWhereInput | SuccessMetricScalarWhereInput[]
+    OR?: SuccessMetricScalarWhereInput[]
+    NOT?: SuccessMetricScalarWhereInput | SuccessMetricScalarWhereInput[]
+    id?: StringFilter<"SuccessMetric"> | string
+    outcome_id?: StringFilter<"SuccessMetric"> | string
+    metric_name?: StringFilter<"SuccessMetric"> | string
+    target_value?: FloatFilter<"SuccessMetric"> | number
+    current_value?: FloatFilter<"SuccessMetric"> | number
+    unit?: StringFilter<"SuccessMetric"> | string
+    description?: StringNullableFilter<"SuccessMetric"> | string | null
+    created_at?: DateTimeFilter<"SuccessMetric"> | Date | string
+    updated_at?: DateTimeFilter<"SuccessMetric"> | Date | string
+  }
+
   export type OutcomeCreateWithoutDriversInput = {
     id?: string
     user_id: string
     title: string
     why_it_matters: string
-    success_metric_value: number
-    success_metric_unit: string
     deadline: Date | string
     status?: $Enums.OutcomeStatus
     created_at?: Date | string
     completed_at?: Date | string | null
     archived_at?: Date | string | null
     actions?: ActionCreateNestedManyWithoutOutcomeInput
+    success_metrics?: SuccessMetricCreateNestedManyWithoutOutcomeInput
   }
 
   export type OutcomeUncheckedCreateWithoutDriversInput = {
@@ -6376,14 +7906,13 @@ export namespace Prisma {
     user_id: string
     title: string
     why_it_matters: string
-    success_metric_value: number
-    success_metric_unit: string
     deadline: Date | string
     status?: $Enums.OutcomeStatus
     created_at?: Date | string
     completed_at?: Date | string | null
     archived_at?: Date | string | null
     actions?: ActionUncheckedCreateNestedManyWithoutOutcomeInput
+    success_metrics?: SuccessMetricUncheckedCreateNestedManyWithoutOutcomeInput
   }
 
   export type OutcomeCreateOrConnectWithoutDriversInput = {
@@ -6447,14 +7976,13 @@ export namespace Prisma {
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     why_it_matters?: StringFieldUpdateOperationsInput | string
-    success_metric_value?: FloatFieldUpdateOperationsInput | number
-    success_metric_unit?: StringFieldUpdateOperationsInput | string
     deadline?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumOutcomeStatusFieldUpdateOperationsInput | $Enums.OutcomeStatus
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     archived_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     actions?: ActionUpdateManyWithoutOutcomeNestedInput
+    success_metrics?: SuccessMetricUpdateManyWithoutOutcomeNestedInput
   }
 
   export type OutcomeUncheckedUpdateWithoutDriversInput = {
@@ -6462,14 +7990,13 @@ export namespace Prisma {
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     why_it_matters?: StringFieldUpdateOperationsInput | string
-    success_metric_value?: FloatFieldUpdateOperationsInput | number
-    success_metric_unit?: StringFieldUpdateOperationsInput | string
     deadline?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumOutcomeStatusFieldUpdateOperationsInput | $Enums.OutcomeStatus
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     archived_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     actions?: ActionUncheckedUpdateManyWithoutOutcomeNestedInput
+    success_metrics?: SuccessMetricUncheckedUpdateManyWithoutOutcomeNestedInput
   }
 
   export type ActionUpsertWithWhereUniqueWithoutDriverInput = {
@@ -6518,14 +8045,13 @@ export namespace Prisma {
     user_id: string
     title: string
     why_it_matters: string
-    success_metric_value: number
-    success_metric_unit: string
     deadline: Date | string
     status?: $Enums.OutcomeStatus
     created_at?: Date | string
     completed_at?: Date | string | null
     archived_at?: Date | string | null
     drivers?: DriverCreateNestedManyWithoutOutcomeInput
+    success_metrics?: SuccessMetricCreateNestedManyWithoutOutcomeInput
   }
 
   export type OutcomeUncheckedCreateWithoutActionsInput = {
@@ -6533,14 +8059,13 @@ export namespace Prisma {
     user_id: string
     title: string
     why_it_matters: string
-    success_metric_value: number
-    success_metric_unit: string
     deadline: Date | string
     status?: $Enums.OutcomeStatus
     created_at?: Date | string
     completed_at?: Date | string | null
     archived_at?: Date | string | null
     drivers?: DriverUncheckedCreateNestedManyWithoutOutcomeInput
+    success_metrics?: SuccessMetricUncheckedCreateNestedManyWithoutOutcomeInput
   }
 
   export type OutcomeCreateOrConnectWithoutActionsInput = {
@@ -6595,14 +8120,13 @@ export namespace Prisma {
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     why_it_matters?: StringFieldUpdateOperationsInput | string
-    success_metric_value?: FloatFieldUpdateOperationsInput | number
-    success_metric_unit?: StringFieldUpdateOperationsInput | string
     deadline?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumOutcomeStatusFieldUpdateOperationsInput | $Enums.OutcomeStatus
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     archived_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     drivers?: DriverUpdateManyWithoutOutcomeNestedInput
+    success_metrics?: SuccessMetricUpdateManyWithoutOutcomeNestedInput
   }
 
   export type OutcomeUncheckedUpdateWithoutActionsInput = {
@@ -6610,14 +8134,85 @@ export namespace Prisma {
     user_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     why_it_matters?: StringFieldUpdateOperationsInput | string
-    success_metric_value?: FloatFieldUpdateOperationsInput | number
-    success_metric_unit?: StringFieldUpdateOperationsInput | string
     deadline?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumOutcomeStatusFieldUpdateOperationsInput | $Enums.OutcomeStatus
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     archived_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     drivers?: DriverUncheckedUpdateManyWithoutOutcomeNestedInput
+    success_metrics?: SuccessMetricUncheckedUpdateManyWithoutOutcomeNestedInput
+  }
+
+  export type OutcomeCreateWithoutSuccess_metricsInput = {
+    id?: string
+    user_id: string
+    title: string
+    why_it_matters: string
+    deadline: Date | string
+    status?: $Enums.OutcomeStatus
+    created_at?: Date | string
+    completed_at?: Date | string | null
+    archived_at?: Date | string | null
+    drivers?: DriverCreateNestedManyWithoutOutcomeInput
+    actions?: ActionCreateNestedManyWithoutOutcomeInput
+  }
+
+  export type OutcomeUncheckedCreateWithoutSuccess_metricsInput = {
+    id?: string
+    user_id: string
+    title: string
+    why_it_matters: string
+    deadline: Date | string
+    status?: $Enums.OutcomeStatus
+    created_at?: Date | string
+    completed_at?: Date | string | null
+    archived_at?: Date | string | null
+    drivers?: DriverUncheckedCreateNestedManyWithoutOutcomeInput
+    actions?: ActionUncheckedCreateNestedManyWithoutOutcomeInput
+  }
+
+  export type OutcomeCreateOrConnectWithoutSuccess_metricsInput = {
+    where: OutcomeWhereUniqueInput
+    create: XOR<OutcomeCreateWithoutSuccess_metricsInput, OutcomeUncheckedCreateWithoutSuccess_metricsInput>
+  }
+
+  export type OutcomeUpsertWithoutSuccess_metricsInput = {
+    update: XOR<OutcomeUpdateWithoutSuccess_metricsInput, OutcomeUncheckedUpdateWithoutSuccess_metricsInput>
+    create: XOR<OutcomeCreateWithoutSuccess_metricsInput, OutcomeUncheckedCreateWithoutSuccess_metricsInput>
+    where?: OutcomeWhereInput
+  }
+
+  export type OutcomeUpdateToOneWithWhereWithoutSuccess_metricsInput = {
+    where?: OutcomeWhereInput
+    data: XOR<OutcomeUpdateWithoutSuccess_metricsInput, OutcomeUncheckedUpdateWithoutSuccess_metricsInput>
+  }
+
+  export type OutcomeUpdateWithoutSuccess_metricsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    why_it_matters?: StringFieldUpdateOperationsInput | string
+    deadline?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumOutcomeStatusFieldUpdateOperationsInput | $Enums.OutcomeStatus
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archived_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    drivers?: DriverUpdateManyWithoutOutcomeNestedInput
+    actions?: ActionUpdateManyWithoutOutcomeNestedInput
+  }
+
+  export type OutcomeUncheckedUpdateWithoutSuccess_metricsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    why_it_matters?: StringFieldUpdateOperationsInput | string
+    deadline?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumOutcomeStatusFieldUpdateOperationsInput | $Enums.OutcomeStatus
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archived_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    drivers?: DriverUncheckedUpdateManyWithoutOutcomeNestedInput
+    actions?: ActionUncheckedUpdateManyWithoutOutcomeNestedInput
   }
 
   export type DriverCreateManyOutcomeInput = {
@@ -6640,6 +8235,17 @@ export namespace Prisma {
     completed_at?: Date | string | null
     scheduled_for?: Date | string | null
     last_moved_outcome_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type SuccessMetricCreateManyOutcomeInput = {
+    id?: string
+    metric_name: string
+    target_value: number
+    current_value?: number
+    unit: string
+    description?: string | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -6714,6 +8320,39 @@ export namespace Prisma {
     completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scheduled_for?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_moved_outcome_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SuccessMetricUpdateWithoutOutcomeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    metric_name?: StringFieldUpdateOperationsInput | string
+    target_value?: FloatFieldUpdateOperationsInput | number
+    current_value?: FloatFieldUpdateOperationsInput | number
+    unit?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SuccessMetricUncheckedUpdateWithoutOutcomeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    metric_name?: StringFieldUpdateOperationsInput | string
+    target_value?: FloatFieldUpdateOperationsInput | number
+    current_value?: FloatFieldUpdateOperationsInput | number
+    unit?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SuccessMetricUncheckedUpdateManyWithoutOutcomeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    metric_name?: StringFieldUpdateOperationsInput | string
+    target_value?: FloatFieldUpdateOperationsInput | number
+    current_value?: FloatFieldUpdateOperationsInput | number
+    unit?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }

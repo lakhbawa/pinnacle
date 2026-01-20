@@ -62,7 +62,7 @@ export default function CreateDriver({ params }: { params: Promise<{ outcome_id:
     try {
       await outcomeAPI.post<ApiResponse>('/drivers', formData);
       router.push(`/u/outcomes/${outcome_id}`);
-      showToast.success(`Driver created successfully.`);
+      showToast.success(`Initiative created successfully.`);
     } catch (error) {
       if (error instanceof APIError) {
         const fieldErrors = error.getValidationErrors();
@@ -80,9 +80,9 @@ export default function CreateDriver({ params }: { params: Promise<{ outcome_id:
         {/* Header */}
         <div className="md:flex md:items-center md:justify-between md:space-x-4 mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Create New Driver</h1>
+            <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Create New Initiative</h1>
             <p className="mt-2 text-sm text-gray-500">
-              Add a new driver to help achieve your outcome
+              Add a new initiative to help achieve your outcome
             </p>
           </div>
           <Link
@@ -137,7 +137,7 @@ export default function CreateDriver({ params }: { params: Promise<{ outcome_id:
                     id="description"
                     name="description"
                     rows={4}
-                    placeholder="Explain what this driver involves and how it contributes to the outcome..."
+                    placeholder="Explain what this initiative involves and how it contributes to the outcome..."
                     className="block w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-900
                              placeholder:text-gray-400 focus:outline-none focus:ring-2
                              focus:ring-primary-500 focus:border-primary-500 resize-none"
@@ -146,7 +146,7 @@ export default function CreateDriver({ params }: { params: Promise<{ outcome_id:
                   />
                 </div>
                 <p className="text-sm text-gray-500">
-                  Optional: Add more context about this driver
+                  Optional: Add more context about this initiative
                 </p>
                 <FieldError errors={errors} field="description" />
               </div>
@@ -190,7 +190,7 @@ export default function CreateDriver({ params }: { params: Promise<{ outcome_id:
                       <svg className="mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
                       </svg>
-                      Create Driver
+                      Create Initiative
                     </>
                   )}
                 </button>

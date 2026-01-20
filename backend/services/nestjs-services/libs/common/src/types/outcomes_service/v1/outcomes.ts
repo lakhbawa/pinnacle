@@ -16,8 +16,6 @@ export interface CreateOutcomeRequest {
   user_id: string;
   title: string;
   why_it_matters: string;
-  success_metric_value: number;
-  success_metric_unit: string;
   deadline: Timestamp | undefined;
 }
 
@@ -29,8 +27,6 @@ export interface UpdateOutcomeRequest {
   id: string;
   title?: string | undefined;
   why_it_matters?: string | undefined;
-  success_metric_value?: number | undefined;
-  success_metric_unit?: string | undefined;
   deadline?: Timestamp | undefined;
   status?: OutcomeStatus | undefined;
 }

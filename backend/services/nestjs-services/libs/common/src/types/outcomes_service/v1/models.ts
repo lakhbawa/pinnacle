@@ -23,8 +23,6 @@ export interface Outcome {
   user_id: string;
   title: string;
   why_it_matters: string;
-  success_metric_value: number;
-  success_metric_unit: string;
   deadline: Timestamp | undefined;
   status: OutcomeStatus;
   created_at: Timestamp | undefined;
@@ -32,6 +30,7 @@ export interface Outcome {
   archived_at: Timestamp | undefined;
   drivers: Driver[];
   actions: Action[];
+  success_metrics: SuccessMetric[];
 }
 
 export interface Driver {
@@ -60,6 +59,19 @@ export interface Action {
   outcome: Outcome | undefined;
   driver: Driver | undefined;
   description: string;
+}
+
+export interface SuccessMetric {
+  id: string;
+  outcome_id: string;
+  metric_name: string;
+  target_value: number;
+  current_value: number;
+  unit: string;
+  description: string;
+  created_at: Timestamp | undefined;
+  updated_at: Timestamp | undefined;
+  outcome: Outcome | undefined;
 }
 
 export const OUTCOMES_SERVICE_V1_PACKAGE_NAME = "outcomes_service.v1";

@@ -17,15 +17,14 @@ message Outcome {
   string user_id = 2;
   string title = 3;
   string why_it_matters = 4;
-  double success_metric_value = 5;
-  string success_metric_unit = 6;
-  google.protobuf.Timestamp deadline = 7;
-  OutcomeStatus status = 8;
-  google.protobuf.Timestamp created_at = 9;
-  google.protobuf.Timestamp completed_at = 10;
-  google.protobuf.Timestamp archived_at = 11;
-  repeated Driver drivers = 12;
-  repeated Action actions = 13;
+  google.protobuf.Timestamp deadline = 5;
+  OutcomeStatus status = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp completed_at = 8;
+  google.protobuf.Timestamp archived_at = 9;
+  repeated Driver drivers = 10;
+  repeated Action actions = 11;
+  repeated SuccessMetric success_metrics = 12;
 }
 
 message Driver {
@@ -55,5 +54,17 @@ message Action {
   Outcome outcome = 12;
   Driver driver = 13;
   string description = 14;
+}
 
+message SuccessMetric {
+  string id = 1;
+  string outcome_id = 2;
+  string metric_name = 3;
+  double target_value = 4;
+  double current_value = 5;
+  string unit = 6;
+  string description = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+  Outcome outcome = 10;
 }

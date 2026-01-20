@@ -20,7 +20,8 @@ export class FocusService {
       include: {
         actions: true
       }
-    }
+    },
+    success_metrics: true
   }});
     }
 }

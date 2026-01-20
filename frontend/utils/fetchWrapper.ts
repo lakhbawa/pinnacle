@@ -648,6 +648,24 @@ export const gatewayAPI = createAPI('gateway', {
   timeout: 30000,
 });
 
+export const authAPIInternal = createAPI('auth', {
+  baseURL: process.env.NEXT_INTERNAL_API_URL || 'http://pinnacle-gateway:8080/api/v1',
+  headers: { 'Content-Type': 'application/json' },
+  timeout: 10000,
+});
+
+export const outcomeAPIInternal = createAPI('outcome', {
+  baseURL: process.env.NEXT_INTERNAL_API_URL || 'http://pinnacle-gateway:8080/api/v1',
+  headers: { 'Content-Type': 'application/json' },
+  timeout: 30000,
+});
+
+export const gatewayAPIInternal = createAPI('gateway', {
+  baseURL: process.env.NEXT_INTERNAL_API_URL || 'http://pinnacle-gateway:8080/api/v1',
+  headers: { 'Content-Type': 'application/json' },
+  timeout: 30000,
+});
+
 // ============================================
 // Shared Interceptors
 // ============================================

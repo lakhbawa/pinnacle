@@ -5,6 +5,7 @@ import appConfig from "@app/common/config/app.config";
 import {DriversModule} from "./drivers/drivers.module";
 import {ActionsModule} from "./actions/actions.module";
 import {FocusModule} from "./focus/focus.module";
+import {SuccessMetricsModule} from "./success-metrics/success-metrics.module";
 
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { MetricsModule } from './metrics/metrics.module';
@@ -21,7 +22,7 @@ import { CustomMetricsService } from './metrics/custom-metrics.service';
     load: [appConfig],
     expandVariables: true,
 }),
-        OutcomesModule, DriversModule, ActionsModule, FocusModule],
+        OutcomesModule, DriversModule, ActionsModule, FocusModule, SuccessMetricsModule],
     controllers: [],
     providers: [
         CustomMetricsService,

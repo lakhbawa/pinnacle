@@ -24,15 +24,13 @@ const (
 )
 
 type CreateOutcomeRequest struct {
-	state              protoimpl.MessageState `protogen:"open.v1"`
-	UserId             string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	Title              string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
-	WhyItMatters       string                 `protobuf:"bytes,3,opt,name=why_it_matters,json=whyItMatters,proto3" json:"why_it_matters,omitempty"`
-	SuccessMetricValue float64                `protobuf:"fixed64,4,opt,name=success_metric_value,json=successMetricValue,proto3" json:"success_metric_value,omitempty"`
-	SuccessMetricUnit  string                 `protobuf:"bytes,5,opt,name=success_metric_unit,json=successMetricUnit,proto3" json:"success_metric_unit,omitempty"`
-	Deadline           *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=deadline,proto3" json:"deadline,omitempty"`
-	unknownFields      protoimpl.UnknownFields
-	sizeCache          protoimpl.SizeCache
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Title         string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	WhyItMatters  string                 `protobuf:"bytes,3,opt,name=why_it_matters,json=whyItMatters,proto3" json:"why_it_matters,omitempty"`
+	Deadline      *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=deadline,proto3" json:"deadline,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CreateOutcomeRequest) Reset() {
@@ -82,20 +80,6 @@ func (x *CreateOutcomeRequest) GetTitle() string {
 func (x *CreateOutcomeRequest) GetWhyItMatters() string {
 	if x != nil {
 		return x.WhyItMatters
-	}
-	return ""
-}
-
-func (x *CreateOutcomeRequest) GetSuccessMetricValue() float64 {
-	if x != nil {
-		return x.SuccessMetricValue
-	}
-	return 0
-}
-
-func (x *CreateOutcomeRequest) GetSuccessMetricUnit() string {
-	if x != nil {
-		return x.SuccessMetricUnit
 	}
 	return ""
 }
@@ -152,16 +136,14 @@ func (x *GetOutcomeRequest) GetId() string {
 }
 
 type UpdateOutcomeRequest struct {
-	state              protoimpl.MessageState `protogen:"open.v1"`
-	Id                 string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Title              *string                `protobuf:"bytes,2,opt,name=title,proto3,oneof" json:"title,omitempty"`
-	WhyItMatters       *string                `protobuf:"bytes,3,opt,name=why_it_matters,json=whyItMatters,proto3,oneof" json:"why_it_matters,omitempty"`
-	SuccessMetricValue *float64               `protobuf:"fixed64,4,opt,name=success_metric_value,json=successMetricValue,proto3,oneof" json:"success_metric_value,omitempty"`
-	SuccessMetricUnit  *string                `protobuf:"bytes,5,opt,name=success_metric_unit,json=successMetricUnit,proto3,oneof" json:"success_metric_unit,omitempty"`
-	Deadline           *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=deadline,proto3,oneof" json:"deadline,omitempty"`
-	Status             *OutcomeStatus         `protobuf:"varint,7,opt,name=status,proto3,enum=outcomes_service.v1.OutcomeStatus,oneof" json:"status,omitempty"`
-	unknownFields      protoimpl.UnknownFields
-	sizeCache          protoimpl.SizeCache
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Title         *string                `protobuf:"bytes,2,opt,name=title,proto3,oneof" json:"title,omitempty"`
+	WhyItMatters  *string                `protobuf:"bytes,3,opt,name=why_it_matters,json=whyItMatters,proto3,oneof" json:"why_it_matters,omitempty"`
+	Deadline      *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=deadline,proto3,oneof" json:"deadline,omitempty"`
+	Status        *OutcomeStatus         `protobuf:"varint,5,opt,name=status,proto3,enum=outcomes_service.v1.OutcomeStatus,oneof" json:"status,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *UpdateOutcomeRequest) Reset() {
@@ -211,20 +193,6 @@ func (x *UpdateOutcomeRequest) GetTitle() string {
 func (x *UpdateOutcomeRequest) GetWhyItMatters() string {
 	if x != nil && x.WhyItMatters != nil {
 		return *x.WhyItMatters
-	}
-	return ""
-}
-
-func (x *UpdateOutcomeRequest) GetSuccessMetricValue() float64 {
-	if x != nil && x.SuccessMetricValue != nil {
-		return *x.SuccessMetricValue
-	}
-	return 0
-}
-
-func (x *UpdateOutcomeRequest) GetSuccessMetricUnit() string {
-	if x != nil && x.SuccessMetricUnit != nil {
-		return *x.SuccessMetricUnit
 	}
 	return ""
 }
@@ -487,28 +455,22 @@ var File_outcomes_service_v1_outcomes_proto protoreflect.FileDescriptor
 
 const file_outcomes_service_v1_outcomes_proto_rawDesc = "" +
 	"\n" +
-	"\"outcomes_service/v1/outcomes.proto\x12\x13outcomes_service.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1cgoogle/api/annotations.proto\x1a outcomes_service/v1/models.proto\"\x85\x02\n" +
+	"\"outcomes_service/v1/outcomes.proto\x12\x13outcomes_service.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1cgoogle/api/annotations.proto\x1a outcomes_service/v1/models.proto\"\xa3\x01\n" +
 	"\x14CreateOutcomeRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12$\n" +
-	"\x0ewhy_it_matters\x18\x03 \x01(\tR\fwhyItMatters\x120\n" +
-	"\x14success_metric_value\x18\x04 \x01(\x01R\x12successMetricValue\x12.\n" +
-	"\x13success_metric_unit\x18\x05 \x01(\tR\x11successMetricUnit\x126\n" +
-	"\bdeadline\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\bdeadline\"#\n" +
+	"\x0ewhy_it_matters\x18\x03 \x01(\tR\fwhyItMatters\x126\n" +
+	"\bdeadline\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\bdeadline\"#\n" +
 	"\x11GetOutcomeRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\xbc\x03\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\x9f\x02\n" +
 	"\x14UpdateOutcomeRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x19\n" +
 	"\x05title\x18\x02 \x01(\tH\x00R\x05title\x88\x01\x01\x12)\n" +
-	"\x0ewhy_it_matters\x18\x03 \x01(\tH\x01R\fwhyItMatters\x88\x01\x01\x125\n" +
-	"\x14success_metric_value\x18\x04 \x01(\x01H\x02R\x12successMetricValue\x88\x01\x01\x123\n" +
-	"\x13success_metric_unit\x18\x05 \x01(\tH\x03R\x11successMetricUnit\x88\x01\x01\x12;\n" +
-	"\bdeadline\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampH\x04R\bdeadline\x88\x01\x01\x12?\n" +
-	"\x06status\x18\a \x01(\x0e2\".outcomes_service.v1.OutcomeStatusH\x05R\x06status\x88\x01\x01B\b\n" +
+	"\x0ewhy_it_matters\x18\x03 \x01(\tH\x01R\fwhyItMatters\x88\x01\x01\x12;\n" +
+	"\bdeadline\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampH\x02R\bdeadline\x88\x01\x01\x12?\n" +
+	"\x06status\x18\x05 \x01(\x0e2\".outcomes_service.v1.OutcomeStatusH\x03R\x06status\x88\x01\x01B\b\n" +
 	"\x06_titleB\x11\n" +
-	"\x0f_why_it_mattersB\x17\n" +
-	"\x15_success_metric_valueB\x16\n" +
-	"\x14_success_metric_unitB\v\n" +
+	"\x0f_why_it_mattersB\v\n" +
 	"\t_deadlineB\t\n" +
 	"\a_status\"\xb6\x01\n" +
 	"\x13ListOutcomesRequest\x12\x17\n" +

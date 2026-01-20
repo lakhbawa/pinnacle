@@ -58,7 +58,7 @@ export default function UpdateDriver({params}: {
                 }
 
             } catch (err) {
-                setError(err instanceof Error ? err.message : 'Failed to load driver');
+                setError(err instanceof Error ? err.message : 'Failed to load initiative');
             } finally {
                 setLoading(false);
             }
@@ -77,14 +77,14 @@ export default function UpdateDriver({params}: {
         try {
             await outcomeAPI.patch(`/drivers/${driver_id}`, formData);
             router.push(`/u/outcomes/${outcome_id}/drivers/${driver_id}`);
-            showToast.success("Driver updated successfully.");
+            showToast.success("Initiative updated successfully.");
         } catch (error) {
             if (error instanceof APIError) {
         const fieldErrors = error.getValidationErrors();
         setErrors(fieldErrors ?? {});
         showToast.error(error.message);
       }
-            setError('Failed to update driver');
+            setError('Failed to update initiative');
         } finally {
             setIsSubmitting(false);
         }
@@ -96,7 +96,7 @@ export default function UpdateDriver({params}: {
                 <div className="animate-pulse flex flex-col items-center">
                     <div
                         className="h-8 w-8 mb-4 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"/>
-                    <p className="text-gray-600">Loading driver...</p>
+                    <p className="text-gray-600">Loading initiative...</p>
                 </div>
             </div>
         );
@@ -106,7 +106,7 @@ export default function UpdateDriver({params}: {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
                 <div className="bg-red-50 border-l-4 border-red-500 rounded-lg p-6 max-w-md shadow-sm">
-                    <h3 className="text-red-800 font-semibold text-lg mb-2">Error Loading Driver</h3>
+                    <h3 className="text-red-800 font-semibold text-lg mb-2">Error Loading Initiative</h3>
                     <p className="text-red-600">{error}</p>
                     <button
                         onClick={() => window.location.reload()}
@@ -131,9 +131,9 @@ export default function UpdateDriver({params}: {
                 {/* Header */}
                 <div className="md:flex md:items-center md:justify-between md:space-x-4 mb-8">
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Update Driver</h1>
+                        <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Update Initiative</h1>
                         <p className="mt-2 text-sm text-gray-500">
-                            Make changes to your driver's information
+                            Make changes to your initiative's information
                         </p>
                     </div>
                     <Link
@@ -145,7 +145,7 @@ export default function UpdateDriver({params}: {
                                   d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
                                   clipRule="evenodd"/>
                         </svg>
-                        Back to Driver
+                        Back to Initiative
                     </Link>
                 </div>
 
@@ -159,7 +159,7 @@ export default function UpdateDriver({params}: {
                             {/* Title Field */}
                             <div className="space-y-2">
                                 <label htmlFor="title" className="block text-sm font-medium text-gray-900">
-                                    Driver Title
+                                    Initiative Title
                                 </label>
                                 <div className="relative rounded-md shadow-sm">
                                     <input
@@ -167,7 +167,7 @@ export default function UpdateDriver({params}: {
                                         id="title"
                                         name="title"
                                         required
-                                        placeholder="Enter driver title"
+                                        placeholder="Enter initiative title"
                                         className="block w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-900
                              placeholder:text-gray-400 focus:outline-none focus:ring-2
                              focus:ring-primary-500 focus:border-primary-500"
@@ -176,7 +176,7 @@ export default function UpdateDriver({params}: {
                                     />
                                 </div>
                                 <p className="text-sm text-gray-500">
-                                    Give your driver a clear, descriptive title
+                                    Give your initiative a clear, descriptive title
                                 </p>
                             </div>
 
@@ -190,7 +190,7 @@ export default function UpdateDriver({params}: {
                       id="description"
                       name="description"
                       rows={4}
-                      placeholder="Describe what this driver involves..."
+                      placeholder="Describe what this initiative involves..."
                       className="block w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-900
                              placeholder:text-gray-400 focus:outline-none focus:ring-2
                              focus:ring-primary-500 focus:border-primary-500 resize-none"
@@ -199,7 +199,7 @@ export default function UpdateDriver({params}: {
                   />
                                 </div>
                                 <p className="text-sm text-gray-500">
-                                    Optional: Add more context about this driver
+                                    Optional: Add more context about this initiative
                                 </p>
                             </div>
 
@@ -248,7 +248,7 @@ export default function UpdateDriver({params}: {
                                                       d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                                       clipRule="evenodd"/>
                                             </svg>
-                                            Update Driver
+                                            Update Initiative
                                         </>
                                     )}
                                 </button>

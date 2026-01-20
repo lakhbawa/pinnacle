@@ -99,16 +99,36 @@ export class ActionsController implements ActionsServiceController {
     }
 
     async updateAction(request: UpdateActionRequest): Promise<Action> {
-                console.log('Received request:', JSON.stringify(request, null, 2));
-        const data: Prisma.ActionUpdateInput = {};
-        if (request.title) data.title = request.title;
-         if (request.scheduled_for) data.scheduled_for = ActionMapper.toDate(request.scheduled_for);
-         if (request.completed_at) data.completed_at = ActionMapper.toDate(request.completed_at);
-         // if (request.driver_id) data.driver_id = request.driver_id;
-         // if (request.outcome_id) data.outcome_id = request.outcome_id;
+      console.log('Received request:', JSON.stringify(request, null, 2));
 
-        const action = await this.actionsService.update({where: {id: request.id}, data});
-        return ActionMapper.toProtoAction(action);
+      const data: Prisma.ActionUpdateInput = {};
+
+      if (request.title !== undefined) {
+        data.title = request.title;
+      }
+
+      if (request.scheduled_for !== undefined) {
+        data.scheduled_for = ActionMapper.toDate(request.scheduled_for);
+      }
+
+      if (request.is_completed !== undefined) {
+        data.is_completed = request.is_completed;
+
+        if (request.is_completed) {
+          data.completed_at = request.completed_at
+            ? ActionMapper.toDate(request.completed_at)
+            : new Date();
+        } else {
+          data.completed_at = null;
+        }
+      }
+
+      const action = await this.actionsService.update({
+        where: { id: request.id },
+        data,
+      });
+
+      return ActionMapper.toProtoAction(action);
     }
 
     async deleteAction(request: DeleteActionRequest): Promise<DeleteActionResponse> {
