@@ -50,7 +50,8 @@ export class OutcomesController implements OutcomesServiceController {
         request: ListOutcomesRequest,
     ): Promise<ListOutcomesResponse> {
 
-                await this.kafkaService.publish('outcomes-events', 'OUTCOME_CREATED', {
+        // test event
+        await this.kafkaService.publish('outcomes-events', 'OUTCOME_LIST_ACCESSED', {
             recipient_ids: ['user-001'] ,
             data: {
                 actor_id: ['user-001'],
@@ -60,9 +61,6 @@ export class OutcomesController implements OutcomesServiceController {
             }
         }
         );
-
-        console.log('Received request:', JSON.stringify(request, null, 2));
-
         const where: Prisma.OutcomeWhereInput = {user_id: request.user_id};
         if (request.status) {
             where.status = OutcomeMapper.toPrismaStatus(request.status);
@@ -77,10 +75,15 @@ export class OutcomesController implements OutcomesServiceController {
                 take: pageSize,
                 include: {
                     drivers: {include: {actions: true}},
-                    actions: true,
+                    actions: {
+                        orderBy: [
+                            { created_at: 'asc' },
+                            { id: 'asc' }
+                        ]
+                    },
                     success_metrics: true,
                 },
-                orderBy: {created_at: 'desc'},
+                orderBy: { created_at: 'desc' }
             }),
         ]);
 
@@ -95,7 +98,17 @@ export class OutcomesController implements OutcomesServiceController {
     async getOutcome(request: GetOutcomeRequest): Promise<Outcome> {
         const outcome = await this.outcomesService.findOne(
             {id: request.id},
-            {drivers: {include: {actions: true}}, actions: true, success_metrics: true}
+            {drivers: {include: {actions: {
+                        orderBy: [
+                            { created_at: 'asc' },
+                            { id: 'asc' }
+                        ]
+                    }}}, actions: {
+                        orderBy: [
+                            { created_at: 'asc' },
+                            { id: 'asc' }
+                        ]
+                    }, success_metrics: true}
         );
         if (!outcome) {
             throw new RpcException({

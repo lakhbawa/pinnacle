@@ -286,10 +286,27 @@ export default function FocusPage() {
 
     async function toggleActionCompletion(action: Action) {
         try {
+            if (!session) {
+                return
+            }
             await outcomeAPI.patch(`/actions/${action.id}`, {
                 is_completed: !action.is_completed
             })
-            fetchOutcomes()
+
+            const response = await outcomeAPI.get<ListOutcomesResponse>('/outcomes', {
+                params: {user_id: session.user.id, page_size: 20}
+            })
+
+            if (response.data && Array.isArray(response.data)) {
+                setOutcomes(response.data)
+
+                if (currentOutcome) {
+                    const updatedCurrent = response.data.find(o => o.id === currentOutcome.id)
+                    if (updatedCurrent) {
+                        setCurrentOutcome(updatedCurrent)
+                    }
+                }
+            }
         } catch (error) {
             console.error('Failed to toggle action:', error)
         }
