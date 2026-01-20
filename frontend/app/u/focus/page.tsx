@@ -43,7 +43,6 @@ export default function FocusPage() {
     }, [outcomes]);
 
     useEffect(() => {
-
         async function loadOutcomes() {
             if (status === 'loading') {
                 console.log('Session still loading, waiting...');
@@ -55,7 +54,6 @@ export default function FocusPage() {
                 setLoading(false);
                 return;
             }
-
 
             if (!session || !session.user || !session.user.id) {
                 console.log('Incomplete session data, waiting...', {
@@ -111,7 +109,7 @@ export default function FocusPage() {
         }
 
         loadOutcomes();
-    }, [session, status, currentOutcome]);
+    }, [session, status]);
 
     useEffect(() => {
         if (showAddDriver && driverInputRef.current) {
@@ -293,14 +291,13 @@ export default function FocusPage() {
                 ...driver,
                 actions: driver.actions?.map(a =>
                     a.id === action.id
-                        ? { ...a, is_completed: !a.is_completed }
+                        ? {...a, is_completed: !a.is_completed}
                         : a
                 ) ?? []
             }))
         };
 
         setCurrentOutcome(optimisticOutcome);
-
         setOutcomes(prev => prev.map(o =>
             o.id === currentOutcome.id ? optimisticOutcome : o
         ));
@@ -309,19 +306,6 @@ export default function FocusPage() {
             await outcomeAPI.patch(`/actions/${action.id}`, {
                 is_completed: !action.is_completed
             });
-
-            const response = await outcomeAPI.get<ListOutcomesResponse>('/outcomes', {
-                params: { user_id: session.user.id, page_size: 20 }
-            });
-
-            if (response.data && Array.isArray(response.data)) {
-                setOutcomes(response.data);
-
-                const updatedCurrent = response.data.find(o => o.id === currentOutcome.id);
-                if (updatedCurrent) {
-                    setCurrentOutcome(updatedCurrent);
-                }
-            }
         } catch (error) {
             console.error('Failed to toggle action:', error);
 
@@ -689,7 +673,8 @@ export default function FocusPage() {
                                 <div className="p-6">
                                     {drivers.length === 0 ? (
                                         <div className="text-center py-12">
-                                            <p className="text-gray-500 mb-4">No initiatives yet. Add one to break down your
+                                            <p className="text-gray-500 mb-4">No initiatives yet. Add one to break down
+                                                your
                                                 outcome.</p>
                                             <button
                                                 onClick={() => setShowAddDriver(true)}
