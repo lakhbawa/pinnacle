@@ -74,16 +74,20 @@ export class OutcomesController implements OutcomesServiceController {
                 skip,
                 take: pageSize,
                 include: {
-                    drivers: {include: {actions: true}},
-                    actions: {
-                        orderBy: [
-                            { created_at: 'asc' },
-                            { id: 'asc' }
-                        ]
+                    drivers: {
+                        include: {
+                            actions: {
+                                orderBy: [
+                                    {created_at: 'asc'},
+                                    {id: 'asc'}
+                                ]
+                            }
+                        },
+                        orderBy: {created_at: 'asc'}
                     },
                     success_metrics: true,
                 },
-                orderBy: { created_at: 'desc' }
+                orderBy: {created_at: 'desc'}
             }),
         ]);
 
@@ -98,17 +102,20 @@ export class OutcomesController implements OutcomesServiceController {
     async getOutcome(request: GetOutcomeRequest): Promise<Outcome> {
         const outcome = await this.outcomesService.findOne(
             {id: request.id},
-            {drivers: {include: {actions: {
-                        orderBy: [
-                            { created_at: 'asc' },
-                            { id: 'asc' }
-                        ]
-                    }}}, actions: {
-                        orderBy: [
-                            { created_at: 'asc' },
-                            { id: 'asc' }
-                        ]
-                    }, success_metrics: true}
+            {
+                drivers: {
+                    include: {
+                        actions: {
+                            orderBy: [
+                                {created_at: 'asc'},
+                                {id: 'asc'}
+                            ]
+                        }
+                    },
+                    orderBy: {created_at: 'asc'}
+                },
+                success_metrics: true
+            }
         );
         if (!outcome) {
             throw new RpcException({

@@ -285,30 +285,52 @@ export default function FocusPage() {
     }
 
     async function toggleActionCompletion(action: Action) {
+        if (!currentOutcome || !session) return;
+
+        const optimisticOutcome = {
+            ...currentOutcome,
+            drivers: currentOutcome.drivers.map(driver => ({
+                ...driver,
+                actions: driver.actions?.map(a =>
+                    a.id === action.id
+                        ? { ...a, is_completed: !a.is_completed }
+                        : a
+                ) ?? []
+            }))
+        };
+
+        setCurrentOutcome(optimisticOutcome);
+
+        setOutcomes(prev => prev.map(o =>
+            o.id === currentOutcome.id ? optimisticOutcome : o
+        ));
+
         try {
-            if (!session) {
-                return
-            }
             await outcomeAPI.patch(`/actions/${action.id}`, {
                 is_completed: !action.is_completed
-            })
+            });
 
             const response = await outcomeAPI.get<ListOutcomesResponse>('/outcomes', {
-                params: {user_id: session.user.id, page_size: 20}
-            })
+                params: { user_id: session.user.id, page_size: 20 }
+            });
 
             if (response.data && Array.isArray(response.data)) {
-                setOutcomes(response.data)
+                setOutcomes(response.data);
 
-                if (currentOutcome) {
-                    const updatedCurrent = response.data.find(o => o.id === currentOutcome.id)
-                    if (updatedCurrent) {
-                        setCurrentOutcome(updatedCurrent)
-                    }
+                const updatedCurrent = response.data.find(o => o.id === currentOutcome.id);
+                if (updatedCurrent) {
+                    setCurrentOutcome(updatedCurrent);
                 }
             }
         } catch (error) {
-            console.error('Failed to toggle action:', error)
+            console.error('Failed to toggle action:', error);
+
+            setCurrentOutcome(currentOutcome);
+            setOutcomes(prev => prev.map(o =>
+                o.id === currentOutcome.id ? currentOutcome : o
+            ));
+
+            alert('Failed to update action. Please try again.');
         }
     }
 
