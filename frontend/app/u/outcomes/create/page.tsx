@@ -38,9 +38,10 @@ const { data: session, status } = useSession();
     title: '',
     user_id: userId,
     why_it_matters: '',
-    success_metric_unit: '',
-    success_metric_value: 0,
     deadline: '',
+    metric_name: '',
+    target_value: '',
+    unit: '',
   })
 
   const [errors, setErrors] = useState<Record<string, string[]>>({})
@@ -59,23 +60,45 @@ const { data: session, status } = useSession();
   const createOutcome = async (event: any) => {
     event.preventDefault()
     setErrors({})
+    setIsSubmitting(true)
 
     console.log('Creating Outcome...', formData);
 
-    await outcomeAPI.post<ApiResponse>('/outcomes', {
-      ...formData,
-      deadline: new Date(formData.deadline)
-    }).then(res => {
-      console.log('Creating Outcome...');
+    try {
+      const outcomeResponse = await outcomeAPI.post<any>('/outcomes', {
+        user_id: formData.user_id,
+        title: formData.title,
+        why_it_matters: formData.why_it_matters,
+        deadline: new Date(formData.deadline)
+      });
+
+      const createdOutcome = outcomeResponse.data;
+
+      if (formData.metric_name && formData.target_value && formData.unit) {
+        try {
+          await outcomeAPI.post('/success-metrics', {
+            outcome_id: createdOutcome.id,
+            metric_name: formData.metric_name,
+            target_value: parseFloat(formData.target_value),
+            current_value: 0,
+            unit: formData.unit,
+          });
+        } catch (metricError) {
+          console.error('Failed to create success metric:', metricError);
+        }
+      }
+
       router.push('/u/outcomes');
       showToast.success(` Outcome: ${formData.title} created successfully.`);
-    }).catch(error => {
+    } catch (error) {
       if (error instanceof APIError) {
         const fieldErrors = error.getValidationErrors();
         setErrors(fieldErrors ?? {})
         showToast.error("Validation Failed, Please check input and try again.")
       }
-    })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
     return (
@@ -139,60 +162,6 @@ const { data: session, status } = useSession();
                 <FieldError errors={errors} field="why_it_matters" />
               </div>
 
-              {/* Success Metrics - Improved */}
-              <div className="space-y-4">
-                <div>
-                  <h3 className="text-base font-medium text-gray-900">Define Success Metrics</h3>
-                  <p className="mt-1 text-sm text-gray-500">
-                    Set clear, measurable targets for your outcome
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <label htmlFor="success_metric_value" className="block text-sm font-medium text-gray-900">
-                      Target Value
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="number"
-                        id="success_metric_value"
-                        name="success_metric_value"
-                        required
-                        placeholder="100"
-                        className="block w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-900
-                                 placeholder:text-gray-400 focus:outline-none focus:ring-2
-                                 focus:ring-primary-500 focus:border-primary-500"
-                        value={formData.success_metric_value}
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <FieldError errors={errors} field="success_metric_value" />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label htmlFor="success_metric_unit" className="block text-sm font-medium text-gray-900">
-                      Unit of Measurement
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        id="success_metric_unit"
-                        name="success_metric_unit"
-                        required
-                        placeholder="e.g., customers, revenue, users"
-                        className="block w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-900
-                                 placeholder:text-gray-400 focus:outline-none focus:ring-2
-                                 focus:ring-primary-500 focus:border-primary-500"
-                        value={formData.success_metric_unit}
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <FieldError errors={errors} field="success_metric_unit" />
-                  </div>
-                </div>
-              </div>
-
               {/* Deadline - Improved */}
               <div className="space-y-2">
                 <label htmlFor="deadline" className="block text-sm font-medium text-gray-900">
@@ -219,6 +188,78 @@ const { data: session, status } = useSession();
                   Set a realistic timeline for achieving your outcome
                 </p>
                 <FieldError errors={errors} field="deadline" />
+              </div>
+
+              {/* Success Metric - Optional */}
+              <div className="space-y-4 pt-6 border-t border-gray-200">
+                <div className="flex items-center space-x-2">
+                  <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                  <label className="block text-sm font-medium text-gray-900">
+                    Success Metric (Optional)
+                  </label>
+                </div>
+                <p className="text-sm text-gray-500">
+                  Define how you'll measure success for this outcome
+                </p>
+
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                  <div className="sm:col-span-2 space-y-2">
+                    <label htmlFor="metric_name" className="block text-xs font-medium text-gray-700">
+                      Metric Name
+                    </label>
+                    <input
+                      type="text"
+                      id="metric_name"
+                      name="metric_name"
+                      placeholder="e.g., Number of customers"
+                      className="block w-full px-3 py-2 rounded-md border border-gray-300 text-gray-900
+                               placeholder:text-gray-400 focus:outline-none focus:ring-2
+                               focus:ring-primary-500 focus:border-primary-500 text-sm"
+                      value={formData.metric_name}
+                      onChange={handleChange}
+                    />
+                    <FieldError errors={errors} field="metric_name" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label htmlFor="unit" className="block text-xs font-medium text-gray-700">
+                      Unit
+                    </label>
+                    <input
+                      type="text"
+                      id="unit"
+                      name="unit"
+                      placeholder="e.g., customers"
+                      className="block w-full px-3 py-2 rounded-md border border-gray-300 text-gray-900
+                               placeholder:text-gray-400 focus:outline-none focus:ring-2
+                               focus:ring-primary-500 focus:border-primary-500 text-sm"
+                      value={formData.unit}
+                      onChange={handleChange}
+                    />
+                    <FieldError errors={errors} field="unit" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label htmlFor="target_value" className="block text-xs font-medium text-gray-700">
+                      Target Value
+                    </label>
+                    <input
+                      type="number"
+                      id="target_value"
+                      name="target_value"
+                      placeholder="e.g., 100"
+                      step="any"
+                      className="block w-full px-3 py-2 rounded-md border border-gray-300 text-gray-900
+                               placeholder:text-gray-400 focus:outline-none focus:ring-2
+                               focus:ring-primary-500 focus:border-primary-500 text-sm"
+                      value={formData.target_value}
+                      onChange={handleChange}
+                    />
+                    <FieldError errors={errors} field="target_value" />
+                  </div>
+                </div>
               </div>
 
               {/* Form Actions - Improved */}

@@ -19,8 +19,6 @@ export class OutcomesSeeder implements Seeder {
         user_id: userId,
         title: 'Launch new product feature to 1000 beta users',
         why_it_matters: 'Validate market demand and collect user feedback before full rollout',
-        success_metric_value: 1000,
-        success_metric_unit: 'active beta users',
         deadline: new Date('2025-04-15'),
         status: OutcomeStatus.ACTIVE,
         drivers: {
@@ -42,6 +40,17 @@ export class OutcomesSeeder implements Seeder {
               title: 'Plan and execute beta user recruitment',
               description: 'Identify and onboard early adopters',
               position: 3,
+            },
+          ],
+        },
+        success_metrics: {
+          create: [
+            {
+              metric_name: 'Beta users onboarded',
+              target_value: 1000,
+              current_value: 450,
+              unit: 'users',
+              description: 'Active beta users testing the new feature',
             },
           ],
         },
@@ -132,8 +141,6 @@ export class OutcomesSeeder implements Seeder {
         user_id: userId,
         title: 'Get promoted to senior engineering role',
         why_it_matters: 'Increase impact, compensation, and leadership responsibilities',
-        success_metric_value: 1,
-        success_metric_unit: 'promotion achieved',
         deadline: new Date('2025-06-30'),
         status: OutcomeStatus.ACTIVE,
         drivers: {
@@ -149,6 +156,17 @@ export class OutcomesSeeder implements Seeder {
               title: 'Build cross-functional relationships',
               description: 'Collaborate effectively with product and design teams',
               position: 2,
+            },
+          ],
+        },
+        success_metrics: {
+          create: [
+            {
+              metric_name: 'Promotion achieved',
+              target_value: 1,
+              current_value: 0,
+              unit: 'promotion',
+              description: 'Successfully promoted to senior engineering role',
             },
           ],
         },
@@ -218,8 +236,6 @@ export class OutcomesSeeder implements Seeder {
         user_id: userId,
         title: 'Reach $50K monthly recurring revenue',
         why_it_matters: 'Achieve financial sustainability and fund team expansion',
-        success_metric_value: 50000,
-        success_metric_unit: 'USD monthly recurring revenue',
         deadline: new Date('2025-09-30'),
         status: OutcomeStatus.ACTIVE,
         drivers: {
@@ -241,6 +257,17 @@ export class OutcomesSeeder implements Seeder {
               title: 'Reduce monthly churn to under 3%',
               description: 'Improve customer retention and lifetime value',
               position: 3,
+            },
+          ],
+        },
+        success_metrics: {
+          create: [
+            {
+              metric_name: 'Monthly recurring revenue',
+              target_value: 50000,
+              current_value: 28500,
+              unit: 'USD',
+              description: 'Total monthly recurring revenue from all customers',
             },
           ],
         },
@@ -330,8 +357,6 @@ export class OutcomesSeeder implements Seeder {
         user_id: userId,
         title: 'Run a half marathon in under 2 hours',
         why_it_matters: 'Improve health, build discipline, and achieve personal milestone',
-        success_metric_value: 120,
-        success_metric_unit: 'minutes finish time',
         deadline: new Date('2025-05-18'),
         status: OutcomeStatus.ACTIVE,
         drivers: {
@@ -353,6 +378,17 @@ export class OutcomesSeeder implements Seeder {
               title: 'Prevent injuries and support recovery',
               description: 'Strength training, stretching, and proper nutrition',
               position: 3,
+            },
+          ],
+        },
+        success_metrics: {
+          create: [
+            {
+              metric_name: 'Half marathon finish time',
+              target_value: 120,
+              current_value: 0,
+              unit: 'minutes',
+              description: 'Complete half marathon in under 2 hours',
             },
           ],
         },
@@ -432,8 +468,6 @@ export class OutcomesSeeder implements Seeder {
         user_id: userId,
         title: 'Build audience of 10,000 newsletter subscribers',
         why_it_matters: 'Create sustainable distribution channel for product launches',
-        success_metric_value: 10000,
-        success_metric_unit: 'email subscribers',
         deadline: new Date('2025-08-31'),
         status: OutcomeStatus.ACTIVE,
         drivers: {
@@ -455,6 +489,17 @@ export class OutcomesSeeder implements Seeder {
               title: 'Amplify reach through partnerships',
               description: 'Collaborate with complementary creators',
               position: 3,
+            },
+          ],
+        },
+        success_metrics: {
+          create: [
+            {
+              metric_name: 'Newsletter subscribers',
+              target_value: 10000,
+              current_value: 3250,
+              unit: 'subscribers',
+              description: 'Total email subscribers to newsletter',
             },
           ],
         },
@@ -534,8 +579,6 @@ export class OutcomesSeeder implements Seeder {
         user_id: userId,
         title: 'Migrate legacy system to microservices',
         why_it_matters: 'Reduce technical debt and enable faster development',
-        success_metric_value: 100,
-        success_metric_unit: 'percent migrated',
         deadline: new Date('2024-12-31'),
         status: OutcomeStatus.COMPLETED,
         completed_at: new Date('2024-12-28'),
@@ -546,6 +589,17 @@ export class OutcomesSeeder implements Seeder {
               title: 'Extract user service from monolith',
               description: 'Separate authentication and user management',
               position: 1,
+            },
+          ],
+        },
+        success_metrics: {
+          create: [
+            {
+              metric_name: 'Migration completion',
+              target_value: 100,
+              current_value: 100,
+              unit: 'percent',
+              description: 'Percentage of system migrated to microservices',
             },
           ],
         },
@@ -585,8 +639,6 @@ export class OutcomesSeeder implements Seeder {
         user_id: userId,
         title: 'Launch mobile app for iOS and Android',
         why_it_matters: 'Expand to mobile-first user segment',
-        success_metric_value: 10000,
-        success_metric_unit: 'app downloads',
         deadline: new Date('2025-12-31'),
         status: OutcomeStatus.PARKED,
         drivers: {
@@ -596,6 +648,17 @@ export class OutcomesSeeder implements Seeder {
               title: 'Research mobile frameworks',
               description: 'Evaluate technology options',
               position: 1,
+            },
+          ],
+        },
+        success_metrics: {
+          create: [
+            {
+              metric_name: 'App downloads',
+              target_value: 10000,
+              current_value: 0,
+              unit: 'downloads',
+              description: 'Total app downloads across iOS and Android',
             },
           ],
         },
@@ -639,6 +702,9 @@ export class OutcomesSeeder implements Seeder {
 
     await this.prisma.driver.deleteMany();
     console.log('  ✓ Cleared drivers');
+
+    await this.prisma.successMetric.deleteMany();
+    console.log('  ✓ Cleared success metrics');
 
     await this.prisma.outcome.deleteMany();
     console.log('  ✓ Cleared outcomes');

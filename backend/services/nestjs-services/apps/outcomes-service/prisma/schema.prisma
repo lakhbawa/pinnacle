@@ -14,20 +14,19 @@ datasource db {
 }
 
 model Outcome {
-  id                   String        @id @default(uuid())
-  user_id              String
-  title                String
-  why_it_matters       String
-  success_metric_value Float
-  success_metric_unit  String
-  deadline             DateTime
-  status               OutcomeStatus @default(ACTIVE)
-  created_at           DateTime      @default(now())
-  completed_at         DateTime?
-  archived_at          DateTime?
+  id             String        @id @default(uuid())
+  user_id        String
+  title          String
+  why_it_matters String
+  deadline       DateTime
+  status         OutcomeStatus @default(ACTIVE)
+  created_at     DateTime      @default(now())
+  completed_at   DateTime?
+  archived_at    DateTime?
 
-  drivers Driver[]
-  actions   Action[]
+  drivers         Driver[]
+  actions         Action[]
+  success_metrics SuccessMetric[]
 
   @@index([user_id, status])
   @@map("outcomes")
@@ -77,4 +76,21 @@ model Action {
   @@index([user_id, scheduled_for])
   @@index([outcome_id, is_completed])
   @@map("actions")
+}
+
+model SuccessMetric {
+  id            String   @id @default(uuid())
+  outcome_id    String
+  metric_name   String
+  target_value  Float
+  current_value Float    @default(0)
+  unit          String
+  description   String?
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  outcome Outcome @relation(fields: [outcome_id], references: [id], onDelete: Cascade)
+
+  @@index([outcome_id])
+  @@map("success_metrics")
 }

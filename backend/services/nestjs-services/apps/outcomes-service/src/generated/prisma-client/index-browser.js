@@ -125,8 +125,6 @@ exports.Prisma.OutcomeScalarFieldEnum = {
   user_id: 'user_id',
   title: 'title',
   why_it_matters: 'why_it_matters',
-  success_metric_value: 'success_metric_value',
-  success_metric_unit: 'success_metric_unit',
   deadline: 'deadline',
   status: 'status',
   created_at: 'created_at',
@@ -160,6 +158,18 @@ exports.Prisma.ActionScalarFieldEnum = {
   updated_at: 'updated_at'
 };
 
+exports.Prisma.SuccessMetricScalarFieldEnum = {
+  id: 'id',
+  outcome_id: 'outcome_id',
+  metric_name: 'metric_name',
+  target_value: 'target_value',
+  current_value: 'current_value',
+  unit: 'unit',
+  description: 'description',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -185,7 +195,8 @@ exports.OutcomeStatus = exports.$Enums.OutcomeStatus = {
 exports.Prisma.ModelName = {
   Outcome: 'Outcome',
   Driver: 'Driver',
-  Action: 'Action'
+  Action: 'Action',
+  SuccessMetric: 'SuccessMetric'
 };
 
 /**

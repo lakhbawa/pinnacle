@@ -3,6 +3,7 @@ import {use, useEffect, useState} from "react";
 import {outcomeAPI} from "@/utils/fetchWrapper";
 import Link from "next/link";
 import {Outcome, OutcomeResponse} from "@/app/types/outcomeTypes";
+import SuccessMetricCard from "@/app/components/success-metrics/SuccessMetricCard";
 
 export default function ViewOutcomePage({params}: { params: Promise<{ outcome_id: string }> }) {
     const [outcomeData, setOutcomeData] = useState<Outcome | undefined>();
@@ -167,14 +168,16 @@ export default function ViewOutcomePage({params}: { params: Promise<{ outcome_id
                                         <span>{deadline.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                                     </div>
 
-                                    {/* Success Metric Badge */}
-                                    <div className="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-purple-100 text-purple-800 border border-purple-200 shadow-sm">
-                                        <svg className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
-                                        </svg>
-                                        <span className="font-semibold">Target:</span>
-                                        <span className="ml-1">{outcomeData.success_metric_value} {outcomeData.success_metric_unit}</span>
-                                    </div>
+                                    {/* Success Metrics Count Badge */}
+                                    {outcomeData.success_metrics && outcomeData.success_metrics.length > 0 && (
+                                        <div className="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-purple-100 text-purple-800 border border-purple-200 shadow-sm">
+                                            <svg className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                                <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
+                                            </svg>
+                                            <span className="font-semibold">{outcomeData.success_metrics.length}</span>
+                                            <span className="ml-1">Success {outcomeData.success_metrics.length === 1 ? 'Metric' : 'Metrics'}</span>
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Progress Bar */}
@@ -239,7 +242,7 @@ export default function ViewOutcomePage({params}: { params: Promise<{ outcome_id
                     <div className="px-6 py-5 sm:px-8 bg-gray-50 grid grid-cols-3 gap-6">
                         <div className="text-center">
                             <div className="text-3xl font-bold text-blue-600">{totalDrivers}</div>
-                            <div className="text-sm text-gray-600 font-medium mt-1">Drivers</div>
+                            <div className="text-sm text-gray-600 font-medium mt-1">Initiatives</div>
                         </div>
                         <div className="text-center border-l border-r border-gray-200">
                             <div className="text-3xl font-bold text-purple-600">{totalActions}</div>
@@ -252,7 +255,7 @@ export default function ViewOutcomePage({params}: { params: Promise<{ outcome_id
                     </div>
                 </div>
 
-                {/* Drivers Section */}
+                {/* Initiatives Section */}
                 <div className="bg-white shadow-lg rounded-xl border border-gray-200 overflow-hidden">
                     <div className="px-6 py-5 sm:px-8 border-b border-gray-200 bg-gray-50">
                         <div className="sm:flex sm:items-center sm:justify-between">
@@ -261,7 +264,7 @@ export default function ViewOutcomePage({params}: { params: Promise<{ outcome_id
                                     <svg className="h-6 w-6 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                                     </svg>
-                                    Drivers
+                                    Initiatives
                                     {totalDrivers > 0 && (
                                         <span className="ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
                                             {totalDrivers}
@@ -269,7 +272,7 @@ export default function ViewOutcomePage({params}: { params: Promise<{ outcome_id
                                     )}
                                 </h2>
                                 <p className="mt-1 text-sm text-gray-600">
-                                    Key activities driving this outcome forward
+                                    Strategic efforts driving this outcome forward
                                 </p>
                             </div>
                             <div className="mt-4 sm:mt-0">
@@ -282,7 +285,7 @@ export default function ViewOutcomePage({params}: { params: Promise<{ outcome_id
                                     <svg className="mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                         <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd"/>
                                     </svg>
-                                    Add Driver
+                                    Add Initiative
                                 </Link>
                             </div>
                         </div>
@@ -296,8 +299,8 @@ export default function ViewOutcomePage({params}: { params: Promise<{ outcome_id
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                                     </svg>
                                 </div>
-                                <h3 className="text-lg font-medium text-gray-900 mb-1">No drivers yet</h3>
-                                <p className="text-sm text-gray-500 mb-6">Get started by creating your first driver for this outcome.</p>
+                                <h3 className="text-lg font-medium text-gray-900 mb-1">No initiatives yet</h3>
+                                <p className="text-sm text-gray-500 mb-6">Get started by creating your first initiative for this outcome.</p>
                                 <Link
                                     href={`/u/outcomes/${outcome_id}/drivers/create`}
                                     className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm
@@ -306,7 +309,7 @@ export default function ViewOutcomePage({params}: { params: Promise<{ outcome_id
                                     <svg className="mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                         <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd"/>
                                     </svg>
-                                    Create First Driver
+                                    Create First Initiative
                                 </Link>
                             </div>
                         ) : (
@@ -340,7 +343,7 @@ export default function ViewOutcomePage({params}: { params: Promise<{ outcome_id
                                                 </p>
                                             )}
 
-                                            {/* Driver Progress */}
+                                            {/* Initiative Progress */}
                                             {driverActions > 0 && (
                                                 <div className="mt-4 pt-4 border-t border-gray-100">
                                                     <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
@@ -358,6 +361,77 @@ export default function ViewOutcomePage({params}: { params: Promise<{ outcome_id
                                         </Link>
                                     );
                                 })}
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Success Metrics Section */}
+                <div className="bg-white shadow-lg rounded-xl border border-gray-200 overflow-hidden mt-8">
+                    <div className="px-6 py-5 sm:px-8 border-b border-gray-200 bg-gray-50">
+                        <div className="sm:flex sm:items-center sm:justify-between">
+                            <div>
+                                <h2 className="text-xl font-bold text-gray-900 flex items-center">
+                                    <svg className="h-6 w-6 mr-2 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                    </svg>
+                                    Success Metrics
+                                    {outcomeData.success_metrics && outcomeData.success_metrics.length > 0 && (
+                                        <span className="ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                            {outcomeData.success_metrics.length}
+                                        </span>
+                                    )}
+                                </h2>
+                                <p className="mt-1 text-sm text-gray-600">
+                                    Measurable metrics to track progress toward your outcome
+                                </p>
+                            </div>
+                            <div className="mt-4 sm:mt-0">
+                                <Link
+                                    href={`/u/outcomes/${outcome_id}/metrics/create`}
+                                    className="inline-flex items-center px-5 py-2.5 border border-transparent rounded-lg shadow-sm
+                                             text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none
+                                             focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors"
+                                >
+                                    <svg className="mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd"/>
+                                    </svg>
+                                    Add Metric
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="px-6 py-6 sm:px-8">
+                        {!outcomeData.success_metrics || outcomeData.success_metrics.length === 0 ? (
+                            <div className="text-center py-16 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border-2 border-dashed border-gray-300">
+                                <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-200 rounded-full mb-4">
+                                    <svg className="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                    </svg>
+                                </div>
+                                <h3 className="text-lg font-medium text-gray-900 mb-1">No success metrics yet</h3>
+                                <p className="text-sm text-gray-500 mb-6">Add measurable metrics to track progress toward this outcome.</p>
+                                <Link
+                                    href={`/u/outcomes/${outcome_id}/metrics/create`}
+                                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm
+                                             text-sm font-medium text-white bg-purple-600 hover:bg-purple-700"
+                                >
+                                    <svg className="mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd"/>
+                                    </svg>
+                                    Create First Metric
+                                </Link>
+                            </div>
+                        ) : (
+                            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                                {outcomeData.success_metrics.map((metric) => (
+                                    <SuccessMetricCard
+                                        key={metric.id}
+                                        metric={metric}
+                                        outcomeId={outcome_id}
+                                    />
+                                ))}
                             </div>
                         )}
                     </div>

@@ -13,9 +13,7 @@ message CreateOutcomeRequest {
   string user_id = 1;
   string title = 2;
   string why_it_matters = 3;
-  double success_metric_value = 4;
-  string success_metric_unit = 5;
-  google.protobuf.Timestamp deadline = 6;
+  google.protobuf.Timestamp deadline = 4;
 }
 
 message GetOutcomeRequest {
@@ -26,10 +24,8 @@ message UpdateOutcomeRequest {
   string id = 1;
   optional string title = 2;
   optional string why_it_matters = 3;
-  optional double success_metric_value = 4;
-  optional string success_metric_unit = 5;
-  optional google.protobuf.Timestamp deadline = 6;
-  optional OutcomeStatus status = 7;
+  optional google.protobuf.Timestamp deadline = 4;
+  optional OutcomeStatus status = 5;
 }
 
 message ListOutcomesRequest {

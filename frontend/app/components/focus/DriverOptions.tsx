@@ -1,9 +1,9 @@
 import {Driver} from "@/app/types/outcomeTypes";
 
-export default function DriverOptions({drivers, onAdd }:{ drivers: Driver[], onAdd: (id: string) => void }) {
+export default function InitiativeOptions({drivers, onAdd }:{ drivers: Driver[], onAdd: (id: string) => void }) {
     return (
         <>
-        DriverOptions
+        InitiativeOptions
 
             {drivers.map((driver) => (
                 <div key={driver.id} onClick={() => onAdd(driver.id)}>

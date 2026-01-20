@@ -394,7 +394,7 @@ export default function Outcomes() {
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                                     </svg>
                                     <span className="font-medium">{outcome.drivers.length}</span>
-                                    <span className="ml-1">{outcome.drivers.length === 1 ? 'driver' : 'drivers'}</span>
+                                    <span className="ml-1">{outcome.drivers.length === 1 ? 'initiative' : 'initiatives'}</span>
                                   </div>
                                 )}
                               </div>

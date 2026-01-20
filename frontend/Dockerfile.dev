@@ -1,0 +1,27 @@
+# Development Dockerfile
+FROM node:22-alpine
+
+WORKDIR /app
+
+# Install dependencies for hot reload
+RUN apk add --no-cache libc6-compat
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies (including devDependencies)
+RUN npm install
+
+# Copy source code
+COPY . .
+
+# Expose port for Next.js dev server
+EXPOSE 3000
+
+# Set environment to development
+ENV NODE_ENV=development
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+# Start Next.js in development mode with hot reload
+CMD ["npm", "run", "dev"]

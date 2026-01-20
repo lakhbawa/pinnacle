@@ -23,6 +23,8 @@ async function bootstrap() {
         join(protoBasePath, 'outcomes_service/v1/drivers.proto'),
         join(protoBasePath, 'outcomes_service/v1/actions.proto'),
         join(protoBasePath, 'outcomes_service/v1/focus.proto'),
+        join(protoBasePath, 'outcomes_service/v1/success_metrics.proto'),
+
       ],
       url: '0.0.0.0:4440',
       loader: {

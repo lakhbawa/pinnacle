@@ -286,6 +286,15 @@ func main() {
 		log.Fatalf("Failed to register actions gateway: %v", err)
 	}
 
+	err = outcomesservicepb.RegisterSuccessMetricsServiceHandlerFromEndpoint(
+		ctx,
+		grpcMux,
+		urls.OutcomesService,
+		opts,
+	)
+	if err != nil {
+		log.Fatalf("Failed to register success metrics gateway: %v", err)
+	}
 
 	err = outcomesservicepb.RegisterFocusServiceHandlerFromEndpoint(
 		ctx,

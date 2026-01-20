@@ -17,8 +17,6 @@ export const createOutcomeSchema = z.object({
   user_id: required(),
   title: required(),
   why_it_matters: required(),
-  success_metric_value: z.preprocess(longToNumber, positiveNumber()),
-  success_metric_unit: required(),
   deadline: z.object({
     seconds: z.preprocess(longToNumber, requiredNumber()),
     nanos: z.number().optional(),
@@ -38,9 +36,17 @@ export const createActionSchema = z.object({
   driver_id: required(),
 })
 
-
-
+export const createSuccessMetricSchema = z.object({
+  outcome_id: required(),
+  metric_name: required(),
+  target_value: z.preprocess(longToNumber, positiveNumber()),
+  current_value: z.preprocess(longToNumber, z.number().optional()),
+  unit: required(),
+  description: z.string().optional(),
+})
 
 export type CreateOutcomeInput = z.infer<typeof createOutcomeSchema>;
 
 export type CreateDriverInput = z.infer<typeof createDriverSchema>;
+
+export type CreateSuccessMetricInput = z.infer<typeof createSuccessMetricSchema>;

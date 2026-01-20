@@ -1,4 +1,4 @@
-import {Driver, Outcome, Action, OutcomeStatus} from "@app/common/types/outcomes_service/v1/models";
+import {Driver, Outcome, Action, OutcomeStatus, SuccessMetric} from "@app/common/types/outcomes_service/v1/models";
 import {OutcomeStatus as PrismaOutcomeStatus} from '../generated/prisma-client';
 import {RpcException} from "@nestjs/microservices";
 import {Status} from "@grpc/grpc-js/build/src/constants";
@@ -10,8 +10,6 @@ export class OutcomeMapper {
       user_id: outcome.user_id,
       title: outcome.title,
       why_it_matters: outcome.why_it_matters,
-      success_metric_value: outcome.success_metric_value,
-      success_metric_unit: outcome.success_metric_unit,
       deadline: this.toTimestamp(outcome.deadline),
       status: this.toProtoStatus(outcome.status),
       created_at: this.toTimestamp(outcome.created_at),
@@ -19,6 +17,7 @@ export class OutcomeMapper {
       archived_at: outcome.archived_at ? this.toTimestamp(outcome.archived_at) : undefined,
       drivers: outcome.drivers?.map((d) => this.toProtoDriver(d)) || [],
       actions: outcome.actions?.map((t) => this.toProtoAction(t)) || [],
+      success_metrics: outcome.success_metrics?.map((m) => this.toProtoSuccessMetric(m)) || [],
     };
   }
 
@@ -51,6 +50,21 @@ export class OutcomeMapper {
       outcome: task.outcome,
       driver: task.driver,
       description: task.description,
+    };
+  }
+
+  static toProtoSuccessMetric(metric: any): SuccessMetric {
+    return {
+      id: metric.id,
+      outcome_id: metric.outcome_id,
+      metric_name: metric.metric_name,
+      target_value: metric.target_value,
+      current_value: metric.current_value,
+      unit: metric.unit,
+      description: metric.description,
+      created_at: this.toTimestamp(metric.created_at),
+      updated_at: this.toTimestamp(metric.updated_at),
+      outcome: metric.outcome,
     };
   }
 

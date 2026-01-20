@@ -78,22 +78,21 @@ func (OutcomeStatus) EnumDescriptor() ([]byte, []int) {
 }
 
 type Outcome struct {
-	state              protoimpl.MessageState `protogen:"open.v1"`
-	Id                 string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	UserId             string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	Title              string                 `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
-	WhyItMatters       string                 `protobuf:"bytes,4,opt,name=why_it_matters,json=whyItMatters,proto3" json:"why_it_matters,omitempty"`
-	SuccessMetricValue float64                `protobuf:"fixed64,5,opt,name=success_metric_value,json=successMetricValue,proto3" json:"success_metric_value,omitempty"`
-	SuccessMetricUnit  string                 `protobuf:"bytes,6,opt,name=success_metric_unit,json=successMetricUnit,proto3" json:"success_metric_unit,omitempty"`
-	Deadline           *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=deadline,proto3" json:"deadline,omitempty"`
-	Status             OutcomeStatus          `protobuf:"varint,8,opt,name=status,proto3,enum=outcomes_service.v1.OutcomeStatus" json:"status,omitempty"`
-	CreatedAt          *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	CompletedAt        *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=completed_at,json=completedAt,proto3" json:"completed_at,omitempty"`
-	ArchivedAt         *timestamppb.Timestamp `protobuf:"bytes,11,opt,name=archived_at,json=archivedAt,proto3" json:"archived_at,omitempty"`
-	Drivers            []*Driver              `protobuf:"bytes,12,rep,name=drivers,proto3" json:"drivers,omitempty"`
-	Actions            []*Action              `protobuf:"bytes,13,rep,name=actions,proto3" json:"actions,omitempty"`
-	unknownFields      protoimpl.UnknownFields
-	sizeCache          protoimpl.SizeCache
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Id             string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	UserId         string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Title          string                 `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
+	WhyItMatters   string                 `protobuf:"bytes,4,opt,name=why_it_matters,json=whyItMatters,proto3" json:"why_it_matters,omitempty"`
+	Deadline       *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=deadline,proto3" json:"deadline,omitempty"`
+	Status         OutcomeStatus          `protobuf:"varint,6,opt,name=status,proto3,enum=outcomes_service.v1.OutcomeStatus" json:"status,omitempty"`
+	CreatedAt      *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	CompletedAt    *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=completed_at,json=completedAt,proto3" json:"completed_at,omitempty"`
+	ArchivedAt     *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=archived_at,json=archivedAt,proto3" json:"archived_at,omitempty"`
+	Drivers        []*Driver              `protobuf:"bytes,10,rep,name=drivers,proto3" json:"drivers,omitempty"`
+	Actions        []*Action              `protobuf:"bytes,11,rep,name=actions,proto3" json:"actions,omitempty"`
+	SuccessMetrics []*SuccessMetric       `protobuf:"bytes,12,rep,name=success_metrics,json=successMetrics,proto3" json:"success_metrics,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *Outcome) Reset() {
@@ -154,20 +153,6 @@ func (x *Outcome) GetWhyItMatters() string {
 	return ""
 }
 
-func (x *Outcome) GetSuccessMetricValue() float64 {
-	if x != nil {
-		return x.SuccessMetricValue
-	}
-	return 0
-}
-
-func (x *Outcome) GetSuccessMetricUnit() string {
-	if x != nil {
-		return x.SuccessMetricUnit
-	}
-	return ""
-}
-
 func (x *Outcome) GetDeadline() *timestamppb.Timestamp {
 	if x != nil {
 		return x.Deadline
@@ -213,6 +198,13 @@ func (x *Outcome) GetDrivers() []*Driver {
 func (x *Outcome) GetActions() []*Action {
 	if x != nil {
 		return x.Actions
+	}
+	return nil
+}
+
+func (x *Outcome) GetSuccessMetrics() []*SuccessMetric {
+	if x != nil {
+		return x.SuccessMetrics
 	}
 	return nil
 }
@@ -465,28 +457,143 @@ func (x *Action) GetDescription() string {
 	return ""
 }
 
+type SuccessMetric struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	OutcomeId     string                 `protobuf:"bytes,2,opt,name=outcome_id,json=outcomeId,proto3" json:"outcome_id,omitempty"`
+	MetricName    string                 `protobuf:"bytes,3,opt,name=metric_name,json=metricName,proto3" json:"metric_name,omitempty"`
+	TargetValue   float64                `protobuf:"fixed64,4,opt,name=target_value,json=targetValue,proto3" json:"target_value,omitempty"`
+	CurrentValue  float64                `protobuf:"fixed64,5,opt,name=current_value,json=currentValue,proto3" json:"current_value,omitempty"`
+	Unit          string                 `protobuf:"bytes,6,opt,name=unit,proto3" json:"unit,omitempty"`
+	Description   string                 `protobuf:"bytes,7,opt,name=description,proto3" json:"description,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	Outcome       *Outcome               `protobuf:"bytes,10,opt,name=outcome,proto3" json:"outcome,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SuccessMetric) Reset() {
+	*x = SuccessMetric{}
+	mi := &file_outcomes_service_v1_models_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SuccessMetric) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SuccessMetric) ProtoMessage() {}
+
+func (x *SuccessMetric) ProtoReflect() protoreflect.Message {
+	mi := &file_outcomes_service_v1_models_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SuccessMetric.ProtoReflect.Descriptor instead.
+func (*SuccessMetric) Descriptor() ([]byte, []int) {
+	return file_outcomes_service_v1_models_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *SuccessMetric) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *SuccessMetric) GetOutcomeId() string {
+	if x != nil {
+		return x.OutcomeId
+	}
+	return ""
+}
+
+func (x *SuccessMetric) GetMetricName() string {
+	if x != nil {
+		return x.MetricName
+	}
+	return ""
+}
+
+func (x *SuccessMetric) GetTargetValue() float64 {
+	if x != nil {
+		return x.TargetValue
+	}
+	return 0
+}
+
+func (x *SuccessMetric) GetCurrentValue() float64 {
+	if x != nil {
+		return x.CurrentValue
+	}
+	return 0
+}
+
+func (x *SuccessMetric) GetUnit() string {
+	if x != nil {
+		return x.Unit
+	}
+	return ""
+}
+
+func (x *SuccessMetric) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *SuccessMetric) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
+func (x *SuccessMetric) GetUpdatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return nil
+}
+
+func (x *SuccessMetric) GetOutcome() *Outcome {
+	if x != nil {
+		return x.Outcome
+	}
+	return nil
+}
+
 var File_outcomes_service_v1_models_proto protoreflect.FileDescriptor
 
 const file_outcomes_service_v1_models_proto_rawDesc = "" +
 	"\n" +
-	" outcomes_service/v1/models.proto\x12\x13outcomes_service.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\xe9\x04\n" +
+	" outcomes_service/v1/models.proto\x12\x13outcomes_service.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\xd4\x04\n" +
 	"\aOutcome\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x14\n" +
 	"\x05title\x18\x03 \x01(\tR\x05title\x12$\n" +
-	"\x0ewhy_it_matters\x18\x04 \x01(\tR\fwhyItMatters\x120\n" +
-	"\x14success_metric_value\x18\x05 \x01(\x01R\x12successMetricValue\x12.\n" +
-	"\x13success_metric_unit\x18\x06 \x01(\tR\x11successMetricUnit\x126\n" +
-	"\bdeadline\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\bdeadline\x12:\n" +
-	"\x06status\x18\b \x01(\x0e2\".outcomes_service.v1.OutcomeStatusR\x06status\x129\n" +
+	"\x0ewhy_it_matters\x18\x04 \x01(\tR\fwhyItMatters\x126\n" +
+	"\bdeadline\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\bdeadline\x12:\n" +
+	"\x06status\x18\x06 \x01(\x0e2\".outcomes_service.v1.OutcomeStatusR\x06status\x129\n" +
 	"\n" +
-	"created_at\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12=\n" +
-	"\fcompleted_at\x18\n" +
-	" \x01(\v2\x1a.google.protobuf.TimestampR\vcompletedAt\x12;\n" +
-	"\varchived_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\n" +
+	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12=\n" +
+	"\fcompleted_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\vcompletedAt\x12;\n" +
+	"\varchived_at\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\n" +
 	"archivedAt\x125\n" +
-	"\adrivers\x18\f \x03(\v2\x1b.outcomes_service.v1.DriverR\adrivers\x125\n" +
-	"\aactions\x18\r \x03(\v2\x1b.outcomes_service.v1.ActionR\aactions\"\xb5\x02\n" +
+	"\adrivers\x18\n" +
+	" \x03(\v2\x1b.outcomes_service.v1.DriverR\adrivers\x125\n" +
+	"\aactions\x18\v \x03(\v2\x1b.outcomes_service.v1.ActionR\aactions\x12K\n" +
+	"\x0fsuccess_metrics\x18\f \x03(\v2\".outcomes_service.v1.SuccessMetricR\x0esuccessMetrics\"\xb5\x02\n" +
 	"\x06Driver\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1d\n" +
@@ -516,7 +623,23 @@ const file_outcomes_service_v1_models_proto_rawDesc = "" +
 	"\fcompleted_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\vcompletedAt\x126\n" +
 	"\aoutcome\x18\f \x01(\v2\x1c.outcomes_service.v1.OutcomeR\aoutcome\x123\n" +
 	"\x06driver\x18\r \x01(\v2\x1b.outcomes_service.v1.DriverR\x06driver\x12 \n" +
-	"\vdescription\x18\x0e \x01(\tR\vdescription*V\n" +
+	"\vdescription\x18\x0e \x01(\tR\vdescription\"\x8b\x03\n" +
+	"\rSuccessMetric\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
+	"\n" +
+	"outcome_id\x18\x02 \x01(\tR\toutcomeId\x12\x1f\n" +
+	"\vmetric_name\x18\x03 \x01(\tR\n" +
+	"metricName\x12!\n" +
+	"\ftarget_value\x18\x04 \x01(\x01R\vtargetValue\x12#\n" +
+	"\rcurrent_value\x18\x05 \x01(\x01R\fcurrentValue\x12\x12\n" +
+	"\x04unit\x18\x06 \x01(\tR\x04unit\x12 \n" +
+	"\vdescription\x18\a \x01(\tR\vdescription\x129\n" +
+	"\n" +
+	"created_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"\n" +
+	"updated_at\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x126\n" +
+	"\aoutcome\x18\n" +
+	" \x01(\v2\x1c.outcomes_service.v1.OutcomeR\aoutcome*V\n" +
 	"\rOutcomeStatus\x12\x0f\n" +
 	"\vUNSPECIFIED\x10\x00\x12\n" +
 	"\n" +
@@ -539,37 +662,42 @@ func file_outcomes_service_v1_models_proto_rawDescGZIP() []byte {
 }
 
 var file_outcomes_service_v1_models_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_outcomes_service_v1_models_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_outcomes_service_v1_models_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_outcomes_service_v1_models_proto_goTypes = []any{
 	(OutcomeStatus)(0),            // 0: outcomes_service.v1.OutcomeStatus
 	(*Outcome)(nil),               // 1: outcomes_service.v1.Outcome
 	(*Driver)(nil),                // 2: outcomes_service.v1.Driver
 	(*Action)(nil),                // 3: outcomes_service.v1.Action
-	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
+	(*SuccessMetric)(nil),         // 4: outcomes_service.v1.SuccessMetric
+	(*timestamppb.Timestamp)(nil), // 5: google.protobuf.Timestamp
 }
 var file_outcomes_service_v1_models_proto_depIdxs = []int32{
-	4,  // 0: outcomes_service.v1.Outcome.deadline:type_name -> google.protobuf.Timestamp
+	5,  // 0: outcomes_service.v1.Outcome.deadline:type_name -> google.protobuf.Timestamp
 	0,  // 1: outcomes_service.v1.Outcome.status:type_name -> outcomes_service.v1.OutcomeStatus
-	4,  // 2: outcomes_service.v1.Outcome.created_at:type_name -> google.protobuf.Timestamp
-	4,  // 3: outcomes_service.v1.Outcome.completed_at:type_name -> google.protobuf.Timestamp
-	4,  // 4: outcomes_service.v1.Outcome.archived_at:type_name -> google.protobuf.Timestamp
+	5,  // 2: outcomes_service.v1.Outcome.created_at:type_name -> google.protobuf.Timestamp
+	5,  // 3: outcomes_service.v1.Outcome.completed_at:type_name -> google.protobuf.Timestamp
+	5,  // 4: outcomes_service.v1.Outcome.archived_at:type_name -> google.protobuf.Timestamp
 	2,  // 5: outcomes_service.v1.Outcome.drivers:type_name -> outcomes_service.v1.Driver
 	3,  // 6: outcomes_service.v1.Outcome.actions:type_name -> outcomes_service.v1.Action
-	4,  // 7: outcomes_service.v1.Driver.created_at:type_name -> google.protobuf.Timestamp
-	3,  // 8: outcomes_service.v1.Driver.actions:type_name -> outcomes_service.v1.Action
-	1,  // 9: outcomes_service.v1.Driver.outcome:type_name -> outcomes_service.v1.Outcome
-	4,  // 10: outcomes_service.v1.Action.created_at:type_name -> google.protobuf.Timestamp
-	4,  // 11: outcomes_service.v1.Action.updated_at:type_name -> google.protobuf.Timestamp
-	4,  // 12: outcomes_service.v1.Action.scheduled_for:type_name -> google.protobuf.Timestamp
-	4,  // 13: outcomes_service.v1.Action.last_moved_outcome_at:type_name -> google.protobuf.Timestamp
-	4,  // 14: outcomes_service.v1.Action.completed_at:type_name -> google.protobuf.Timestamp
-	1,  // 15: outcomes_service.v1.Action.outcome:type_name -> outcomes_service.v1.Outcome
-	2,  // 16: outcomes_service.v1.Action.driver:type_name -> outcomes_service.v1.Driver
-	17, // [17:17] is the sub-list for method output_type
-	17, // [17:17] is the sub-list for method input_type
-	17, // [17:17] is the sub-list for extension type_name
-	17, // [17:17] is the sub-list for extension extendee
-	0,  // [0:17] is the sub-list for field type_name
+	4,  // 7: outcomes_service.v1.Outcome.success_metrics:type_name -> outcomes_service.v1.SuccessMetric
+	5,  // 8: outcomes_service.v1.Driver.created_at:type_name -> google.protobuf.Timestamp
+	3,  // 9: outcomes_service.v1.Driver.actions:type_name -> outcomes_service.v1.Action
+	1,  // 10: outcomes_service.v1.Driver.outcome:type_name -> outcomes_service.v1.Outcome
+	5,  // 11: outcomes_service.v1.Action.created_at:type_name -> google.protobuf.Timestamp
+	5,  // 12: outcomes_service.v1.Action.updated_at:type_name -> google.protobuf.Timestamp
+	5,  // 13: outcomes_service.v1.Action.scheduled_for:type_name -> google.protobuf.Timestamp
+	5,  // 14: outcomes_service.v1.Action.last_moved_outcome_at:type_name -> google.protobuf.Timestamp
+	5,  // 15: outcomes_service.v1.Action.completed_at:type_name -> google.protobuf.Timestamp
+	1,  // 16: outcomes_service.v1.Action.outcome:type_name -> outcomes_service.v1.Outcome
+	2,  // 17: outcomes_service.v1.Action.driver:type_name -> outcomes_service.v1.Driver
+	5,  // 18: outcomes_service.v1.SuccessMetric.created_at:type_name -> google.protobuf.Timestamp
+	5,  // 19: outcomes_service.v1.SuccessMetric.updated_at:type_name -> google.protobuf.Timestamp
+	1,  // 20: outcomes_service.v1.SuccessMetric.outcome:type_name -> outcomes_service.v1.Outcome
+	21, // [21:21] is the sub-list for method output_type
+	21, // [21:21] is the sub-list for method input_type
+	21, // [21:21] is the sub-list for extension type_name
+	21, // [21:21] is the sub-list for extension extendee
+	0,  // [0:21] is the sub-list for field type_name
 }
 
 func init() { file_outcomes_service_v1_models_proto_init() }
@@ -583,7 +711,7 @@ func file_outcomes_service_v1_models_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_outcomes_service_v1_models_proto_rawDesc), len(file_outcomes_service_v1_models_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -40,8 +40,6 @@ export class OutcomesController implements OutcomesServiceController {
             user_id: request.user_id,
             title: request.title,
             why_it_matters: request.why_it_matters,
-            success_metric_value: request.success_metric_value,
-            success_metric_unit: request.success_metric_unit,
             deadline: OutcomeMapper.toDate(request.deadline),
         });
 
@@ -80,6 +78,7 @@ export class OutcomesController implements OutcomesServiceController {
                 include: {
                     drivers: {include: {actions: true}},
                     actions: true,
+                    success_metrics: true,
                 },
                 orderBy: {created_at: 'desc'},
             }),
@@ -96,7 +95,7 @@ export class OutcomesController implements OutcomesServiceController {
     async getOutcome(request: GetOutcomeRequest): Promise<Outcome> {
         const outcome = await this.outcomesService.findOne(
             {id: request.id},
-            {drivers: {include: {actions: true}}, actions: true}
+            {drivers: {include: {actions: true}}, actions: true, success_metrics: true}
         );
         if (!outcome) {
             throw new RpcException({
@@ -111,8 +110,6 @@ export class OutcomesController implements OutcomesServiceController {
         const data: Prisma.OutcomeUpdateInput = {};
         if (request.title) data.title = request.title;
         if (request.why_it_matters) data.why_it_matters = request.why_it_matters;
-        if (request.success_metric_value !== undefined) data.success_metric_value = request.success_metric_value;
-        if (request.success_metric_unit) data.success_metric_unit = request.success_metric_unit;
         if (request.deadline) data.deadline = OutcomeMapper.toDate(request.deadline);
         if (request.status) data.status = OutcomeMapper.toPrismaStatus(request.status);
 
