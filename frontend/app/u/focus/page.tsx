@@ -495,14 +495,14 @@ export default function FocusPage() {
                                                 </div>
                                             </div>
 
-                                            {outcome.success_metric_value && (
-                                                <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                                                    <div className="text-xs text-gray-500 mb-1">Success Target</div>
-                                                    <div className="text-sm font-semibold text-gray-900">
-                                                        {outcome.success_metric_value} {outcome.success_metric_unit}
-                                                    </div>
-                                                </div>
-                                            )}
+                                            {/*{outcome.success_metric_value && (*/}
+                                            {/*    <div className="mb-4 p-3 bg-gray-50 rounded-lg">*/}
+                                            {/*        <div className="text-xs text-gray-500 mb-1">Success Target</div>*/}
+                                            {/*        <div className="text-sm font-semibold text-gray-900">*/}
+                                            {/*            {outcome.success_metric_value} {outcome.success_metric_unit}*/}
+                                            {/*        </div>*/}
+                                            {/*    </div>*/}
+                                            {/*)}*/}
 
                                             <div className="flex gap-2 pt-4 border-t border-gray-100">
                                                 <Link
