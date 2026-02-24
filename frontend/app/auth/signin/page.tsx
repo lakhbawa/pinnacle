@@ -40,8 +40,8 @@ export default function SignInPage() {
                 showToast.error(result.error)
             } else {
                 // Sign in successful
-               // window.location.href = "/u/dashboard";
-                router.push("/");
+               window.location.href = "/u/dashboard";
+                // router.push("/");
                 router.refresh();
             }
         } catch (err: any) {
