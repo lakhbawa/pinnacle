@@ -33,7 +33,7 @@ services:
     healthcheck:
       test: kafka-topics --bootstrap-server localhost:29092 --list
       interval: 10s
-      timeout: 10s
+      timeout: 30s
       retries: 10
       start_period: 90s
 
