@@ -34,8 +34,8 @@ services:
       test: kafka-topics --bootstrap-server localhost:29092 --list
       interval: 10s
       timeout: 30s
-      retries: 10
-      start_period: 90s
+      retries: 4
+      start_period: 60s
 
   pinnacle-kafka-ui:
     image: provectuslabs/kafka-ui:latest
