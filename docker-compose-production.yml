@@ -31,11 +31,11 @@ services:
     restart: always
     networks: [pinnacle-network]
     healthcheck:
-      test: kafka-topics --bootstrap-server localhost:29092 --list
+      test: ["CMD-SHELL", "nc -z localhost 9092 || exit 1"]
       interval: 10s
-      timeout: 30s
-      retries: 4
-      start_period: 60s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   pinnacle-kafka-ui:
     image: provectuslabs/kafka-ui:latest
@@ -44,7 +44,8 @@ services:
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: pinnacle-kafka:29092
       KAFKA_CLUSTERS_0_ZOOKEEPER: pinnacle-zookeeper:2181
     depends_on:
-      - pinnacle-kafka
+      pinnacle-kafka:
+        condition: service_healthy
     restart: always
     networks:
       - pinnacle-network
