@@ -1,7 +1,7 @@
 # ================================
 # Stage 1: Generate Protobuf Code
 # ================================
-FROM golang:1.25.3 AS proto-builder
+FROM golang:1.25.10 AS proto-builder
 
 WORKDIR /app
 
@@ -20,7 +20,7 @@ RUN buf mod update && buf generate
 # ================================
 # Stage 2: Build Go Binary
 # ================================
-FROM golang:1.25.3 AS builder
+FROM golang:1.25.10 AS builder
 
 WORKDIR /app
 
