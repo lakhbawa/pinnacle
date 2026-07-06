@@ -104,6 +104,51 @@ truncate-notifications-db:
 truncate-all-db: truncate-auth-db truncate-users-db truncate-outcomes-db truncate-notifications-db
 	@echo "🎉 All databases truncated successfully!"
 
+# ==========================================================================
+# Prisma migrations
+# Each service owns its own schema + DB, so migrations run INSIDE that
+# service's container (its .env supplies the correct DATABASE_URL, and the
+# DB hostname only resolves on the docker network). Requires `make up` first.
+# ==========================================================================
+
+# Apply committed migrations (use in CI / staging / production)
+migrate-auth:
+	docker compose exec pinnacle-auth-service npm run prisma:migrate:deploy:auth
+	@echo "✅ Auth migrations applied"
+
+migrate-users:
+	docker compose exec pinnacle-users-service npm run prisma:migrate:deploy:users
+	@echo "✅ Users migrations applied"
+
+migrate-outcomes:
+	docker compose exec pinnacle-outcomes-service npm run prisma:migrate:deploy:outcomes
+	@echo "✅ Outcomes migrations applied"
+
+migrate-notifications:
+	docker compose exec pinnacle-notifications-service npm run prisma:migrate:deploy:notifications
+	@echo "✅ Notifications migrations applied"
+
+migrate-all: migrate-auth migrate-users migrate-outcomes migrate-notifications
+	@echo "🎉 All migrations applied successfully!"
+
+# Show migration status for every service
+migrate-status:
+	docker compose exec pinnacle-auth-service npm run prisma:migrate:status:auth
+	docker compose exec pinnacle-users-service npm run prisma:migrate:status:users
+	docker compose exec pinnacle-outcomes-service npm run prisma:migrate:status:outcomes
+	docker compose exec pinnacle-notifications-service npm run prisma:migrate:status:notifications
+
+# Create + apply a new migration during development.
+# Usage: make migrate-dev-outcomes NAME=add_some_field
+migrate-dev-auth:
+	docker compose exec pinnacle-auth-service npm run prisma:migrate:dev:auth -- --name $(NAME)
+migrate-dev-users:
+	docker compose exec pinnacle-users-service npm run prisma:migrate:dev:users -- --name $(NAME)
+migrate-dev-outcomes:
+	docker compose exec pinnacle-outcomes-service npm run prisma:migrate:dev:outcomes -- --name $(NAME)
+migrate-dev-notifications:
+	docker compose exec pinnacle-notifications-service npm run prisma:migrate:dev:notifications -- --name $(NAME)
+
 seed-auth-db:
 	docker compose exec pinnacle-auth-service npm run db:seed:auth
 	@echo "✅ Auth database seeded"
