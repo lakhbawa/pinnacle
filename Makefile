@@ -111,21 +111,23 @@ truncate-all-db: truncate-auth-db truncate-users-db truncate-outcomes-db truncat
 # DB hostname only resolves on the docker network). Requires `make up` first.
 # ==========================================================================
 
-# Apply committed migrations (use in CI / staging / production)
+# Apply committed migrations (use in CI / staging / production).
+# Calls the prisma CLI directly inside each container (no npm-script
+# dependency) so it works even if package.json in the image is stale.
 migrate-auth:
-	docker compose exec pinnacle-auth-service npm run prisma:migrate:deploy:auth
+	docker compose exec pinnacle-auth-service npx prisma migrate deploy --config=./apps/auth-service/prisma.config.ts
 	@echo "✅ Auth migrations applied"
 
 migrate-users:
-	docker compose exec pinnacle-users-service npm run prisma:migrate:deploy:users
+	docker compose exec pinnacle-users-service npx prisma migrate deploy --config=./apps/users-service/prisma.config.ts
 	@echo "✅ Users migrations applied"
 
 migrate-outcomes:
-	docker compose exec pinnacle-outcomes-service npm run prisma:migrate:deploy:outcomes
+	docker compose exec pinnacle-outcomes-service npx prisma migrate deploy --config=./apps/outcomes-service/prisma.config.ts
 	@echo "✅ Outcomes migrations applied"
 
 migrate-notifications:
-	docker compose exec pinnacle-notifications-service npm run prisma:migrate:deploy:notifications
+	docker compose exec pinnacle-notifications-service npx prisma migrate deploy --config=./apps/notifications-service/prisma.config.ts
 	@echo "✅ Notifications migrations applied"
 
 migrate-all: migrate-auth migrate-users migrate-outcomes migrate-notifications
@@ -133,21 +135,21 @@ migrate-all: migrate-auth migrate-users migrate-outcomes migrate-notifications
 
 # Show migration status for every service
 migrate-status:
-	docker compose exec pinnacle-auth-service npm run prisma:migrate:status:auth
-	docker compose exec pinnacle-users-service npm run prisma:migrate:status:users
-	docker compose exec pinnacle-outcomes-service npm run prisma:migrate:status:outcomes
-	docker compose exec pinnacle-notifications-service npm run prisma:migrate:status:notifications
+	docker compose exec pinnacle-auth-service npx prisma migrate status --config=./apps/auth-service/prisma.config.ts
+	docker compose exec pinnacle-users-service npx prisma migrate status --config=./apps/users-service/prisma.config.ts
+	docker compose exec pinnacle-outcomes-service npx prisma migrate status --config=./apps/outcomes-service/prisma.config.ts
+	docker compose exec pinnacle-notifications-service npx prisma migrate status --config=./apps/notifications-service/prisma.config.ts
 
 # Create + apply a new migration during development.
 # Usage: make migrate-dev-outcomes NAME=add_some_field
 migrate-dev-auth:
-	docker compose exec pinnacle-auth-service npm run prisma:migrate:dev:auth -- --name $(NAME)
+	docker compose exec pinnacle-auth-service npx prisma migrate dev --config=./apps/auth-service/prisma.config.ts --name $(NAME)
 migrate-dev-users:
-	docker compose exec pinnacle-users-service npm run prisma:migrate:dev:users -- --name $(NAME)
+	docker compose exec pinnacle-users-service npx prisma migrate dev --config=./apps/users-service/prisma.config.ts --name $(NAME)
 migrate-dev-outcomes:
-	docker compose exec pinnacle-outcomes-service npm run prisma:migrate:dev:outcomes -- --name $(NAME)
+	docker compose exec pinnacle-outcomes-service npx prisma migrate dev --config=./apps/outcomes-service/prisma.config.ts --name $(NAME)
 migrate-dev-notifications:
-	docker compose exec pinnacle-notifications-service npm run prisma:migrate:dev:notifications -- --name $(NAME)
+	docker compose exec pinnacle-notifications-service npx prisma migrate dev --config=./apps/notifications-service/prisma.config.ts --name $(NAME)
 
 seed-auth-db:
 	docker compose exec pinnacle-auth-service npm run db:seed:auth
