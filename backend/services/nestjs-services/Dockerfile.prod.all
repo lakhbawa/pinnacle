@@ -1,0 +1,52 @@
+# Builds every NestJS microservice into ONE image and runs them as separate
+# processes in one container (see start-all.sh). Code stays split per service;
+# only the container is shared, to save memory on a small production server.
+
+# Stage 1: Build
+FROM node:22-alpine AS builder
+
+WORKDIR /app
+
+COPY package*.json ./
+COPY tsconfig*.json ./
+COPY nest-cli.json ./
+
+RUN npm ci
+
+COPY apps/ ./apps/
+COPY libs/ ./libs/
+COPY proto/ ./proto/
+
+ARG SERVICES="auth-service users-service outcomes-service notifications-service"
+
+# Generate each service's Prisma client and build each service
+RUN for s in $SERVICES; do \
+      npx prisma generate --schema=./apps/$s/prisma/schema.prisma --config=./apps/$s/prisma.config.ts && \
+      npm run build $s || exit 1; \
+    done
+
+# Stage 2: Production
+FROM node:22-alpine AS production
+
+WORKDIR /app
+
+COPY package*.json ./
+COPY tsconfig*.json ./
+COPY nest-cli.json ./
+RUN npm ci
+
+# Built apps (dist/apps/<service>/src/main.js)
+COPY --from=builder /app/dist ./dist/
+
+# Proto files (needed at runtime for gRPC)
+COPY --from=builder /app/proto ./proto/
+
+# Source, Prisma schemas/configs and generated clients (migrations + seeding)
+COPY --from=builder /app/apps ./apps/
+COPY --from=builder /app/libs ./libs/
+
+COPY start-all.sh ./start-all.sh
+
+ENV NODE_ENV=production
+
+CMD ["sh", "./start-all.sh"]
