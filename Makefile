@@ -104,6 +104,53 @@ truncate-notifications-db:
 truncate-all-db: truncate-auth-db truncate-users-db truncate-outcomes-db truncate-notifications-db
 	@echo "🎉 All databases truncated successfully!"
 
+# ==========================================================================
+# Prisma migrations
+# Each service owns its own schema + DB, so migrations run INSIDE that
+# service's container (its .env supplies the correct DATABASE_URL, and the
+# DB hostname only resolves on the docker network). Requires `make up` first.
+# ==========================================================================
+
+# Apply committed migrations (use in CI / staging / production).
+# Calls the prisma CLI directly inside each container (no npm-script
+# dependency) so it works even if package.json in the image is stale.
+migrate-auth:
+	docker compose exec pinnacle-auth-service npx prisma migrate deploy --config=./apps/auth-service/prisma.config.ts
+	@echo "✅ Auth migrations applied"
+
+migrate-users:
+	docker compose exec pinnacle-users-service npx prisma migrate deploy --config=./apps/users-service/prisma.config.ts
+	@echo "✅ Users migrations applied"
+
+migrate-outcomes:
+	docker compose exec pinnacle-outcomes-service npx prisma migrate deploy --config=./apps/outcomes-service/prisma.config.ts
+	@echo "✅ Outcomes migrations applied"
+
+migrate-notifications:
+	docker compose exec pinnacle-notifications-service npx prisma migrate deploy --config=./apps/notifications-service/prisma.config.ts
+	@echo "✅ Notifications migrations applied"
+
+migrate-all: migrate-auth migrate-users migrate-outcomes migrate-notifications
+	@echo "🎉 All migrations applied successfully!"
+
+# Show migration status for every service
+migrate-status:
+	docker compose exec pinnacle-auth-service npx prisma migrate status --config=./apps/auth-service/prisma.config.ts
+	docker compose exec pinnacle-users-service npx prisma migrate status --config=./apps/users-service/prisma.config.ts
+	docker compose exec pinnacle-outcomes-service npx prisma migrate status --config=./apps/outcomes-service/prisma.config.ts
+	docker compose exec pinnacle-notifications-service npx prisma migrate status --config=./apps/notifications-service/prisma.config.ts
+
+# Create + apply a new migration during development.
+# Usage: make migrate-dev-outcomes NAME=add_some_field
+migrate-dev-auth:
+	docker compose exec pinnacle-auth-service npx prisma migrate dev --config=./apps/auth-service/prisma.config.ts --name $(NAME)
+migrate-dev-users:
+	docker compose exec pinnacle-users-service npx prisma migrate dev --config=./apps/users-service/prisma.config.ts --name $(NAME)
+migrate-dev-outcomes:
+	docker compose exec pinnacle-outcomes-service npx prisma migrate dev --config=./apps/outcomes-service/prisma.config.ts --name $(NAME)
+migrate-dev-notifications:
+	docker compose exec pinnacle-notifications-service npx prisma migrate dev --config=./apps/notifications-service/prisma.config.ts --name $(NAME)
+
 seed-auth-db:
 	docker compose exec pinnacle-auth-service npm run db:seed:auth
 	@echo "✅ Auth database seeded"
@@ -120,3 +167,31 @@ seed-all-db: seed-auth-db seed-outcomes-db
 # Production reset and seed
 reset-and-seed-all: truncate-all-db seed-all-db
 	@echo "All databases reset and seeded in production!"
+
+# ==========================================================================
+# Production migrations
+# In production all NestJS services run in one container (pinnacle-services)
+# and share one Postgres (pinnacle-db), so pass each service's DATABASE_URL.
+# ==========================================================================
+PROD_COMPOSE := docker compose $(PROD_PROJECT) -f docker-compose-production.yml
+PROD_DB_URL = postgresql://$${DB_USER:-postgres}:$${DB_PASSWORD:-postgres}@pinnacle-db:5432
+
+prod-migrate-%:
+	$(PROD_COMPOSE) exec -e NODE_OPTIONS= -e DATABASE_URL=$(PROD_DB_URL)/$* pinnacle-services npx prisma migrate deploy --config=./apps/$*-service/prisma.config.ts
+	@echo "✅ $* migrations applied (production)"
+
+prod-migrate-all: prod-migrate-auth prod-migrate-users prod-migrate-outcomes prod-migrate-notifications
+	@echo "🎉 All production migrations applied!"
+
+prod-migrate-status:
+	@for s in auth users outcomes notifications; do \
+		$(PROD_COMPOSE) exec -e NODE_OPTIONS= -e DATABASE_URL=$(PROD_DB_URL)/$$s pinnacle-services npx prisma migrate status --config=./apps/$$s-service/prisma.config.ts; \
+	done
+
+# Production seeding (same seeders as seed-*-db, run in pinnacle-services)
+prod-seed-%:
+	$(PROD_COMPOSE) exec -e NODE_OPTIONS= -e DATABASE_URL=$(PROD_DB_URL)/$* pinnacle-services npm run db:seed:$*
+	@echo "✅ $* database seeded (production)"
+
+prod-seed-all: prod-seed-auth prod-seed-outcomes
+	@echo "🎉 All production databases seeded!"
