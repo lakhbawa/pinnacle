@@ -177,7 +177,7 @@ PROD_COMPOSE := docker compose $(PROD_PROJECT) -f docker-compose-production.yml
 PROD_DB_URL = postgresql://$${DB_USER:-postgres}:$${DB_PASSWORD:-postgres}@pinnacle-db:5432
 
 prod-migrate-%:
-	$(PROD_COMPOSE) exec -e DATABASE_URL=$(PROD_DB_URL)/$* pinnacle-services npx prisma migrate deploy --config=./apps/$*-service/prisma.config.ts
+	$(PROD_COMPOSE) exec -e NODE_OPTIONS= -e DATABASE_URL=$(PROD_DB_URL)/$* pinnacle-services npx prisma migrate deploy --config=./apps/$*-service/prisma.config.ts
 	@echo "✅ $* migrations applied (production)"
 
 prod-migrate-all: prod-migrate-auth prod-migrate-users prod-migrate-outcomes prod-migrate-notifications
@@ -185,12 +185,12 @@ prod-migrate-all: prod-migrate-auth prod-migrate-users prod-migrate-outcomes pro
 
 prod-migrate-status:
 	@for s in auth users outcomes notifications; do \
-		$(PROD_COMPOSE) exec -e DATABASE_URL=$(PROD_DB_URL)/$$s pinnacle-services npx prisma migrate status --config=./apps/$$s-service/prisma.config.ts; \
+		$(PROD_COMPOSE) exec -e NODE_OPTIONS= -e DATABASE_URL=$(PROD_DB_URL)/$$s pinnacle-services npx prisma migrate status --config=./apps/$$s-service/prisma.config.ts; \
 	done
 
 # Production seeding (same seeders as seed-*-db, run in pinnacle-services)
 prod-seed-%:
-	$(PROD_COMPOSE) exec -e DATABASE_URL=$(PROD_DB_URL)/$* pinnacle-services npm run db:seed:$*
+	$(PROD_COMPOSE) exec -e NODE_OPTIONS= -e DATABASE_URL=$(PROD_DB_URL)/$* pinnacle-services npm run db:seed:$*
 	@echo "✅ $* database seeded (production)"
 
 prod-seed-all: prod-seed-auth prod-seed-outcomes
