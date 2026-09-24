@@ -173,7 +173,7 @@ reset-and-seed-all: truncate-all-db seed-all-db
 # In production all NestJS services run in one container (pinnacle-services)
 # and share one Postgres (pinnacle-db), so pass each service's DATABASE_URL.
 # ==========================================================================
-PROD_COMPOSE := docker compose -f docker-compose-production.yml
+PROD_COMPOSE := docker compose $(PROD_PROJECT) -f docker-compose-production.yml
 PROD_DB_URL = postgresql://$${DB_USER:-postgres}:$${DB_PASSWORD:-postgres}@pinnacle-db:5432
 
 prod-migrate-%:
@@ -187,3 +187,11 @@ prod-migrate-status:
 	@for s in auth users outcomes notifications; do \
 		$(PROD_COMPOSE) exec -e DATABASE_URL=$(PROD_DB_URL)/$$s pinnacle-services npx prisma migrate status --config=./apps/$$s-service/prisma.config.ts; \
 	done
+
+# Production seeding (same seeders as seed-*-db, run in pinnacle-services)
+prod-seed-%:
+	$(PROD_COMPOSE) exec -e DATABASE_URL=$(PROD_DB_URL)/$* pinnacle-services npm run db:seed:$*
+	@echo "✅ $* database seeded (production)"
+
+prod-seed-all: prod-seed-auth prod-seed-outcomes
+	@echo "🎉 All production databases seeded!"

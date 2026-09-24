@@ -1,6 +1,8 @@
 #!/bin/sh
 # Runs each microservice as its own Node process inside a single container.
 # Per-service settings come from <PREFIX>_DATABASE_URL, e.g. AUTH_DATABASE_URL.
+# Heap per service is capped by SERVICE_MAX_HEAP_MB (default 192); ad-hoc
+# commands (migrations, seeding) run via docker exec are not capped.
 # If any process exits, the others are stopped and the container exits so
 # Docker's restart policy brings the whole set back up.
 
@@ -11,7 +13,7 @@ start() {
   db_url=$2
   echo "[start-all] starting $name"
   DATABASE_URL="$db_url" KAFKA_CLIENT_ID="$name" \
-    node "dist/apps/$name/src/main.js" &
+    node --max-old-space-size="${SERVICE_MAX_HEAP_MB:-192}" "dist/apps/$name/src/main.js" &
   PIDS="$PIDS $!"
 }
 

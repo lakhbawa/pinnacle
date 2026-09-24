@@ -129,7 +129,6 @@ services:
       - REDIS_HOST=pinnacle-redis
       - USERS_SERVICE_URL=pinnacle-users-service:4450
       - KAFKA_BROKERS=pinnacle-kafka:9092
-      - NODE_OPTIONS=--max-old-space-size=192
     restart: always
     depends_on:
       pinnacle-kafka:
